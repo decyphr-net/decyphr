@@ -1,0 +1,31 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: languages_postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresDB:/var/lib/postgresql/data
+    env_file:
+      - ./languages/.env
+  pgAdmin:
+    image: dpage/pgadmin4
+    container_name: languages_pgAdmin
+    env_file:
+      - ./languages/.env
+    ports:
+      - "5050:80"
+  languages:
+    image: snig501:languages
+    env_file:
+      - ./languages/.env
+    build:
+      context: ./
+      dockerfile: ./languages/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+volumes:
+  postgresDB:
