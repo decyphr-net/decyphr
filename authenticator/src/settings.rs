@@ -1,9 +1,41 @@
-use crate::settings::entities::{Environment, Settings};
-
 use config::{Config, ConfigError, Environment as ConfigEnvironment, File};
+use infra::settings::entities::{
+    ApplicationSettings, DatabaseSettings, Environment, RedisSettings
+};
+use serde::Deserialize;
 use std::env::{current_dir, var};
 
 
+#[derive(Deserialize, Clone)]
+pub struct Settings {
+    pub application: ApplicationSettings,
+    pub debug: bool,
+    pub database: DatabaseSettings,
+    pub redis: RedisSettings,
+    pub secret: Secret,
+    pub email: EmailSettings,
+    pub frontend_url: String,
+}
+
+
+#[derive(Deserialize, Clone)]
+pub struct Secret {
+    pub secret_key: String,
+    pub token_expiration: i64,
+    pub hmac_secret: String,
+}
+
+
+#[derive(Deserialize, Clone)]
+pub struct EmailSettings {
+    pub host: String,
+    pub host_user: String,
+    pub host_user_password: String,
+}
+
+
+/// TODO: update settings in `infra` to decouple the logic that reads from the config
+/// files and deserializes the configs
 pub fn get_settings() -> Result<Settings, ConfigError> {
     let base_path = current_dir().expect("Failed to determine the current directory");
     let settings_directory = base_path.join("settings");

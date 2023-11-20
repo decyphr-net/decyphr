@@ -1,0 +1,11 @@
+application:
+  protocol: https
+
+debug: false
+
+secret:
+  secret_key: ""
+  token_expiration: 0
+  hmac_secret: ""
+
+frontend_url: ""
