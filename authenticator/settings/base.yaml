@@ -1,0 +1,9 @@
+application:
+  port: 5000
+  host: 0.0.0.0
+  base_url: ""
+
+email:
+  host: ""
+  host_user: ""
+  host_user_password: ""
