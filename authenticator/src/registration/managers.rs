@@ -41,7 +41,7 @@ use crate::registration::{
 use crate::settings::get_settings;
 use crate::tokens::{
     entities::RegistrationConfirmation,
-    managers::verify_confirmation_token_pasetor
+    managers::{issue_confirmation_token_pasetors, verify_confirmation_token_pasetor}
 };
 
 use actix_multipart::form::MultipartForm;
@@ -172,15 +172,29 @@ impl UserRegistrationManager {
             )
             .expect("Redis connection cannot be retrieved");
 
-        // TODO: Remove redis connection from here. Sending the email should not be
-        // responsible for creating this token
+        let issued_token = match issue_confirmation_token_pasetors(
+            user_id, &mut redis_con, None,
+        )
+        .await
+        {
+            Ok(t) => t,
+            Err(e) => {
+                event!(target: "authenticator", Level::ERROR, "{}", e);
+                return Err(
+                    ErrorResponse {
+                        error: format!("{}", e)
+                    }
+                );
+            }
+        };
+
         send_multipart_email(
             "Decyphr - Let's get you verified".to_string(),
             user_id,
             create_new_user.email,
             create_new_user.name,
             "verification_email.html",
-            &mut redis_con,
+            issued_token,
         )
         .await
         .unwrap();

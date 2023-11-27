@@ -1,6 +1,5 @@
 use crate::ENV;
 use crate::settings::get_settings;
-use crate::tokens::managers::issue_confirmation_token_pasetors;
 
 use chrono::{Local as ChronoLocal, Duration};
 use lettre::{
@@ -12,6 +11,7 @@ use lettre::{
     Tokio1Executor
 };
 use minijinja::context;
+use tokio::spawn;
 use tracing::{event, instrument, Level};
 
 /// Send Email
@@ -92,30 +92,18 @@ pub async fn send_email(
 /// 
 /// Setup up the tokens and email contents (including templates) for sending and then
 /// calls the `send_email` function at the end 
-#[instrument(name="Generic multipart e-mail sending function", skip(redis_connection))]
+#[instrument(name="Generic multipart e-mail sending function")]
 pub async fn send_multipart_email(
     subject: String,
     user_id: uuid::Uuid,
     recipient_email: String,
     recipient_name: String,
     template_name: &str,
-    redis_connection: &mut deadpool_redis::redis::aio::Connection,
+    token: String,
 ) -> Result<(), String> {
     let settings = get_settings().expect("Failed to read settings");
 
     let title = subject.clone();
-
-    let issued_token = match issue_confirmation_token_pasetors(
-        user_id, redis_connection, None,
-    )
-    .await
-    {
-        Ok(t) => t,
-        Err(e) => {
-            event!(target: "authenticator", Level::ERROR, "{}", e);
-            return Err(format!("{}", e));
-        }
-    };
 
     let web_address = {
         if settings.debug {
@@ -129,11 +117,11 @@ pub async fn send_multipart_email(
             format!(
                 "{}/api/users/password/confirm/change_password?token={}",
                 web_address,
-                issued_token,
+                token,
             )
         } else {
             format!(
-                "{}/api/users/register/confirm/?token={}", web_address, issued_token
+                "{}/api/users/register/confirm/?token={}", web_address, token
             )
         }
     };
@@ -152,8 +140,6 @@ pub async fn send_multipart_email(
     let text = format!(
         "Tap the link below to confirm your email address. {}",confirmation_link
     );
-    tokio::spawn(
-        send_email(None, recipient_email, recipient_name, subject, html_text, text)
-    );
+    spawn(send_email(None, recipient_email, recipient_name, subject, html_text, text));
     Ok(())
 }
