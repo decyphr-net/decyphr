@@ -1,10 +1,6 @@
 FROM messense/rust-musl-cross:x86_64-musl as chef
 ENV SQLX_OFFLINE=true
 RUN sudo apt-get update -y && \
-    sudo apt-get install libc6 -y && \
-    sudo apt-get install libssl-dev -y && \
-    sudo apt-get install -y --no-install-recommends openssl ca-certificates && \
-    sudo apt-get install pkg-config -y && \
     sudo apt-get install -y musl-tools && \
     sudo apt-get install wget -y && \
     sudo apt-get install ca-certificates -y
@@ -48,11 +44,12 @@ COPY . .
 RUN cargo build --release --target x86_64-unknown-linux-musl
 
 # Create a new stage with a minimal image
-FROM scratch
+FROM debian:bullseye-slim
 COPY --from=builder /authenticator/target/x86_64-unknown-linux-musl/release/authenticator /authenticator
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-COPY ./authenticator/settings settings
+COPY /authenticator/settings settings
+COPY /authenticator/templates templates
 
 ENTRYPOINT ["./authenticator"]
 EXPOSE 5000

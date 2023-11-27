@@ -46,6 +46,8 @@ tracing-subscriber = { version = "0.3.17", features = [
     'json',
     'tracing-log',
 ] }
+utoipa = { version = "4.0.0", features = ["chrono", "actix_extras"] }
+utoipa-swagger-ui = { version = "4.0.0", features = ["actix-web"] }
 uuid = { version = "1.4.1", features = ["v4", "serde"] }
 
 [dev-dependencies]

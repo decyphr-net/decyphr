@@ -1,6 +1,8 @@
+use crate::openapi::ApiDoc;
 use crate::ping::controllers::ping;
 use crate::s3::client::S3Client;
 use crate::settings::Settings;
+use crate::registration::controllers::{confirm_registration, register};
 
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, cookie::{Key, SameSite}, dev::Server, HttpServer, web::{Data, scope}};
@@ -9,6 +11,8 @@ use deadpool_redis::{Config as RedisConfig, Runtime::Tokio1};
 use sqlx::{migrate, postgres::{PgPool, PgPoolOptions}};
 use std::{env::var, io::Error as IOError, net::TcpListener};
 use tracing::{event, Level};
+use utoipa_swagger_ui::SwaggerUi;
+use utoipa::OpenApi;
 
 
 pub struct Application {
@@ -80,6 +84,8 @@ async fn run(
     let redis_store = RedisSessionStore::new(redis_url.clone())
         .await.expect("Can't unwrap redis session");
 
+    let openapi = ApiDoc::openapi();
+
     let server = HttpServer::new(
         move || {
             App::new()
@@ -92,12 +98,22 @@ async fn run(
                         .build(),
                 )
                 .service(
+                    SwaggerUi::new(
+                        "/swagger-ui/{_:.*}"
+                    )
+                    .url(
+                        "/api-docs/openapi.json", openapi.clone()
+                    )
+                )
+                .service(
                     scope("/api")
                         .service(ping)
                         .service(
                             scope("/auth")
                                 .service(
-                                    scope("/register")
+                                    scope("/registration")
+                                        .service(register)
+                                        .service(confirm_registration)
                                 )
                         )
                 )
