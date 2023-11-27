@@ -1,4 +1,3 @@
-
 use crate::languages::entities::{ErrorResponse, Language};
 use utoipa::OpenApi;
 

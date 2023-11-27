@@ -2,22 +2,10 @@ use crate::ping::controllers::ping;
 use crate::languages::controllers::get_all_languages;
 use crate::openapi::ApiDoc;
 
-use actix_web::{
-    App,
-    dev::Server,
-    HttpServer,
-    web::{Data, scope}
-};
+use actix_web::{App, dev::Server, HttpServer, web::{Data, scope}};
 use infra::settings::entities::{DatabaseSettings, Settings};
-use std::{
-    io::Error,
-    net::TcpListener,
-    time::Duration
-};
-use sqlx::{
-    migrate,
-    postgres::{PgPool, PgPoolOptions}
-};
+use std::{io::Error, net::TcpListener, time::Duration};
+use sqlx::{migrate, postgres::{PgPool, PgPoolOptions}};
 use utoipa_swagger_ui::SwaggerUi;
 use utoipa::OpenApi;
 
@@ -40,9 +28,7 @@ impl Application {
         migrate!().run(&connection_pool).await.expect("Failed to migrate DB");
 
         let address = format!(
-            "{}:{}",
-            settings.application.host,
-            settings.application.port
+            "{}:{}", settings.application.host, settings.application.port
         );
 
         let listener = TcpListener::bind(&address)?;
