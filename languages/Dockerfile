@@ -1,6 +1,6 @@
 FROM messense/rust-musl-cross:x86_64-musl as chef
 ENV SQLX_OFFLINE=true
-RUN sudo apt-get update && sudo apt-get install libc6
+RUN sudo apt-get update && sudo apt-get install libc6 -y
 RUN cargo install cargo-chef
 WORKDIR /languages
 
