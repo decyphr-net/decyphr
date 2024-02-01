@@ -6,6 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+actix-multipart = "0.6.1"
+aws-config = "0.56.1"
+aws-sdk-s3 = "0.31.2"
 config = { version = "0.13.3", features = ["yaml"] }
 serde = "1.0.160"
 sqlx = { version = "0.7.2", features = ["postgres"] }
@@ -18,5 +21,6 @@ tracing-subscriber = { version = "0.3.17", features = [
     'json',
     'tracing-log',
 ] }
+tokio = { version = "1.27.0", features = ["macros", "rt-multi-thread"] }
 utoipa = { version = "4.0.0", features = ["chrono", "actix_extras"] }
 utoipa-swagger-ui = { version = "4.0.0", features = ["actix-web"] }

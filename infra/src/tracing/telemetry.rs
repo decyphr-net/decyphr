@@ -3,11 +3,7 @@ use tracing_subscriber::{EnvFilter, fmt::layer, layer::SubscriberExt, Registry};
 
 
 pub fn get_subscriber(debug: bool) -> impl Subscriber {
-    let env_filter = if debug {
-        "trace".to_string()
-    } else {
-        "info".to_string()
-    };
+    let env_filter = "info".to_string();
 
     let env_filter = EnvFilter::try_from_default_env()
         .unwrap_or_else(
