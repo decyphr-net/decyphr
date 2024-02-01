@@ -1,11 +1,8 @@
-use crate::ping::{
-    entities::DBResponse,
-    repositories::PingRepository
-};
+use crate::ping::{entities::DBResponse, repositories::PingRepository};
 use actix_web::web::Data;
 
 use sqlx::postgres::PgPool;
-use tracing::{event, instrument, Level};
+use tracing::{event, Level};
 
 
 pub struct PingManager {

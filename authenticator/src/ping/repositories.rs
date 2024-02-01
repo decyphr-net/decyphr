@@ -12,7 +12,9 @@ use sqlx::{
 };
 use tracing::{event, Level};
 
+
 pub struct PingRepository {}
+
 
 impl PingRepository {
 

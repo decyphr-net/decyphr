@@ -15,6 +15,16 @@ pub struct Settings {
     pub secret: Secret,
     pub email: EmailSettings,
     pub frontend_url: String,
+    pub google_oauth: GoogleAuthSettings,
+    pub jwt: JwtSettings,
+}
+
+
+#[derive(Deserialize, Clone)]
+pub struct JwtSettings {
+    pub secret: String,
+    pub expires_in: String,
+    pub max_age: i64,
 }
 
 
@@ -31,6 +41,14 @@ pub struct EmailSettings {
     pub host: String,
     pub host_user: String,
     pub host_user_password: String,
+}
+
+
+#[derive(Deserialize, Clone)]
+pub struct GoogleAuthSettings {
+    pub client_id: String,
+    pub client_secret: String,
+    pub redirect_uri: String,
 }
 
 

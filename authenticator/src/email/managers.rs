@@ -116,8 +116,7 @@ pub async fn send_multipart_email(
     let activation_link = {
         if template_name == "password_reset_email.html" {
             format!(
-                "{}/api/users/password/confirm/change_password?token={}",
-                web_address,
+                "http://127.0.0.1:5001/api/auth/password/confirm-change-password?token={}",
                 token,
             )
         } else {

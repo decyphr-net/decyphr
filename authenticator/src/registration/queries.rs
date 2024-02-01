@@ -15,3 +15,16 @@ pub const INSERT_USER_PROFILE_QUERY: &str = "
 
 pub const ACTIVATE_NEW_USER_QUERY: &str = "
     UPDATE users SET is_active=true WHERE id = $1";
+
+pub const GET_INACTIVE_USER: &str = "
+    SELECT 
+        id, 
+        email, 
+        name, 
+        password, 
+        is_active, 
+        is_staff, 
+        is_superuser, 
+        date_joined, 
+        thumbnail 
+    FROM users WHERE email = $1 AND is_active=false";

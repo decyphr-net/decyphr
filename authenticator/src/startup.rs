@@ -1,13 +1,18 @@
+use crate::accounts::controllers::{update_user_details};
 use crate::openapi::ApiDoc;
+use crate::password::controllers::{
+    change_user_password, confirm_change_password_token, request_password_change
+};
 use crate::ping::controllers::ping;
-use crate::s3::client::S3Client;
 use crate::settings::Settings;
-use crate::registration::controllers::{confirm_registration, register};
+use crate::oauth::controllers::register_user;
+use crate::registration::controllers::{confirm_registration, regenerate_token, register};
+use crate::sessions::controllers::{get_current_user, login, logout};
 
 use actix_session::{SessionMiddleware, storage::RedisSessionStore};
 use actix_web::{App, cookie::{Key, SameSite}, dev::Server, HttpServer, web::{Data, scope}};
-use aws_sdk_s3::config::{Builder, Credentials as S3Credentials, Region};
 use deadpool_redis::{Config as RedisConfig, Runtime::Tokio1};
+use infra::third_party::aws::s3::client::{configure_and_return_s3_client, S3Client,};
 use sqlx::{migrate, postgres::{PgPool, PgPoolOptions}};
 use std::{env::var, io::Error as IOError, net::TcpListener};
 use tracing::{event, Level};
@@ -111,9 +116,27 @@ async fn run(
                         .service(
                             scope("/auth")
                                 .service(
+                                    scope("/sessions")
+                                        .service(register_user)
+                                        .service(login)
+                                        .service(logout)
+                                        .service(get_current_user)
+                                )
+                                .service(
                                     scope("/registration")
                                         .service(register)
+                                        .service(regenerate_token)
                                         .service(confirm_registration)
+                                )
+                                .service(
+                                    scope("/accounts")
+                                        .service(update_user_details)
+                                )
+                                .service(
+                                    scope("/password")
+                                        .service(request_password_change)
+                                        .service(confirm_change_password_token)
+                                        .service(change_user_password)
                                 )
                         )
                 )
@@ -126,20 +149,4 @@ async fn run(
     .run();
 
     Ok(server)
-}
-
-
-async fn configure_and_return_s3_client() -> S3Client {
-    let key = var("AWS_ACCESS_KEY_ID").expect("Failed to get AWS key");
-    let key_secret = var("AWS_SECRET_ACCESS_KEY")
-        .expect("Failed to get AWS secret key");
-    let cred = S3Credentials::new(
-        key, key_secret, None, None, "loaded-from-custom-env"
-    );
-
-    let region = Region::new(var("AWS_REGION").unwrap_or("eu-west-1".to_string()));
-    let config_builder = Builder::new().region(region).credentials_provider(cred);
-
-    let config = config_builder.build();
-    S3Client::new(config)
 }
