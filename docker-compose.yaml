@@ -1,5 +1,46 @@
 version: "3"
 services:
+
+  # UI Clients
+  pgAdmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    env_file:
+      - ./languages/.env
+    ports:
+      - "5050:80"
+
+  # Monitoring
+  fluentd:
+    build: ./fluentd
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    expose:
+      - 9200
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+  kibana:
+    image: kibana:7.17.0
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
+
+  # Application Databases
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -9,13 +50,6 @@ services:
       - postgresDB:/var/lib/postgresql/data
     env_file:
       - ./languages/.env
-  pgAdmin:
-    image: dpage/pgadmin4
-    container_name: pgAdmin
-    env_file:
-      - ./languages/.env
-    ports:
-      - "5050:80"
   redis:
     image: redis:6.2-alpine
     restart: always
@@ -24,6 +58,8 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes: 
       - redis:/data
+
+  # Application Services
   languages:
     image: snig501:languages
     env_file:
@@ -35,6 +71,11 @@ services:
       - "5000:5000"
     depends_on:
       - postgres
+      - fluentd
+    logging:
+      driver: fluentd
+      options:
+        tag: "languages"
   authenticator:
     image: snig501:authenticator
     env_file:
@@ -47,7 +88,13 @@ services:
     depends_on:
       - postgres
       - redis
+      - fluentd
+    logging:
+      driver: fluentd
+      options:
+        tag: "authenticator"
 volumes:
+  elasticsearch:
   postgresDB:
   redis:
     driver: local
