@@ -1,7 +1,4 @@
-use actix_web::{
-    get,
-    HttpResponse,
-};
+use actix_web::{get, HttpResponse};
 use tracing::{event, instrument, Level};
 
 #[instrument]

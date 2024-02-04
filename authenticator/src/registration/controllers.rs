@@ -14,7 +14,7 @@ use actix_web::{
 };
 use deadpool_redis::Pool as RedisPool;
 use tracing::instrument;
-use sqlx::{postgres::PgPool};
+use sqlx::postgres::PgPool;
 use utoipa::path as openapi_path;
 
 
