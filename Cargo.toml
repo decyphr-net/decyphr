@@ -3,5 +3,6 @@
 members = [
     "authenticator",
     "infra",
-    "languages"
+    "languages",
+    "text_processing_gateway"
 ]

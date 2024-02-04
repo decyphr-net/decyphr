@@ -1,0 +1,4 @@
+application:
+  protocol: http
+
+debug: true

@@ -1,0 +1,4 @@
+application:
+  protocol: https
+
+debug: false
