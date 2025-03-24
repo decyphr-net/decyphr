@@ -1,0 +1,102 @@
+{
+  "global": {
+    "loading": "Á Luchtú...",
+    "themeToggle": "Athraigh Téama",
+    "light": "Solas",
+    "dark": "Dorcha",
+    "system": "Córas"
+  },
+  "nav": {
+    "home": "Baile",
+    "features": "Gnéithe",
+    "practice": "Cleachtadh",
+    "pricing": "Praghas",
+    "chat": "Comhrá",
+    "translate": "Aistrigh",
+    "lexicon": "Foclóir"
+  },
+  "hero": {
+    "title": "Máistreacht ar Theangacha go Nádúrtha",
+    "subtitle": "Foghlaim teanga le AI a oiriúnaíonn duit",
+    "cta": "Tosaigh ag Foghlaim Saor"
+  },
+  "features": {
+    "translation": {
+      "title": "Aistriúchán Cliste",
+      "description": "Faigh aistriúcháin chomhthéacsúla le hanailís ar pháirteanna cainte"
+    },
+    "practice": {
+      "title": "Cleachtadh Comhrá le AI",
+      "description": "Tóg muinín le comhpháirtithe comhrá AI saor ó strus"
+    },
+    "tracking": {
+      "title": "Rianú Cliste ar Dhul Chun Cinn",
+      "description": "Foghlaim go héifeachtach le sceidil athbhreithnithe pearsantaithe"
+    }
+  },
+  "auth": {
+    "title": "Sínigh isteach i do chuntas",
+    "emailPlaceholder": "Iontráil do ríomhphost",
+    "signIn": "Seol Nasc Logála isteach chuig Ríomhphost",
+    "sending": "Á sheoladh...",
+    "sent": "Nasc seolta! Seiceáil do ríomhphost",
+    "error": "Rudaí áirithe mícheart",
+    "signOut": "Sínigh Amach",
+    "loggedInAs": "Sínithe isteach mar",
+    "verifyRequestTitle": "Seiceáil Do Ríomhphost 📧",
+    "verifyRequestText": "Seoladh nasc sínithe chugat. Cliceáil ar an nasc i do ríomhphost chun leanúint ar aghaidh.",
+    "verifyRequestWaiting": "Ag fanacht le deimhniú...",
+    "magicLoginVerifying": "Á dheimhniú...",
+    "magicLoginInvalidLinkError": "Nasc logála isteach neamhbhailí.",
+    "magicLoginExpiredLinkError": "Nasc logála isteach neamhbhailí nó imithe in éag.",
+    "firstTimeLoginTitle": "Socraigh do roghanna teanga",
+    "firstLanguage": "An Chéad Teanga",
+    "targetLanguage": "Teanga Sprioc",
+    "immersionLevel": "Leibhéal Tumoideachais",
+    "immersionNormal": "Gnáth",
+    "immersionFull": "Iomlán",
+    "saveSettings": "Sábháil Socruithe",
+    "selectLanguage": "Roghnaigh teanga"
+  },
+  "dashboard": {
+    "title": "Painéal",
+    "subtitle": "Do mhol foghlama teangacha",
+    "chat": {
+      "title": "Labhair le hAI",
+      "description": "Cleachtaigh comhráite le róbait AI atá dírithe ar theangacha.",
+      "cta": "Tosaigh ag Comhrá!"
+    },
+    "translation": {
+      "title": "Aistrigh & Déan Anailís",
+      "description": "Bris síos téacs le haistriúcháin agus lipéadú coda cainte.",
+      "cta": "Tosaigh ag Aistriú!"
+    },
+    "lexicon": {
+      "title": "Do Stór Focal",
+      "description": "Rianaigh agus athbhreithnigh na focail a d’úsáid tú.",
+      "cta": "Féach ar an Foclóir!"
+    }
+  },
+  "translate": {
+    "title": "Aistrigh Téacs",
+    "inputPlaceholer": "Cuir Téacs isteach",
+    "translateButton": "Aistrigh",
+    "translateButtonLoading": "Á gCinnteáil",
+    "translateNoTranslations": "Níl aistriúcháin ann. Aistrigh roinnt téacs leis an bhfoirm thuas",
+    "translatePaginationPrev": "Roimhe seo",
+    "translatePaginationNext": "Ar Aghaidh",
+    "translatePaginationText": "Leathanach {page} de {totalPages}"
+  },
+  "lexicon": {
+    "title": "Do Idirghníomhaíochtaí Focal",
+    "table": {
+      "word": "Focal",
+      "type": "Cineál",
+      "family": "Teaghlach",
+      "familiarity": "Eolas",
+      "revise": "Ní mór Athbhreithniú",
+      "action": "Gníomh"
+    },
+    "noWords": "Níl Aon Idirghníomhaíochtaí Focal"
+  }
+}

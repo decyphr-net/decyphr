@@ -1,0 +1,102 @@
+{
+  "global": {
+    "loading": "Carregando...",
+    "themeToggle": "Alternar Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "nav": {
+    "home": "Início",
+    "features": "Funcionalidades",
+    "practice": "Prática",
+    "pricing": "Preços",
+    "chat": "Chat",
+    "translate": "Traduzir",
+    "lexicon": "Vocabulário"
+  },
+  "hero": {
+    "title": "Domine os Idiomas Naturalmente",
+    "subtitle": "Aprendizado de idiomas com IA que se adapta a você",
+    "cta": "Comece a Aprender Gratuitamente"
+  },
+  "features": {
+    "translation": {
+      "title": "Tradução Inteligente",
+      "description": "Obtenha traduções contextualizadas com análise de partes do discurso"
+    },
+    "practice": {
+      "title": "Prática de Conversação com IA",
+      "description": "Ganhe confiança com parceiros de bate-papo em IA sem estresse"
+    },
+    "tracking": {
+      "title": "Acompanhamento Inteligente de Progresso",
+      "description": "Aprenda de forma eficiente com cronogramas de revisão personalizados"
+    }
+  },
+  "auth": {
+    "title": "Faça login na sua conta",
+    "emailPlaceholder": "Digite seu e-mail",
+    "signIn": "Enviar Link de Login Para o e-mail",
+    "sending": "Enviando...",
+    "sent": "Link enviado! Verifique seu e-mail",
+    "error": "Algo deu errado",
+    "signOut": "Sair",
+    "loggedInAs": "Conectado como",
+    "verifyRequestTitle": "Verifique seu E-mail 📧",
+    "verifyRequestText": "Enviamos um link de login para você. Clique no link no seu e-mail para continuar.",
+    "verifyRequestWaiting": "Aguardando confirmação...",
+    "magicLoginVerifying": "Verificando...",
+    "magicLoginInvalidLinkError": "Link de login inválido.",
+    "magicLoginExpiredLinkError": "Link de login inválido ou expirado.",
+    "firstTimeLoginTitle": "Configure suas preferências de idioma",
+    "firstLanguage": "Primeiro Idioma",
+    "targetLanguage": "Idioma Alvo",
+    "immersionLevel": "Nível de Imersão",
+    "immersionNormal": "Normal",
+    "immersionFull": "Total",
+    "saveSettings": "Salvar Configurações",
+    "selectLanguage": "Selecione um idioma"
+  },
+  "dashboard": {
+    "title": "Painel",
+    "subtitle": "Seu centro de aprendizado de idiomas",
+    "chat": {
+      "title": "Converse com IA",
+      "description": "Pratique conversas com bots de idiomas baseados em IA.",
+      "cta": "Comece a Conversar!"
+    },
+    "translation": {
+      "title": "Traduzir & Analisar",
+      "description": "Analise o texto com traduções e marcação de partes do discurso.",
+      "cta": "Comece a Traduzir!"
+    },
+    "lexicon": {
+      "title": "Seu Vocabulário",
+      "description": "Acompanhe e revise as palavras com as quais você interagiu.",
+      "cta": "Veja o Vocabulário!"
+    }
+  },
+  "translate": {
+    "title": "Traduzir Texto",
+    "inputPlaceholer": "Digite o Texto",
+    "translateButton": "Traduzir",
+    "translateButtonLoading": "Traduzindo",
+    "translateNoTranslations": "Sem traduções. Traduza algum texto usando o formulário acima",
+    "translatePaginationPrev": "Anterior",
+    "translatePaginationNext": "Próximo",
+    "translatePaginationText": "Página {page} de {totalPages}"
+  },
+  "lexicon": {
+    "title": "Suas Interações com Palavras",
+    "table": {
+      "word": "Palavra",
+      "type": "Tipo",
+      "family": "Família",
+      "familiarity": "Familiaridade",
+      "revise": "Precisa de Revisão",
+      "action": "Ação"
+    },
+    "noWords": "Nenhuma Interação com Palavras"
+  }
+}

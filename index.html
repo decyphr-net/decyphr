@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interface WebSocket Client</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #output { margin-top: 20px; font-size: 18px; color: #333; }
+    </style>
+</head>
+<body>
+    <h1>AI Interface WebSocket Client</h1>
+    <p>Status: <span id="status">Connecting...</span></p>
+    <p><b>Received Translation:</b></p>
+    <div id="output">Waiting for translation...</div>
+
+    <script>
+        const socket = io('http://localhost:3009'); // Update the port if necessary
+
+        socket.on('connect', () => {
+            const clientId = '843ec4fc-a82e-4592-abbb-5b07113da2e3'; // Replace with actual client ID
+            socket.emit('join-room', clientId);
+        });
+
+        socket.on('translationResponse', (data) => {
+            console.log("Translation received:", data);
+        });
+
+
+        const statusEl = document.getElementById("status");
+        const outputEl = document.getElementById("output");
+
+        socket.on("connect", () => {
+            statusEl.innerText = "Connected ✅";
+            statusEl.style.color = "green";
+        });
+
+        socket.on("disconnect", () => {
+            statusEl.innerText = "Disconnected ❌";
+            statusEl.style.color = "red";
+        });
+
+        socket.on("translationResponse", (data) => {
+            console.log("Translation received:", data);
+            outputEl.innerText = `Translated Text: ${data.statement} (Language: ${data.targetLanguage})`;
+        });
+    </script>
+</body>
+</html>
