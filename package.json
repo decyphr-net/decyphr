@@ -9,6 +9,9 @@
     "apps/chat/*",
     "libs/*"
   ],
+  "scripts": {
+    "test": "npm run test --workspaces"
+  },
   "devDependencies": {
     "@nestjs/testing": "^11.0.11",
     "@types/jest": "^29.5.14",

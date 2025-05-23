@@ -46,11 +46,11 @@ export class InteractionService {
 
     // Transform output to match the structure expected from the cron job
     return stats.map((stat) => ({
-      userId: stat.id, // Ensure correct user ID
-      wordId: stat.word.id, // Ensure correct word ID
-      word: stat.word.word, // Get the actual word
-      pos_tag: stat.word.tag, // Part of speech tag
-      lemma: stat.word.lemma, // Lemma of the word
+      userId: stat.id,
+      wordId: stat.word.id,
+      word: stat.word.word,
+      pos_tag: stat.word.tag,
+      lemma: stat.word.lemma,
       activeInteractions7Days: stat.activeInteractions7Days,
       passiveInteractions7Days: stat.passiveInteractions7Days,
       activeInteractions30Days: stat.activeInteractions30Days,
@@ -58,7 +58,7 @@ export class InteractionService {
       averageCorrectness7Days: stat.averageCorrectness7Days,
       averageCorrectness30Days: stat.averageCorrectness30Days,
       lastUpdated: stat.lastUpdated,
-      score: stat.score ?? 0, // Ensure score is always defined
+      score: stat.score ?? 0,
     }));
   }
 
@@ -193,11 +193,11 @@ export class InteractionService {
       const rawStats = await this.interactionRepository
         .createQueryBuilder('i')
         .select([
-          'user.id AS userId', // Ensure valid user
-          'word.id AS wordId', // Ensure valid word
-          'word.token AS word', // Fetch word token
-          'word.tag AS pos_tag', // Fetch part-of-speech (POS) tag
-          'word.lemma AS lemma', // Fetch lemma
+          'user.id AS userId',
+          'word.id AS wordId',
+          'word.token AS word',
+          'word.tag AS pos_tag',
+          'word.lemma AS lemma',
           `COUNT(CASE WHEN i.type = 'active' AND i.timestamp >= NOW() - INTERVAL 7 DAY THEN 1 END) AS activeInteractions7Days`,
           `COUNT(CASE WHEN i.type = 'passive' AND i.timestamp >= NOW() - INTERVAL 7 DAY THEN 1 END) AS passiveInteractions7Days`,
           `COUNT(CASE WHEN i.type = 'active' AND i.timestamp >= NOW() - INTERVAL 30 DAY THEN 1 END) AS activeInteractions30Days`,
@@ -206,10 +206,10 @@ export class InteractionService {
           `IFNULL(AVG(CASE WHEN i.type = 'active' AND i.timestamp >= NOW() - INTERVAL 30 DAY THEN i.correctness END), 0) AS averageCorrectness30Days`,
           'NOW() AS lastUpdated',
         ])
-        .innerJoin('i.user', 'user') // Ensure valid user
-        .innerJoin('i.word', 'word') // Ensure valid word
-        .where('user.id IS NOT NULL') // Exclude null users
-        .andWhere('word.id IS NOT NULL') // Exclude null words
+        .innerJoin('i.user', 'user')
+        .innerJoin('i.word', 'word')
+        .where('user.id IS NOT NULL')
+        .andWhere('word.id IS NOT NULL')
         .groupBy('user.id, word.id')
         .getRawMany();
 
@@ -269,7 +269,7 @@ export class InteractionService {
           averageCorrectness7Days: stat.averageCorrectness7Days,
           averageCorrectness30Days: stat.averageCorrectness30Days,
           lastUpdated: stat.lastUpdated,
-          score: existingRecord?.score ?? 0, // Include updated score
+          score: existingRecord?.score ?? 0,
         });
       }
 

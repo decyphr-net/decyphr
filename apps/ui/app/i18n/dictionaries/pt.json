@@ -4,7 +4,8 @@
     "themeToggle": "Alternar Tema",
     "light": "Claro",
     "dark": "Escuro",
-    "system": "Sistema"
+    "system": "Sistema",
+    "settings": "Configurações"
   },
   "nav": {
     "home": "Início",

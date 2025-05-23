@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{lang}}">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{t.subject}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f7;
+        font-family: sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+      }
+      .button {
+        display: inline-block;
+        background-color: #3b82f6;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+      .footer {
+        text-align: center;
+        color: #888;
+        font-size: 12px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{t.greeting}}</h1>
+      <p>{{t.intro}}</p>
+      <p style="text-align: center;">
+        <a href="{{verifyUrl}}" class="button">{{t.button}}</a>
+      </p>
+      <p>{{t.note}}</p>
+      <p class="footer">{{t.footer}}</p>
+    </div>
+  </body>
+</html>

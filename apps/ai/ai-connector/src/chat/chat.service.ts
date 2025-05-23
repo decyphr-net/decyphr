@@ -1,52 +1,91 @@
-// import { Injectable, Logger } from '@nestjs/common';
-// import { GroqProvider } from 'apps/ai-connector/src/providers/groq.provider';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { EnrichmentService } from 'src/enrichment/enrichment.service';
+import { RedisService } from 'src/utils/redis/redis.service';
+import { GroqProvider } from '../providers/groq.provider';
+import ChatMessagePayload from './dtos/chat-message.dto';
 
-// @Injectable()
-// export class ChatService {
-//   private readonly logger = new Logger(ChatService.name);
+@Injectable()
+export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
 
-//   constructor(
-//     private readonly groqProvider: GroqProvider,
-//     private readonly kafkaService: KafkaService,
-//   ) { }
+  constructor(
+    @Inject('CHAT') private readonly chatClient: ClientKafka,
+    private readonly groq: GroqProvider,
+    private readonly redis: RedisService,
+    private readonly enrichmentService: EnrichmentService
+  ) { }
 
-//   async handleIncomingMessage(message: {
-//     text: string;
-//     sourceLang: string;
-//     targetLang: string;
-//     clientId: string;
-//     conversationId: string;
-//   }) {
-//     const { translatedInput, translatedResponse, aiResponse } =
-//       await this.groqProvider.translateAndTrack({
-//         text: message.text,
-//         sourceLang: message.sourceLang,
-//         targetLang: message.targetLang,
-//       });
+  /**
+   * Handles a user message by generating an AI response and emitting it back.
+   * @param payload Chat message payload from Kafka
+   */
+  async handleUserMessage(payload: ChatMessagePayload): Promise<void> {
+    if (payload.type !== 'message') {
+      this.logger.warn(`Ignored payload with invalid type: ${payload.type}`);
+      return;
+    }
 
-//     // Emit translated input to Lexicon
-//     await this.kafkaService.emit('lexicon.track', {
-//       text: message.text,
-//       translated: translatedInput,
-//       lang: message.sourceLang,
-//       type: 'user_message',
-//       clientId: message.clientId,
-//     });
+    await this.enrichmentService.enrichChatMessage(payload, 'active');
 
-//     // Emit AI response (translated) to Lexicon
-//     await this.kafkaService.emit('lexicon.track', {
-//       text: aiResponse,
-//       translated: translatedResponse,
-//       lang: message.targetLang,
-//       type: 'ai_response',
-//       clientId: message.clientId,
-//     });
+    try {
+      const bot = await this.getBotFromRedis(payload.botId);
 
-//     // Emit translated response back to chat topic for FE
-//     await this.kafkaService.emit('chat.response', {
-//       clientId: message.clientId,
-//       conversationId: message.conversationId,
-//       response: translatedResponse,
-//     });
-//   }
-// }
+      const response = await this.groq.generateResponseFromChat(payload, bot);
+      this.logger.log(`✅ Generated response for chatId=${payload.chatId}`);
+
+      const newBotMessage: { role: 'bot'; content: string } = {
+        role: 'bot',
+        content: response,
+      };
+
+      const updatedMessages = [...payload.messages, newBotMessage];
+
+      await this.emitMessageResponse({
+        ...payload,
+        messages: updatedMessages,
+      });
+
+
+      await this.enrichmentService.enrichChatMessage(payload, 'passive');
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to handle user message for chatId=${payload.chatId}: ${error.message}`,
+        error.stack,
+      );
+    }
+  }
+
+  /**
+   * Emits the chat response to the Kafka topic.
+   * @param payload Updated payload including the bot's reply
+   */
+  async emitMessageResponse(payload: ChatMessagePayload): Promise<void> {
+    try {
+      await this.chatClient.emit('chat.response', payload);
+      this.logger.log(
+        `📤 Emitted 'chat.response' for chatId=${payload.chatId} with ${payload.messages.length} messages`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `❌ Failed to emit 'chat.response': ${error.message}`,
+        error.stack,
+      );
+    }
+  }
+
+  /**
+   * Retrieves the bot from Redis by its ID.
+   * @param botId The bot ID
+   */
+  private async getBotFromRedis(botId: number): Promise<any> {
+    const botKey = `bot:${botId}`;
+    const botData = await this.redis.client.get(botKey);
+    if (!botData) {
+      this.logger.warn(`Bot with ID ${botId} not found in Redis`);
+      throw new NotFoundException(`Bot with ID ${botId} not found`);
+    }
+
+    return JSON.parse(botData);
+  }
+}

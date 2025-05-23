@@ -5,10 +5,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Bot } from './bots/bots.entity';
 import { BotsModule } from './bots/bots.module';
+import { UtilsModule } from './utils/utils.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -24,6 +27,7 @@ import { BotsModule } from './bots/bots.module';
       }),
     }),
     BotsModule,
+    UtilsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

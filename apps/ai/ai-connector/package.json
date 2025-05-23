@@ -31,6 +31,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "ioredis": "^5.6.1",
     "kafkajs": "^2.2.4",
     "langchain": "^0.3.19",
     "mysql": "^2.18.1",

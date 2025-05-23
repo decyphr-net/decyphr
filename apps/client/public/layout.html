@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" hx-boost="true">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Decyphr</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="/scripts/auth/first-login.js" defer></script>
+    <script src="/scripts/dashboard/chat.js" defer></script>
+    <script src="/scripts/dashboard/translations.js" defer></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/franken-ui@2.0.0/dist/css/core.min.css"
+    />
+    <style>[x-cloak] { display: none !important; }</style>
+
+    <style>
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes slide-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes zoom-in {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+      }
+
+      .animate-fade-in {
+        animation: fade-in 1s ease-in-out forwards;
+      }
+
+      .animate-slide-in {
+        animation: slide-in 1s ease-out forwards;
+      }
+
+      .animate-fade-in-delay {
+        animation: fade-in 1s ease-in-out 0.5s forwards;
+      }
+
+      .animate-zoom-in {
+        animation: zoom-in 0.6s ease-out forwards;
+      }
+
+      .delay-0   { animation-delay: 0s; }
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+    </style>
+  </head>
+  <body x-data>
+    <!-- Shared Navigation -->
+    <nav class="border-b bg-white">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-8">
+          <a href="/" class="text-2xl font-bold bg-blue-500 bg-clip-text text-transparent">
+            Decyphr
+          </a>
+          <div class="hidden md:flex space-x-6">
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div hx-get="/components/locale-switcher.html" hx-trigger="load" hx-swap="outerHTML"></div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Swap Zone -->
+    <main id="content" hx-get="{{PARTIAL_ROUTE}}" hx-trigger="load" hx-swap="innerHTML">
+      Loading…
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 py-10">
+      <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.about.title')"></h3>
+          <p x-text="$store.i18n.t('footer.about.description')"></p>
+        </div>
+        <div>
+          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.links.title')"></h3>
+          <ul class="space-y-2">
+            <li><a href="/auth/login" class="hover:text-white" x-text="$store.i18n.t('footer.links.login')"></a></li>
+            <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.privacy')"></a></li>
+            <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.terms')"></a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.contact.title')"></h3>
+          <p>Email: support@decyphr.com</p>
+          <p>Twitter: @decyphrapp</p>
+        </div>
+      </div>
+      <div class="mt-8 text-center text-gray-500 text-sm">
+        © 2025 Decyphr. All rights reserved.
+      </div>
+    </footer>
+
+    <!-- i18n setup -->
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.store('i18n', {
+          translations: {},
+          t(key) {
+            return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key;
+          }
+        });
+
+        fetch(`/i18n?lang=${localStorage.getItem('language') || 'en'}`)
+          .then(res => res.json())
+          .then(data => {
+            Alpine.store('i18n').translations = data;
+          });
+      });
+    </script>
+
+    <!-- Re-init Alpine after HTMX swaps -->
+    <script>
+      document.body.addEventListener('htmx:afterSwap', (e) => {
+        if (window.Alpine && Alpine.initTree) {
+          Alpine.initTree(e.target);
+        }
+      });
+    </script>
+
+    <script>
+      document.addEventListener('alpine:init', () => {
+        // Create the i18n store
+        Alpine.store('i18n', {
+          translations: {},
+          languageNames: {
+            en: "English",
+            ga: "Gaeilge",
+            pt: "Português",
+          },
+          languageFlags: {
+            en: "🇬🇧",
+            ga: "🇮🇪",
+            pt: "🇵🇹",
+          },
+          t(key) {
+            return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key;
+          },
+          saveLanguage(lang) {
+            localStorage.setItem('language', lang);
+            this.loadTranslations(lang);
+            location.reload();
+          },
+          loadTranslations(lang = localStorage.getItem('language') || 'en') {
+            fetch(`/i18n?lang=${lang}`)
+              .then(res => res.json())
+              .then(data => {
+                this.translations = data;
+              });
+          }
+        });
+
+        // Load initial language
+        Alpine.store('i18n').loadTranslations();
+      });
+
+      // Reinit Alpine for all HTMX-injected content
+      document.body.addEventListener('htmx:afterSwap', (e) => {
+        if (window.Alpine && Alpine.initTree) {
+          Alpine.initTree(e.target);
+        }
+      });
+    </script>
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('authForm', () => ({
+          email: '',
+          loading: false,
+          message: '',
+
+          init() {
+            const params = new URLSearchParams(window.location.search);
+            const prefill = params.get('email');
+            if (prefill) this.email = prefill;
+          },
+
+          async submit() {
+            this.loading = true;
+            this.message = '';
+
+            try {
+              const res = await fetch('/auth/magic-link', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: this.email,
+                }),
+              });
+
+              const data = await res.json();
+              this.loading = false;
+
+              if (res.ok) {
+                this.message = Alpine.store('i18n')?.t('auth.sent') || 'Magic link sent!';
+              } else {
+                this.message = data.error || Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+              }
+            } catch (err) {
+              console.error('Magic link error:', err);
+              this.loading = false;
+              this.message = Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+            }
+          }
+        }));
+      });
+
+      // Re-init Alpine after HTMX swaps
+      document.body.addEventListener('htmx:afterSwap', (e) => {
+        if (window.Alpine && Alpine.initTree) Alpine.initTree(e.target);
+      });
+    </script>
+  </body>
+</html>

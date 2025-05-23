@@ -38,7 +38,7 @@ export default function DashboardClient({ dict, lang }: { dict: any; lang: strin
   return (
     <section className="py-20">
       <div className="container mx-auto px-4 grid md:grid-cols-3 gap-8 text-center">
-        {/* <Link href={`/${lang}/dashboard/chat`} className="w-full">
+        <Link href={`/${lang}/dashboard/chat`} className="w-full">
           <Card className="hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full">
             <CardHeader className="flex flex-col items-center p-4">
               <Bot className="w-12 h-12 text-orange-500" />
@@ -49,7 +49,7 @@ export default function DashboardClient({ dict, lang }: { dict: any; lang: strin
               <Button className="self-center mt-8">{dict.dashboard.chat.cta}</Button>
             </CardContent>
           </Card>
-        </Link> */}
+        </Link>
 
         <Link href={`/${lang}/dashboard/language-processing`} className="w-full">
           <Card className="hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full">

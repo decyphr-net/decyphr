@@ -1,8 +1,7 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AiInterfaceGateway } from './ai-interface.gateway';
 import { SaveTranslationResult } from './dto/save-translation-result.dto';
 import { SaveTranslationDto } from './dto/save-translation.dto';
 import { Translation, WordBreakdown } from './translation.entity';
@@ -16,8 +15,6 @@ export class AiInterfaceService {
   private readonly logger = new Logger(AiInterfaceService.name);
 
   constructor(
-    @Inject(forwardRef(() => AiInterfaceGateway))
-    private readonly gateway: AiInterfaceGateway,
     @InjectRepository(Translation)
     private readonly translationRepository: Repository<Translation>,
   ) { }
@@ -132,6 +129,5 @@ export class AiInterfaceService {
     this.logger.log(
       `Sending translation response to client: ${response.clientId}`,
     );
-    this.gateway.sendTranslationResponse(response);
   }
 }

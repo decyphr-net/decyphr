@@ -1,0 +1,94 @@
+<div class="min-h-screen grid grid-cols-1 md:grid-cols-2">
+  <!-- Left: Login Form -->
+  <div class="flex items-center justify-center p-6 bg-white">
+    <div class="w-full max-w-md" x-data="authForm()" x-init="init">
+      <form @submit.prevent="submit" class="space-y-4">
+        <input
+          type="email"
+          name="email"
+          x-model="email"
+          class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          :placeholder="$store.i18n?.t('auth.emailPlaceholder') || 'Enter your email'"
+          required
+        />
+
+        <button
+          type="submit"
+          class="btn btn-primary w-full bg-blue-500 text-white rounded px-4 py-2"
+          :disabled="loading"
+          x-init="$el.textContent = $store.i18n?.t('auth.signIn') || 'Sign In'"
+          x-effect="$el.textContent = loading
+            ? ($store.i18n?.t('auth.sending') || 'Sending...')
+            : ($store.i18n?.t('auth.signIn') || 'Sign In')"
+        ></button>
+
+        <p x-show="message" class="mt-2 text-sm text-center text-gray-600" x-text="message"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Right: Marketing Section -->
+  <div class="hidden md:flex flex-col justify-center text-white bg-gradient-to-br from-teal-400 via-blue-500 to-indigo-600 p-10">
+    <div class="max-w-md mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4 animate-zoom-in" x-text="$store.i18n?.t('home.hero.title')">Master Languages Naturally</h2>
+      <p class="text-lg mb-6" x-text="$store.i18n?.t('home.hero.subtitle')">AI-powered language learning that adapts to you</p>
+      <ul class="text-left space-y-2 text-blue-100">
+        <li class="animate-fade-in-delay delay-0" x-text="$store.i18n?.t('auth.benefits.1')">✅ Chat with AI characters in your target language</li>
+        <li class="animate-fade-in-delay delay-0" x-text="$store.i18n?.t('auth.benefits.2')">✅ Track weak words and grammar in real time</li>
+        <li class="animate-fade-in-delay delay-0" x-text="$store.i18n?.t('auth.benefits.3')">✅ Practice daily with structured, natural conversations</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('authForm', () => ({
+      email: '',
+      loading: false,
+      message: '',
+
+      init() {
+        const params = new URLSearchParams(window.location.search);
+        const prefill = params.get('email');
+        if (prefill) this.email = prefill;
+      },
+
+      async submit() {
+        this.loading = true;
+        this.message = '';
+
+        try {
+          const res = await fetch('/auth/magic-link', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: this.email,
+              locale: localStorage.getItem('language') || 'en',
+            }),
+          });
+
+          const data = await res.json();
+          this.loading = false;
+
+          if (res.ok) {
+            this.message = Alpine.store('i18n')?.t('auth.sent') || 'Magic link sent!';
+          } else {
+            this.message = data.error || Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+          }
+        } catch (err) {
+          console.error('Failed to send magic link:', err);
+          this.loading = false;
+          this.message = Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+        }
+      }
+    }));
+  });
+
+  // Re-initialize Alpine after HTMX swap
+  document.body.addEventListener('htmx:afterSwap', (e) => {
+    if (window.Alpine && Alpine.initTree) {
+      Alpine.initTree(e.target);
+    }
+  });
+</script>

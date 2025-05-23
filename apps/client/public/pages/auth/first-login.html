@@ -1,0 +1,32 @@
+<div class="max-w-md mx-auto p-6" x-data="firstLoginForm()" x-init="init">
+  <h1 class="text-3xl font-bold mb-6" x-text="$store.i18n.t('auth.firstTimeLoginTitle')"></h1>
+  <form @submit.prevent="submit" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" x-text="$store.i18n.t('auth.firstLanguage')"></label>
+      <select x-model="firstLanguage" class="w-full p-2 border rounded" required>
+        <template x-for="lang in languages" :key="lang.value">
+          <option :value="lang.value" x-text="lang.label"></option>
+        </template>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" x-text="$store.i18n.t('auth.targetLanguage')"></label>
+      <select x-model="targetLanguage" class="w-full p-2 border rounded" required>
+        <template x-for="lang in filteredLanguages" :key="lang.value">
+          <option :value="lang.value" x-text="lang.label"></option>
+        </template>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1" x-text="$store.i18n.t('auth.immersionLevel')"></label>
+      <select x-model="immersionLevel" class="w-full p-2 border rounded">
+        <option value="normal" x-text="$store.i18n.t('auth.immersionNormal')"></option>
+        <option value="full" x-text="$store.i18n.t('auth.immersionFull')"></option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn w-full text-white bg-blue-500" x-text="$store.i18n.t('auth.saveSettings')"></button>
+  </form>
+</div>

@@ -1,6 +1,5 @@
 import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
-import { AiInterfaceGateway } from './ai-interface.gateway';
 import { AiInterfaceService } from './ai-interface.service';
 import { TranslationDto } from './dto/translation.dto';
 
@@ -13,7 +12,6 @@ export class AiInterfaceController implements OnModuleInit {
   private readonly logger = new Logger(AiInterfaceController.name);
 
   constructor(
-    private readonly gateway: AiInterfaceGateway,
     private readonly service: AiInterfaceService,
     @Inject('TRANSLATION') private readonly client: ClientKafka,
   ) { }
@@ -38,10 +36,13 @@ export class AiInterfaceController implements OnModuleInit {
    *
    * @param response The translation response received from Kafka.
    */
-  @MessagePattern('ai.translation.response')
+  // TODO: For now, use the full breakdown provided by the `lexicon.update`
+  @MessagePattern('lexicon.update')
   async handleTranslationResponse(response: any) {
     try {
-      this.logger.log(`Received translation response: ${JSON.stringify(response)}`);
+      this.logger.log(
+        `Received translation response: ${JSON.stringify(response)}`,
+      );
 
       if (!response || !response.translationResponse) {
         this.logger.error('Invalid Kafka message: Missing translationResponse');
@@ -55,15 +56,15 @@ export class AiInterfaceController implements OnModuleInit {
         targetLanguage: 'en',
         translatedText: response.translationResponse.translatedText,
         alternatives: response.translationResponse.alternatives || [],
-        breakdown: Array.isArray(response.translationResponse.breakdown) ? response.translationResponse.breakdown : [],
+        breakdown: Array.isArray(response.translationResponse.breakdown)
+          ? response.translationResponse.breakdown
+          : [],
       });
 
-      if (this.gateway['isReady']) {
-        this.gateway.sendTranslationResponse(translation);
-      } else {
-        this.logger.warn('WebSocket not ready, delaying response send...');
-        setTimeout(() => this.gateway.sendTranslationResponse(translation), 500);
-      }
+      const key = `${response.clientId}|${response.sourceLanguage}|${response.targetLanguage}`;
+
+      await this.client.emit('translation.response.table', { key, value: translation });
+      this.logger.log('✅ Translation response emitted to translation.response.table topic');
     } catch (error) {
       this.logger.error('Failed to handle translation response', error);
     }

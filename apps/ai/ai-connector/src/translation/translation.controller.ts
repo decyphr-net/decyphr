@@ -7,12 +7,11 @@ import {
 } from '@nestjs/microservices';
 import { z } from 'zod';
 import { TranslateDto } from './translation-request.dto';
-import { TranslationOutput } from './translation.schema';
 import { TranslationService } from './translation.service';
 
 @Controller()
 export class TranslationController {
-  private readonly logger = new Logger(TranslationController.name); // ✅ Logger instance
+  private readonly logger = new Logger(TranslationController.name);
 
   constructor(
     @Inject('TRANSLATION') private readonly translationClient: ClientKafka,
@@ -35,30 +34,10 @@ export class TranslationController {
 
     try {
       // Generate translation based on the provided text and languages
-      const response: TranslationOutput =
-        await this.translationService.getTranslation(payload);
+      await this.translationService.handleTranslation(payload);
 
       this.logger.log(
         `✅ Translation successful for clientId: ${payload.clientId}`,
-      );
-
-      // Emit the translated response back to the Kafka topic
-      this.translationClient.emit(
-        'ai.translation.response',
-        JSON.stringify({
-          statement: payload.text,
-          sourceLanguage: payload.sourceLang,
-          targetLanguage: payload.targetLang,
-          translationResponse: response,
-          timestamp: Date.now().toString(),
-          source: 'translate',
-          clientId: payload.clientId,
-          interactionType: 'active',
-        }),
-      );
-
-      this.logger.log(
-        `📤 Translation response emitted for clientId: ${payload.clientId}`,
       );
     } catch (error) {
       this.logger.error(

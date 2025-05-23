@@ -1,8 +1,9 @@
-import { forwardRef, Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Chat, Message } from './chat.entity';
-import { ChatGateway } from './chat.gateway';
+import { ChatHistoryDto } from './dtos/chat-history.dto';
 import ChatMessagePayload from './dtos/chat-message.dto';
 import StartChatPayload from './dtos/start-chat.dto';
 
@@ -11,22 +12,16 @@ export type ChatGatewayPayload = StartChatPayload | ChatMessagePayload;
 @Injectable()
 export class ChatService {
   private readonly logger = new Logger(ChatService.name);
+
   constructor(
+    @Inject('CHAT') private readonly chatClient: ClientKafka,
     @InjectRepository(Chat)
     private readonly chatRepository: Repository<Chat>,
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
-    @Inject(forwardRef(() => ChatGateway))
-    private readonly chatGateway: ChatGateway,
   ) { }
 
-  async handleGatewayPayload(payload: ChatGatewayPayload): Promise<void> {
-    if (payload.type === 'start') {
-      return this.startChat(payload);
-    }
-  }
-
-  private async startChat(data: StartChatPayload): Promise<void> {
+  async startChat(data: StartChatPayload): Promise<void> {
     this.logger.log(
       `🔹 Starting new chat: clientId=${data.clientId}, botId=${data.botId}, language=${data.language}`,
     );
@@ -49,14 +44,64 @@ export class ChatService {
 
     await this.messageRepository.save(greeting);
 
-    // Emit the greeting back to the frontend
-    this.chatGateway.sendMessageToClient(data.clientId, {
+    const responsePayload = {
+      type: 'started',
       chatId: chat.id,
-      role: 'bot',
-      content: greetingContent,
+      clientId: data.clientId,
+      botId: data.botId,
+      greeting: greetingContent,
+    };
+
+    try {
+      await this.chatClient.emit('chat.started', responsePayload);
+      this.logger.log(`📤 Emitted 'chat.started' for chatId=${chat.id}`);
+    } catch (err) {
+      this.logger.error(
+        `❌ Failed to emit 'chat.started': ${err.message}`,
+        err.stack,
+      );
+    }
+  }
+
+  async storeUserMessage(
+    data: ChatMessagePayload,
+    role: 'user' | 'bot',
+  ): Promise<void> {
+    this.logger.log(
+      `💬 Storing user message for chatId=${data.chatId}, clientId=${data.clientId}`,
+    );
+
+    const chat = await this.chatRepository.findOne({
+      where: { id: Number(data.chatId), clientId: data.clientId },
     });
 
-    this.logger.log(`🤖 Sent greeting message to chatId=${chat.id}`);
+    if (!chat) {
+      this.logger.warn(
+        `⚠️ Chat not found for chatId=${data.chatId}, clientId=${data.clientId}`,
+      );
+      return;
+    }
+
+    const latestUserMessage = data.messages
+      .filter((msg) => msg.role === role)
+      .at(-1);
+
+    if (!latestUserMessage) {
+      this.logger.warn(
+        `⚠️ No latest user message found for chatId=${data.chatId}`,
+      );
+      return;
+    }
+
+    const messageEntity = this.messageRepository.create({
+      chat,
+      role,
+      content: latestUserMessage.content,
+    });
+
+    await this.messageRepository.save(messageEntity);
+
+    this.logger.log(`✅ Stored message for chatId=${data.chatId}`);
   }
 
   private getGreetingForLanguage(language: string): string {
@@ -70,5 +115,25 @@ export class ChatService {
       default:
         return 'Hello! How can I help you today?';
     }
+  }
+
+  async getChatHistoryForClient(clientId: string): Promise<ChatHistoryDto[]> {
+    const chats = await this.chatRepository.find({
+      where: { clientId },
+      relations: ['messages'],
+      order: { createdAt: 'DESC' },
+    });
+
+    return chats.map((chat) => ({
+      id: chat.id,
+      botId: chat.botId,
+      language: chat.language,
+      messages: chat.messages.map((m) => ({
+        id: m.id,
+        role: m.role,
+        content: m.content,
+        createdAt: m.createdAt,
+      })),
+    }));
   }
 }

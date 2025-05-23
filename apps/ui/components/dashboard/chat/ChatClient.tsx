@@ -1,14 +1,31 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import { Bot, Loader, MessageCirclePlus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { io } from 'socket.io-client';
+
+type ChatMessage = {
+  sender: 'user' | 'bot';
+  text: string;
+};
+
+type Chat = {
+  id: number;
+  name: string;
+  messages: ChatMessage[];
+};
 
 type ChatSocketPayload = {
   chatId: number;
@@ -16,129 +33,126 @@ type ChatSocketPayload = {
   content: string;
 };
 
+/**
+ * ChatClient is the main client-side chat interface that:
+ * - Fetches available bots based on language preference
+ * - Connects to a WebSocket server to send and receive chat messages
+ * - Renders chats in real-time, supporting both desktop and mobile layouts
+ */
 const ChatClient = () => {
-  const [chats, setChats] = useState<any[]>([]);
+  const [clientId, setClientId] = useState<string | null>(null);
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [bots, setBots] = useState<any[]>([]);
+  const [activeChatId, setActiveChatId] = useState<number | null>(null);
+  const [messageInput, setMessageInput] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [messageInput, setMessageInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [bots, setBots] = useState<any[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const messagesEndRef = useRef(null);
-  const [clientId, setClientId] = useState<string | null>(null);
-  const [activeChatId, setActiveChatId] = useState<number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
   const selectedChat = chats.find(chat => chat.id === activeChatId);
 
+  // Load session and extract clientId
   useEffect(() => {
     const getSessionData = async () => {
       try {
         const response = await fetch("/api/auth/session");
         const data = await response.json();
-        if (data.clientId) {
-          setClientId(data.clientId.value);
-        } else {
-          console.error("Client ID not found");
-        }
+        setClientId(data.clientId?.value ?? null);
       } catch (error) {
         console.error("Error fetching session data:", error);
       }
     };
-
     getSessionData();
   }, []);
 
-  const selectedChatRef = useRef(selectedChat);
+  // WebSocket connection setup
+  const { socket } = useWebSocket<ChatSocketPayload>({
+    clientId,
+    serverUrl: process.env.NEXT_PUBLIC_CHAT_SERVER!,
+    events: {
+      chatMessage: (message) => {
+        console.log("📩 Received chatMessage", message);
+        setChats((prevChats) => {
+          const chatIndex = prevChats.findIndex(chat => chat.id === message.chatId);
+          const newMessage = { sender: message.role, text: message.content };
 
-  useEffect(() => {
-    selectedChatRef.current = selectedChat;
-  }, [selectedChat]);
+          if (chatIndex === -1) {
+            return [
+              ...prevChats,
+              { id: message.chatId, name: "New Chat", messages: [newMessage] }
+            ];
+          }
 
+          const updatedChats = [...prevChats];
+          updatedChats[chatIndex].messages.push(newMessage);
+          return updatedChats;
+        });
+
+        setActiveChatId((prev) => prev ?? message.chatId);
+        setLoading(false);
+      },
+    },
+  });
+
+  // Fetch bots when clientId is available
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const storedData = localStorage.getItem("languageSettings");
-    const targetLanguage = storedData ? JSON.parse(storedData).targetLanguage : "ga";
+    if (!clientId) return;
+
+    const stored = localStorage.getItem("languageSettings");
+    const targetLanguage = stored ? JSON.parse(stored).targetLanguage : "ga";
 
     const fetchBots = async () => {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BOTS_SERVER}/bots?language=${targetLanguage}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch bots: ${response.statusText}`);
-        }
         const data = await response.json();
         setBots(data);
       } catch (err) {
         console.error("Error fetching bots:", err);
-        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBots();
-  }, []);
+  }, [clientId]);
 
   const availableBots = bots.filter(bot => !chats.find(chat => chat.id === bot.id));
 
-  chatMessage: (message) => {
-  setChats(prevChats => {
-    const chatIndex = prevChats.findIndex(chat => chat.id === message.chatId);
-
-    if (chatIndex === -1) {
-      // 👇 Create the chat if it doesn't exist
-      return [
-        ...prevChats,
-        {
-          id: message.chatId,
-          name: "New Chat",
-          messages: [{ sender: message.role, text: message.content }]
-        }
-      ];
-    }
-
-    // ✅ Update existing chat
-    const updatedChats = [...prevChats];
-    updatedChats[chatIndex].messages.push({
-      sender: message.role,
-      text: message.content
-    });
-
-    return updatedChats;
-  });
-
-  setActiveChatId(prev => prev ?? message.chatId); // set if null
-}
-
+  /**
+   * Starts a new chat with the selected bot and emits a WebSocket event.
+   */
   const startChat = (bot: any) => {
     const languageSettings = localStorage.getItem("languageSettings");
     const language = languageSettings ? JSON.parse(languageSettings).targetLanguage : "ga";
 
-    const socket = io(process.env.NEXT_PUBLIC_CHAT_SERVER);
-    socket.emit('chat', {
+    socket?.emit('chat', {
       type: 'start',
       clientId,
       botId: bot.id,
       language,
     });
 
-    const newChat = { id: bot.id, name: bot.name, messages: [] };
-    setChats(prev => [newChat, ...prev]);
+    setChats(prev => [{ id: bot.id, name: bot.name, messages: [] }, ...prev]);
     setActiveChatId(bot.id);
     setIsDialogOpen(false);
   };
 
+  /**
+   * Sends a user message to the active chat via WebSocket.
+   */
   const sendMessage = () => {
     if (!messageInput.trim() || !selectedChat) return;
 
-    const socket = io(process.env.NEXT_PUBLIC_CHAT_SERVER);
-    socket.emit('chat', {
+    socket?.emit('chat', {
       type: 'message',
       chatId: selectedChat.id,
       clientId,
       messages: [{ role: 'user', content: messageInput }],
     });
 
-    setChats(prevChats =>
-      prevChats.map(chat =>
+    setChats(prev =>
+      prev.map(chat =>
         chat.id === selectedChat.id
           ? { ...chat, messages: [...chat.messages, { sender: 'user', text: messageInput }] }
           : chat
@@ -149,23 +163,26 @@ const ChatClient = () => {
     setLoading(true);
   };
 
+  // Scroll to newest message
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [selectedChat?.messages]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
+
+      {/* Chat List (Desktop) */}
       <div className="hidden md:block w-1/4">
-        <Button onClick={() => setIsDialogOpen(true)} className="h-24 w-full hover:bg-sidebar-accent flex items-center justify-center bg-green-200 text-black">
+        <Button onClick={() => setIsDialogOpen(true)} className="h-24 w-full flex items-center justify-center bg-green-200 text-black hover:bg-sidebar-accent">
           <MessageCirclePlus />
         </Button>
         <ScrollArea className="h-[calc(100vh-5rem)]">
           {chats.map(chat => (
             <div
               key={chat.id}
-              className={`h-24 mt-2 hover:bg-sidebar-accent flex flex-col items-start gap-2 p-2 text-sm cursor-pointer ${selectedChat?.id === chat.id ? 'bg-gray-200 text-black' : 'hover:bg-gray-50 hover:text-black'}`}
+              className={`h-24 mt-2 p-2 text-sm cursor-pointer flex flex-col justify-center rounded-lg ${
+                selectedChat?.id === chat.id ? 'bg-gray-200 text-black' : 'hover:bg-gray-100'
+              }`}
               onClick={() => setActiveChatId(chat.id)}
             >
               {chat.name}
@@ -174,12 +191,14 @@ const ChatClient = () => {
         </ScrollArea>
       </div>
 
+      {/* Mobile Toggle */}
       <div className="md:hidden p-4 border-b">
         <Button onClick={() => setIsDrawerOpen(true)} className="w-full">
           Open Chats
         </Button>
       </div>
 
+      {/* Chat Window */}
       <div className="flex-1 flex flex-col">
         {selectedChat ? (
           <>
@@ -187,16 +206,20 @@ const ChatClient = () => {
             <div className="flex-1 overflow-hidden">
               <ScrollArea className="h-full max-h-[calc(100vh-4rem-5rem)] flex flex-col-reverse">
                 <div className="flex flex-col-reverse">
-                  {(chats.find(chat => chat.id === activeChatId)?.messages || []).slice().reverse().map((msg, idx) => (
+                  {selectedChat.messages?.slice().reverse().map((msg, idx) => (
                     <div
                       key={idx}
-                      className={`mb-2 p-2 border rounded-lg ${msg.sender === "user" ? "bg-blue-100 text-blue-900 self-end" : "bg-gray-100 text-gray-900 self-start"}`}
+                      className={`mb-2 p-2 border rounded-lg max-w-[75%] ${
+                        msg.sender === "user"
+                          ? "bg-blue-100 text-blue-900 self-end"
+                          : "bg-gray-100 text-gray-900 self-start"
+                      }`}
                     >
                       {msg.text}
                     </div>
                   ))}
                 </div>
-                <div ref={messagesEndRef}></div>
+                <div ref={messagesEndRef} />
                 {loading && (
                   <div className="flex items-center space-x-2 mb-2 p-2 text-gray-600">
                     <Loader className="animate-spin" size={20} />
@@ -224,17 +247,19 @@ const ChatClient = () => {
         )}
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Drawer for mobile chat list */}
       <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
         <DrawerContent className="p-4">
-          <Button onClick={() => setIsDialogOpen(true)} className="w-full h-12 hover:bg-sidebar-accent flex items-center justify-center bg-green-200 text-black">
+          <Button onClick={() => setIsDialogOpen(true)} className="w-full h-12 bg-green-200 text-black hover:bg-sidebar-accent">
             <MessageCirclePlus />
           </Button>
           <ScrollArea className="h-[calc(100vh-5rem)]">
             {chats.map(chat => (
               <div
                 key={chat.id}
-                className={`h-12 p-3 mt-3 rounded-lg cursor-pointer ${selectedChat?.id === chat.id ? 'bg-gray-200 text-black' : 'hover:bg-gray-100'}`}
+                className={`h-12 p-3 mt-3 rounded-lg cursor-pointer ${
+                  selectedChat?.id === chat.id ? 'bg-gray-200 text-black' : 'hover:bg-gray-100'
+                }`}
                 onClick={() => {
                   setActiveChatId(chat.id);
                   setIsDrawerOpen(false);
@@ -247,7 +272,7 @@ const ChatClient = () => {
         </DrawerContent>
       </Drawer>
 
-      {/* Bot Dialog */}
+      {/* Bot selection modal */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-md w-full p-6">
           <DialogHeader>
@@ -264,7 +289,7 @@ const ChatClient = () => {
                   <div className="flex-1">
                     <h3 className="font-bold text-lg">{bot.name}</h3>
                     <p className="text-sm text-white-600">{bot.occupation} from {bot.city}, {bot.region}</p>
-                    <p className="text-sm text-white-600 italic">"{bot.personal}"</p>
+                    <p className="text-sm text-white-600 italic">&quot;{bot.personal}&quot;</p>
                     <div className="text-sm text-white-700 mt-1">
                       <strong>Age:</strong> {bot.age}
                     </div>
@@ -282,8 +307,7 @@ const ChatClient = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Optional Carousel Dialog for Fallback */}
-      <Dialog open={false} onOpenChange={false}>
+      <Dialog open={false} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-md p-6">
           <DialogHeader>
             <DialogTitle>Select a Bot</DialogTitle>
@@ -298,7 +322,7 @@ const ChatClient = () => {
                   <Bot className="w-12 h-12 text-orange-500" />
                   <h3 className="font-bold mt-2 text-lg">{bot.name}</h3>
                   <p className="text-sm text-gray-600">{bot.occupation} from {bot.city}, {bot.region}</p>
-                  <p className="text-sm text-gray-600 italic">"{bot.personal}"</p>
+                  <p className="text-sm text-white-600 italic">&quot;{bot.personal}&quot;</p>
                   <div className="text-sm text-gray-700 mt-2">
                     <strong>Age:</strong> {bot.age}
                   </div>

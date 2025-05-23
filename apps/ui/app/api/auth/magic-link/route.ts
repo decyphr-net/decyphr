@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   // Generate a secure token
   const token = crypto.randomBytes(32).toString("hex");
   const hashedToken = await bcrypt.hash(token, 10);
-  const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // Token expires in 15 minutes
+  const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
 
   // Store the token in the database
   const magicLink = db.getRepository(MagicLink).create({

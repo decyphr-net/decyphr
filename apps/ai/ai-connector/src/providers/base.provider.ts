@@ -1,3 +1,4 @@
+import ChatMessagePayload from 'src/chat/dtos/chat-message.dto';
 import { z } from 'zod';
 
 /**
@@ -18,4 +19,14 @@ export abstract class BaseProvider {
     prompt: string,
     responseSchema: T,
   ): Promise<z.infer<T>>;
+
+  /**
+   * Generates a plain natural language response based on the full chat history.
+   *
+   * @param payload - Chat history with user messages.
+   * @returns A Promise resolving to a single AI-generated message.
+   */
+  abstract generateResponseFromChat(
+    payload: ChatMessagePayload,
+  ): Promise<string>;
 }

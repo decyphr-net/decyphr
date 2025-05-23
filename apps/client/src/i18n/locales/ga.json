@@ -1,0 +1,145 @@
+{
+  "footer": {
+    "about": {
+      "title": "Fúinn",
+      "description": "Déanaimid foghlaim teanga simplí, nádúrtha agus cumhachtach trí chleachtadh AI agus rianú cliste."
+    },
+    "links": {
+      "title": "Naisc Thapa",
+      "login": "Logáil Isteach",
+      "privacy": "Polasaí Príobháideachta",
+      "terms": "Téarmaí Seirbhíse"
+    },
+    "contact": {
+      "title": "Teagmháil"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Máistir Teangacha go Nádúrtha",
+      "subtitle": "Foghlaim teanga faoi thiomáint AI a oireann duit",
+      "cta": "Tosaigh ag Foghlaim Saor in Aisce"
+    },
+    "features": {
+      "translation": {
+        "title": "Aistriúchán Cliste",
+        "description": "Faigh aistriúcháin le tuiscint ar pháirt na bhfocal"
+      },
+      "practice": {
+        "title": "Cleachtadh Comhrá AI",
+        "description": "Tóg muinín le comhpháirtithe comhrá suaimhneach AI"
+      },
+      "tracking": {
+        "title": "Rianú Dul Chun Cinn Cliste",
+        "description": "Foghlaim go héifeachtach le sceidil athbhreithnithe pearsanta"
+      }
+    },
+    "how_it_works": {
+      "title": "Conas a Oibríonn Sé",
+      "step1": {
+        "title": "Roghnaigh Do Bhoth",
+        "description": "Roghnaigh bot carachtair bunaithe ar do theanga agus suimeanna."
+      },
+      "step2": {
+        "title": "Tosaigh Ag Comhrá",
+        "description": "Tosaigh comhrá agus cleachtaigh dialóga nádúrtha leat féin."
+      },
+      "step3": {
+        "title": "Rianaigh & Feabhsaigh",
+        "description": "Déan monatóireacht ar do fhoclóir agus do ghramadach go huathoibríoch."
+      }
+    },
+    "testimonials": {
+      "title": "Teistiméireachtaí",
+      "student": {
+        "feedback": "\"Chabhraigh an aip seo liom cleachtadh ar an nGaeilge — táim níos muiníní anois!\"",
+        "name": "- Saoirse, Mac Léinn"
+      },
+      "traveller": {
+        "feedback": "\"Bhí sé an-spraíúil comhrá a dhéanamh le carachtair ó réigiúin éagsúla!\"",
+        "name": "- Lucas, Taistealaí"
+      },
+      "professional": {
+        "feedback": "\"Is maith liom an chaoi a rianaíonn an córas mo laigí — cosúil le meantóir pearsanta.\"",
+        "name": "- Emily, Gairmí"
+      }
+    },
+    "cta": {
+      "title": "Réidh le Labhairt go Muiníneach?",
+      "subtitle": "Bí le foghlaimeoirí ar fud an domhain ag máistirú teangacha nua trí chomhrá bríoch.",
+      "button": "Tosaigh Do Thuras Inniu"
+    }
+  },
+  "nav": {
+    "home": "Baile",
+    "features": "Gnéithe",
+    "practice": "Cleachtadh",
+    "pricing": "Praghsanna"
+  },
+  "auth": {
+    "emailPlaceholder": "Cuir isteach do sheoladh ríomhphoist",
+    "signIn": "Seol Nasc Draíochta",
+    "sending": "Á sheoladh...",
+    "sent": "Seoladh nasc draíochta! Seiceáil do bhosca isteach.",
+    "error": "Theip ar an nasc draíochta a sheoladh. Bain triail eile as.",
+    "firstTimeLoginTitle": "Socraigh Do Roghanna Teanga",
+    "firstLanguage": "Do Chéad Teanga",
+    "targetLanguage": "An Teanga atá á Foghlaim agat",
+    "immersionLevel": "Leibhéal Tumtha",
+    "immersionNormal": "Gnáth (le leideanna)",
+    "immersionFull": "Tumadh Iomlán (gan leideanna)",
+    "saveSettings": "Sábháil Socruithe",
+    "selectLanguage": "Roghnaigh teanga",
+    "benefits": {
+      "1": "✅ Labhair le carachtair AI i do sprioctheanga",
+      "2": "✅ Rianaigh focail agus gramadach lag i bhfíor-am",
+      "3": "✅ Cleachtaigh go laethúil le comhráite struchtúrtha nádúrtha"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "title": "Do Thuras Teanga",
+      "chatMessages": "Teachtaireachtaí Comhrá Seolta",
+      "wordsToPractice": "Focail atá le Cleachtadh",
+      "wordsMastered": "Focail Máistreáilte",
+      "translations": "Aistriúcháin Críochnaithe",
+      "conversations": "Comhráite AI Tosaigh",
+      "books": "Leabhair Léite"
+    },
+    "chat": {
+      "title": "Comhrá le hAI",
+      "description": "Cleacht do sprioctheanga trí chomhrá le hintleacht shaorga.",
+      "cta": "Tosaigh Comhrá"
+    },
+    "translation": {
+      "title": "Próiseáil Teanga",
+      "description": "Aistrigh téacs agus déan anailís ar struchtúir ghramadaí.",
+      "cta": "Aistrigh Téacs"
+    },
+    "lexicon": {
+      "title": "Mo Lúibín",
+      "description": "Athbhreithnigh agus bainistigh na focail atá foghlamtha agat.",
+      "cta": "Féach ar an Lúibín"
+    }
+  },
+  "chat": {
+    "start_chat": "Tosaigh comhrá",
+    "send": "Seol",
+    "bot_typing": "Tá an bot ag clóscríobh...",
+    "select_or_start": "Roghnaigh nó tosaigh comhrá",
+    "select_bot": "Roghnaigh Bot",
+    "age": "Aois",
+    "hobbies": "Caitheamh aimsire",
+    "cancel": "Cealaigh",
+    "type_message": "Clóscríobh teachtaireacht..."
+  },
+  "translate": {
+    "inputPlaceholer": "Cuir téacs isteach le haistriú...",
+    "translateButton": "Aistrigh",
+    "translateButtonLoading": "Á aistriú...",
+    "translateNoTranslations": "Níl aon aistriúcháin fós. Cuir abairt isteach chun tosú!",
+    "translatePaginationPrev": "Roimhe Seo",
+    "translatePaginationNext": "Ar Aghaidh",
+    "translatePaginationText": "Leathanach {page} as {totalPages}"
+  }
+}

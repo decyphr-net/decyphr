@@ -8,8 +8,12 @@ const dictionaries = {
 }
 
 export const getDictionary = async (locale: Locale) => {
-  if (!dictionaries[locale]) {
-    console.log(`Locale ${locale} not found in dictionaries.`);
+  const loader = dictionaries[locale];
+
+  if (!loader) {
+    console.error(`❌ Locale '${locale}' not found in dictionaries. Falling back to 'en'.`);
+    return dictionaries.en(); // fallback
   }
-  return dictionaries[locale]();
+
+  return loader();
 }

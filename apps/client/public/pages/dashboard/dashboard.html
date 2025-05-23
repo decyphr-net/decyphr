@@ -1,0 +1,87 @@
+<div class="py-10" x-data="dashboard()" x-init="$nextTick(() => init())">
+  <div class="container mx-auto px-4 space-y-12">
+
+    <div class="p-8 bg-blue-500 rounded-lg shadow-lg text-center space-y-6 bg-gradient-to-r from-teal-400 to-blue-500 text-white hover:shadow-xl transition-shadow border overflow-hidden">
+      <h2 class="text-2xl md:text-3xl font-bold text-white" x-text="$store.i18n.t('dashboard.stats.title')"></h2>
+
+      <div class="max-w-6xl mx-auto px-4 grid grid-cols-2 md:grid-cols-3 gap-6 text-center text-white">
+        <div class="space-y-1">
+          <i class="lucide lucide-message-circle w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">234</p>
+          <p x-text="$store.i18n.t('dashboard.stats.chatMessages')"></p>
+        </div>
+
+        <div class="space-y-1">
+          <i class="lucide lucide-book-open w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">15</p>
+          <p x-text="$store.i18n.t('dashboard.stats.wordsToPractice')"></p>
+        </div>
+
+        <div class="space-y-1">
+          <i class="lucide lucide-award w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">200</p>
+          <p x-text="$store.i18n.t('dashboard.stats.wordsMastered')"></p>
+        </div>
+
+        <div class="space-y-1">
+          <i class="lucide lucide-translate w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">86</p>
+          <p x-text="$store.i18n.t('dashboard.stats.translations')"></p>
+        </div>
+
+        <div class="space-y-1">
+          <i class="lucide lucide-bot w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">29</p>
+          <p x-text="$store.i18n.t('dashboard.stats.conversations')"></p>
+        </div>
+
+        <div class="space-y-1">
+          <i class="lucide lucide-book w-8 h-8 mx-auto text-white"></i>
+          <p class="text-3xl font-bold">10</p>
+          <p x-text="$store.i18n.t('dashboard.stats.books')"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 text-center py-3">
+      <a href="/chat" class="group">
+        <div class="hover:shadow-xl transition-shadow flex flex-col h-full border rounded-lg overflow-hidden">
+          <div class="flex flex-col items-center p-6 transition-transform group-hover:-translate-y-1">
+            <i class="lucide lucide-bot w-12 h-12 text-blue-500"></i>
+            <h3 class="text-xl font-semibold mt-4" x-text="$store.i18n.t('dashboard.chat.title')"></h3>
+          </div>
+          <div class="flex flex-col p-6">
+            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.chat.description')"></p>
+            <button class="inline-flex items-center justify-center px-4 py-2 mt-6 rounded-md text-white text-md font-semibold bg-blue-500 hover:bg-blue-600 transition" x-text="$store.i18n.t('dashboard.chat.cta')"></button>
+          </div>
+        </div>
+      </a>
+
+      <a href="/translations" class="group">
+        <div class="hover:shadow-xl transition-shadow flex flex-col h-full border rounded-lg overflow-hidden">
+          <div class="flex flex-col items-center p-6 transition-transform group-hover:-translate-y-1">
+            <i class="lucide lucide-book-open w-12 h-12 text-blue-600"></i>
+            <h3 class="text-xl font-semibold mt-4" x-text="$store.i18n.t('dashboard.translation.title')"></h3>
+          </div>
+          <div class="flex flex-col p-6">
+            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.translation.description')"></p>
+            <button class="inline-flex items-center justify-center px-4 py-2 mt-6 rounded-md text-white text-md font-semibold bg-blue-500 hover:bg-blue-600 transition" x-text="$store.i18n.t('dashboard.translation.cta')"></button>
+          </div>
+        </div>
+      </a>
+
+      <a href="/dashboard/lexicon" class="group">
+        <div class="hover:shadow-xl transition-shadow flex flex-col h-full border rounded-lg overflow-hidden">
+          <div class="flex flex-col items-center p-6 transition-transform group-hover:-translate-y-1">
+            <i class="lucide lucide-list w-12 h-12 text-blue-700"></i>
+            <h3 class="text-xl font-semibold mt-4" x-text="$store.i18n.t('dashboard.lexicon.title')"></h3>
+          </div>
+          <div class="flex flex-col p-6">
+            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.lexicon.description')"></p>
+            <button class="inline-flex items-center justify-center px-4 py-2 mt-6 rounded-md text-white text-md font-semibold bg-blue-500 hover:bg-blue-600 transition" x-text="$store.i18n.t('dashboard.lexicon.cta')"></button>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

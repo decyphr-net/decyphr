@@ -1,0 +1,145 @@
+{
+  "footer": {
+    "about": {
+      "title": "Sobre",
+      "description": "Tornamos o aprendizado de idiomas simples, natural e poderoso combinando prática de IA com acompanhamento inteligente."
+    },
+    "links": {
+      "title": "Links Rápidos",
+      "login": "Entrar",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço"
+    },
+    "contact": {
+      "title": "Contato"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Domine Idiomas Naturalmente",
+      "subtitle": "Aprendizado de idiomas impulsionado por IA que se adapta a você",
+      "cta": "Comece a Aprender Gratuitamente"
+    },
+    "features": {
+      "translation": {
+        "title": "Tradução Inteligente",
+        "description": "Obtenha traduções com análise contextual e gramatical"
+      },
+      "practice": {
+        "title": "Prática de Conversação com IA",
+        "description": "Ganhe confiança conversando com parceiros de IA sem pressão"
+      },
+      "tracking": {
+        "title": "Acompanhamento de Progresso Inteligente",
+        "description": "Aprenda com eficiência com planos de revisão personalizados"
+      }
+    },
+    "how_it_works": {
+      "title": "Como Funciona",
+      "step1": {
+        "title": "Escolha Seu Bot",
+        "description": "Escolha um bot de personagem baseado na sua língua, região e interesses."
+      },
+      "step2": {
+        "title": "Comece a Conversar",
+        "description": "Inicie uma conversa e pratique diálogos naturais no seu ritmo."
+      },
+      "step3": {
+        "title": "Acompanhe & Melhore",
+        "description": "Monitore seu vocabulário e gramática automaticamente enquanto aprende."
+      }
+    },
+    "testimonials": {
+      "title": "Depoimentos",
+      "student": {
+        "feedback": "\"Este app facilitou muito a prática do irlandês — estou muito mais confiante!\"",
+        "name": "- Saoirse, Estudante"
+      },
+      "traveller": {
+        "feedback": "\"Conversar com personagens de diferentes regiões tornou aprender português muito mais divertido!\"",
+        "name": "- Lucas, Viajante"
+      },
+      "professional": {
+        "feedback": "\"Adoro como o sistema rastreia automaticamente minhas palavras fracas — como um tutor pessoal.\"",
+        "name": "- Emily, Profissional"
+      }
+    },
+    "cta": {
+      "title": "Pronto para Falar com Confiança?",
+      "subtitle": "Junte-se a aprendizes do mundo inteiro dominando novos idiomas com conversas significativas.",
+      "button": "Comece Sua Jornada Hoje"
+    }
+  },
+  "nav": {
+    "home": "Início",
+    "features": "Recursos",
+    "practice": "Prática",
+    "pricing": "Preços"
+  },
+  "auth": {
+    "emailPlaceholder": "Insira seu endereço de e-mail",
+    "signIn": "Enviar link mágico",
+    "sending": "Enviando...",
+    "sent": "Link mágico enviado! Verifique sua caixa de entrada.",
+    "error": "Falha ao enviar o link mágico. Tente novamente.",
+    "firstTimeLoginTitle": "Configure Suas Preferências de Idioma",
+    "firstLanguage": "Sua Língua Nativa",
+    "targetLanguage": "Idioma que Está a Aprender",
+    "immersionLevel": "Nível de Imersão",
+    "immersionNormal": "Normal (com dicas)",
+    "immersionFull": "Imersão Total (sem dicas)",
+    "saveSettings": "Salvar Configurações",
+    "selectLanguage": "Selecione um idioma",
+    "benefits": {
+      "1": "✅ Converse com personagens de IA no seu idioma de destino",
+      "2": "✅ Acompanhe palavras fracas e gramática em tempo real",
+      "3": "✅ Pratique diariamente com conversas naturais e estruturadas"
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "title": "Sua Jornada Linguística",
+      "chatMessages": "Mensagens de Chat Enviadas",
+      "wordsToPractice": "Palavras para Praticar",
+      "wordsMastered": "Palavras Dominadas",
+      "translations": "Traduções Concluídas",
+      "conversations": "Conversas com IA Iniciadas",
+      "books": "Livros Lidos"
+    },
+    "chat": {
+      "title": "Conversar com IA",
+      "description": "Pratique seu idioma alvo com conversas com IA.",
+      "cta": "Começar Conversa"
+    },
+    "translation": {
+      "title": "Processamento de Linguagem",
+      "description": "Traduza textos e analise estruturas gramaticais.",
+      "cta": "Traduzir Texto"
+    },
+    "lexicon": {
+      "title": "Léxico Pessoal",
+      "description": "Revise e gerencie palavras aprendidas.",
+      "cta": "Ver Léxico"
+    }
+  },
+  "chat": {
+    "start_chat": "Iniciar conversa",
+    "send": "Enviar",
+    "bot_typing": "O bot está digitando...",
+    "select_or_start": "Selecione ou inicie uma conversa",
+    "select_bot": "Selecionar Bot",
+    "age": "Idade",
+    "hobbies": "Passatempos",
+    "cancel": "Cancelar",
+    "type_message": "Digite uma mensagem..."
+  },
+  "translate": {
+    "inputPlaceholer": "Digite o texto para traduzir...",
+    "translateButton": "Traduzir",
+    "translateButtonLoading": "Traduzindo...",
+    "translateNoTranslations": "Nenhuma tradução ainda. Envie uma frase para começar!",
+    "translatePaginationPrev": "Anterior",
+    "translatePaginationNext": "Próximo",
+    "translatePaginationText": "Página {page} de {totalPages}"
+  }
+}

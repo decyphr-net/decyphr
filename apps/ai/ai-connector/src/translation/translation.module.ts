@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { EnrichmentModule } from 'src/enrichment/enrichment.module';
 import { GroqProvider } from 'src/providers/groq.provider';
 import { TranslationController } from './translation.controller';
 import { TranslationService } from './translation.service';
@@ -28,8 +29,10 @@ import { TranslationService } from './translation.service';
         }),
       },
     ]),
+    EnrichmentModule,
   ],
   providers: [GroqProvider, TranslationService],
   controllers: [TranslationController],
+  exports: [TranslationService],
 })
 export class TranslationModule { }

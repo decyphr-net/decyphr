@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AiInterfaceController } from './ai-interface.controller';
-import { AiInterfaceGateway } from './ai-interface.gateway';
 import { AiInterfaceService } from './ai-interface.service';
 import { Translation, WordBreakdown } from './translation.entity';
 
@@ -40,7 +39,7 @@ import { Translation, WordBreakdown } from './translation.entity';
     ]),
     TypeOrmModule.forFeature([Translation, WordBreakdown]),
   ],
-  providers: [AiInterfaceService, AiInterfaceGateway],
+  providers: [AiInterfaceService],
   controllers: [AiInterfaceController],
 })
 export class AiInterfaceModule { }

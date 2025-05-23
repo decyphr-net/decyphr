@@ -63,31 +63,11 @@ export const TranslationOutputSchema = z.object({
  */
 export type TranslationOutput = z.infer<typeof TranslationOutputSchema>;
 
-// export const TranslationSchema = z.object({
-//   text: z.string(),
-//   correctedText: z.string(),
-//   translatedText: z.string(),
-//   breakdown: z.string(), // or use z.object() if more structured
-//   sourceLanguage: z.string(),
-//   targetLanguage: z.string(),
-// });
-// export const WordBreakdownSchema = z.object({
-//   originalWord: z.string(),
-//   translatedWord: z.string(),
-//   alternatives: z.array(z.string()),
-//   pos_tag: z.string(),
-//   lemma: z.string(),
-//   correctness: z.number().min(0).max(1),
-//   level: z.string(),
-//   correctedWord: z.string(),
-// });
+export const SimpleTranslationSchema = z.object({
+  original: z.string(),
+  translated: z.string(),
+  sourceLang: z.string(),
+  targetLang: z.string(),
+});
 
-// export const TranslationOutputSchema = z.object({
-//   detectedLanguage: z.string(),
-//   translatedText: z.string(),
-//   alternatives: z.array(z.string()),
-//   breakdown: z.array(WordBreakdownSchema),
-//   tense: z.string(),
-// });
-
-// export type TranslationOutput = z.infer<typeof TranslationOutputSchema>;
+export type SimpleTranslation = z.infer<typeof SimpleTranslationSchema>;

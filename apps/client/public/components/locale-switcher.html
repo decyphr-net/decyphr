@@ -1,0 +1,33 @@
+<div class="relative" x-data="{ openLangMenu: false }">
+  <button
+    class="btn btn-ghost btn-sm rounded-full"
+    @click="openLangMenu = !openLangMenu"
+    aria-label="Switch Language"
+  >
+    <!-- Languages icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 stroke-white" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+      <path d="M2 12h20M12 2c3.5 4 3.5 16 0 20M5 5c5 5 9 5 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <div
+    x-show="openLangMenu"
+    @click.away="openLangMenu = false"
+    class="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white text-black ring-1 ring-black ring-opacity-5 z-50"
+    x-cloak
+  >
+    <ul class="py-1">
+      <template x-for="lang in ['en', 'ga', 'pt']" :key="lang">
+        <li>
+          <button
+            class="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+            @click="$store.i18n.saveLanguage(lang); openLangMenu = false"
+          >
+            <span x-text="$store.i18n.languageFlags[lang] + ' ' + $store.i18n.languageNames[lang]"></span>
+          </button>
+        </li>
+      </template>
+    </ul>
+  </div>
+</div>

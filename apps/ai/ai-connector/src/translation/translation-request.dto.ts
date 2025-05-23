@@ -20,7 +20,7 @@ export class TranslateDto {
    */
   @IsString()
   @IsOptional()
-  targetLang: string;
+  targetLanguage: string;
 
   /**
    * The source language of the text (optional).
@@ -28,7 +28,7 @@ export class TranslateDto {
    */
   @IsString()
   @IsOptional()
-  sourceLang: string;
+  sourceLanguage: string;
 
   /**
    * A unique identifier for the client making the request.

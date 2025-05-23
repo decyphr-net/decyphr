@@ -1,0 +1,77 @@
+<section class="py-12" x-data="translationApp()" x-init="init">
+  <div class="container mx-auto p-4 flex flex-col items-center gap-4">
+    <h2 class="text-2xl font-bold" x-text="$store.i18n.t('dashboard.translation.title')"></h2>
+
+    <!-- Translation Input -->
+    <div class="w-full max-w-4xl">
+      <textarea
+        x-model="text"
+        class="w-full p-3 border rounded mb-4"
+        :placeholder="$store.i18n.t('translate.inputPlaceholer')"
+      ></textarea>
+      <button
+        @click="submit"
+        :disabled="loading"
+        class="w-full px-4 py-2 font-semibold rounded bg-blue-500 text-white"
+        x-init="$el.textContent = $store.i18n?.t('translate.translateButton') || 'Translate'"
+        x-effect="$el.textContent = loading
+          ? ($store.i18n?.t('translate.translateButtonLoading') || 'Translating...')
+          : ($store.i18n?.t('translate.translateButton') || 'Translate')"
+      ></button>
+    </div>
+
+    <!-- Translation List -->
+    <div class="w-full max-w-4xl mt-8">
+      <template x-if="Array.isArray(translations) && translations.length > 0">
+        <div>
+          <template x-for="translation in paginatedTranslations" :key="translation.id || translation.originalText">
+            <div class="mb-4 p-4 border rounded">
+              <p class="font-semibold text-lg" x-text="translation.originalText"></p>
+              <p class="text-gray-600 mb-2" x-text="translation.translatedText"></p>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="(token, index) in translation.breakdown" :key="token.correctedWord + index">
+                  <div class="relative group cursor-pointer bg-gray-100 px-2 py-1 rounded hover:bg-gray-200">
+                    <span x-text="token.correctedWord"></span>
+                    <div class="absolute z-10 hidden group-hover:block transition-all duration-200 bg-white border p-2 shadow rounded mt-1 text-sm w-48">
+                      <ul>
+                        <li><strong>Translation:</strong> <span x-text="token.translatedWord"></span></li>
+                        <li><strong>Level:</strong> <span x-text="token.level"></span></li>
+                        <li><strong>POS:</strong> <span x-text="token.pos_tag"></span></li>
+                        <li><strong>Lemma:</strong> <span x-text="token.lemma"></span></li>
+                      </ul>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </template>
+      <template x-if="!Array.isArray(translations) || translations.length === 0">
+        <p x-text="$store.i18n.t('translate.translateNoTranslations')"></p>
+      </template>
+
+      <template x-if="Array.isArray(translations) && translations.length > limit">
+        <div class="flex justify-center gap-4 mt-6">
+          <button
+            class="px-4 py-2 bg-gray-200 rounded"
+            :disabled="page === 1"
+            @click="page--"
+            x-text="$store.i18n.t('translate.translatePaginationPrev')"
+          ></button>
+
+          <span class="text-lg font-semibold">
+            <span x-text="$store.i18n.t('translate.translatePaginationText').replace('{page}', page).replace('{totalPages}', totalPages)"></span>
+          </span>
+
+          <button
+            class="px-4 py-2 bg-gray-200 rounded"
+            :disabled="page === totalPages"
+            @click="page++"
+            x-text="$store.i18n.t('translate.translatePaginationNext')"
+          ></button>
+        </div>
+      </template>
+    </div>
+  </div>
+</section>

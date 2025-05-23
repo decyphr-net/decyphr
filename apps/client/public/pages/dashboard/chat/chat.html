@@ -1,0 +1,81 @@
+<div class="h-screen flex flex-col md:flex-row font-sans text-slate-800 bg-white" x-data="chatApp()" x-init="init">
+  <!-- Sidebar -->
+  <div class="md:w-1/4 bg-white p-4 border-r border-gray-200 space-y-2 h-screen overflow-y-auto">
+    <button
+      class="w-full bg-blue-400 text-white font-semibold rounded-xl py-2"
+      @click="openBotSelection = true"
+      x-text="$store.i18n.t('chat.start_chat')"
+    ></button>
+
+    <template x-for="chat in chats" :key="chat.id">
+      <div
+        class="cursor-pointer p-3 rounded-xl hover:bg-gray-100 transition"
+        :class="{ 'bg-gray-100': chat.id === activeChatId }"
+        @click="selectChat(chat.id)"
+      >
+        <strong x-text="chat.name"></strong>
+      </div>
+    </template>
+  </div>
+
+  <!-- Chat Window -->
+  <div class="flex-1 flex flex-col">
+    <template x-if="activeChat">
+      <div class="flex flex-col h-full">
+        <div class="border-b border-gray-200 p-4 font-bold text-lg bg-white" x-text="activeChat.name"></div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-2 bg-white">
+          <template x-for="msg in activeChat.messages" :key="msg.id">
+            <div class="max-w-[75%] p-3 rounded-xl" :class="msg.sender === 'user' ? 'bg-blue-400 ml-auto text-white' : 'bg-gray-200 text-slate-800'">
+              <p x-text="msg.text"></p>
+            </div>
+          </template>
+          <template x-if="loading">
+            <div class="text-sm text-gray-400 animate-pulse">
+              <p x-text="$store.i18n.t('chat.bot_typing')"></p>
+            </div>
+          </template>
+        </div>
+        <div class="sticky bottom-0 bg-white">
+          <form class="p-4 border-t border-gray-200 flex gap-2" @submit.prevent="sendMessage">
+            <input type="text" class="w-full px-4 py-2 border border-gray-300 bg-white placeholder-gray-400 text-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400" :placeholder="$store.i18n.t('chat.type_message')" x-model="messageInput" />
+            <button type="submit" class="bg-blue-400 text-white rounded-xl px-4 py-2 font-semibold" :disabled="loading" x-text="$store.i18n.t('chat.send')"></button>
+          </form>
+        </div>
+      </div>
+    </template>
+
+    <template x-if="loading && !activeChat">
+      <div class="flex-1 flex items-center justify-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-400"></div>
+      </div>
+    </template>
+
+    <template x-if="!activeChat && !loading">
+      <div class="flex-1 flex items-center justify-center text-gray-500 text-lg">
+        <span x-text="$store.i18n.t('chat.select_or_start')"></span>
+      </div>
+    </template>
+  </div>
+
+  <!-- Bot Selector Modal -->
+  <div x-cloak x-show="openBotSelection" x-transition.opacity class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-2xl w-full max-w-xl space-y-4 overflow-y-auto max-h-[80vh] border border-gray-200">
+      <h2 class="text-lg font-bold text-slate-800" x-text="$store.i18n.t('chat.select_bot')"></h2>
+      <template x-for="bot in bots" :key="bot.id">
+        <div class="p-4 border border-gray-200 rounded-xl space-y-2 bg-gray-100">
+          <h3 class="text-slate-800 font-bold" x-text="bot.name"></h3>
+          <p class="text-sm text-gray-700"><strong>Gender:</strong> <span x-text="bot.gender"></span></p>
+          <p class="text-sm text-gray-700"><strong>Age:</strong> <span x-text="bot.age"></span></p>
+          <p class="text-sm text-gray-700"><strong>Region:</strong> <span x-text="bot.region"></span></p>
+          <p class="text-sm text-gray-700"><strong>City:</strong> <span x-text="bot.city"></span></p>
+          <p class="text-sm text-gray-700"><strong>Background:</strong> <span x-text="bot.background"></span></p>
+          <p class="text-sm text-gray-700"><strong>Occupation:</strong> <span x-text="bot.occupation"></span></p>
+          <p class="text-sm text-gray-700"><strong>Hobbies:</strong> <span x-text="bot.hobbies"></span></p>
+          <p class="italic text-sm text-gray-600" x-text="bot.personal ? `'${bot.personal}'` : ''"></p>
+          <button class="mt-2 bg-blue-400 text-white rounded-xl px-4 py-2 w-full text-center font-semibold" @click="startChat(bot); openBotSelection = false" x-text="$store.i18n.t('chat.start_chat')"></button>
+        </div>
+      </template>
+      <button class="mt-4 w-full bg-gray-200 text-slate-800 rounded-xl py-2 font-semibold" @click="openBotSelection = false" x-text="$store.i18n.t('chat.cancel')"></button>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,7 @@ export class TranslationController {
    *
    * Logs the received payload and delegates further processing to the TranslationService.
    */
-  @EventPattern('ai.translation.response', Transport.KAFKA)
+  @EventPattern('lexicon.update', Transport.KAFKA)
   async handleEvent(
     @Payload() payload: TextTranslatedPayloadDto,
   ): Promise<void> {

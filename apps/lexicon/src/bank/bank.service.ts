@@ -32,8 +32,8 @@ export class BankService {
     language: string,
     interactionType: string,
   ): Promise<void> {
+    this.logger.debug('Called');
     try {
-      // 🔹 Find or create user
       let user = await this.userRepository.findOne({ where: { clientId } });
 
       if (!user) {
@@ -47,12 +47,10 @@ export class BankService {
         this.logger.log(`User with clientId ${clientId} found.`);
       }
 
-      // 🔹 Process each item in the breakdown
       for (const item of breakdown) {
-        // Ensure the word exists (but don't check for interactions)
         let word = await this.wordRepository.findOne({
           where: {
-            word: item.originalWord, // Correct field name
+            word: item.originalWord,
             tag: item.pos_tag,
             language: language,
             lemma: item.lemma,
@@ -65,7 +63,7 @@ export class BankService {
           );
 
           word = this.wordRepository.create({
-            word: item.originalWord, // Ensure correct field
+            word: item.originalWord,
             tag: item.pos_tag,
             language: language,
             lemma: item.lemma,

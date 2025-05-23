@@ -1,3 +1,4 @@
+import { Locale } from "@/app/i18n/config";
 import { getDictionary } from "@/app/i18n/get-dictionary"; // Adjust the import to match your i18n setup
 import LocaleSwitcher from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -13,7 +14,7 @@ export default async function DashboardLayout({
   children: ReactNode;
   params: { lang: string };
 }) {
-  const dict = await getDictionary(lang);
+  const dict = await getDictionary(lang as Locale);
 
   return (
     <div className="min-h-screen bg-background">
@@ -38,10 +39,10 @@ export default async function DashboardLayout({
           <div className="flex items-center space-x-2">
             <Link href={`/${lang}/settings`}>
               <Settings />
-              <span>{dict.dashboard.settings}</span>
+              <span>{dict.global.settings}</span>
             </Link>
             <LocaleSwitcher />
-            <ThemeToggle dict={dict} />
+            <ThemeToggle dict={dict.global} />
           </div>
         </div>
       </nav>

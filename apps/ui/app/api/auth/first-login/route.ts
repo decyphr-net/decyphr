@@ -1,44 +1,59 @@
-import { LanguageSetting } from '@/app/models/LanguageSetting';
-import { User } from '@/app/models/User';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { cookies } from "next/headers";
-import { getDataSource } from "../../../lib/db";
+import { cookies } from 'next/headers';
+import { getDataSource } from '../../../lib/db';
+import { LanguageSetting } from '../../../models/LanguageSetting';
+import { User } from '../../../models/User';
 
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
+/**
+ * POST /api/auth/first-login
+ *
+ * Saves the user's initial language settings (first language, target language, and immersion level)
+ * after their first login. Requires a valid session cookie to identify the user.
+ *
+ * Request body (JSON):
+ * {
+ *   "firstLanguage": string,
+ *   "targetLanguage": string,
+ *   "immersionLevel": number
+ * }
+ *
+ * Responses:
+ * - 200: Settings saved successfully
+ * - 401: Unauthorized (no session or invalid session)
+ * - 404: User not found
+ * - 405: Method not allowed (if not a POST request)
+ */
+export async function POST(req: Request) {
+  try {
     const db = await getDataSource();
-    const { firstLanguage, targetLanguage, immersionLevel } = JSON.parse(req.body);
-    try {
-      const session = cookies().get("session");
+    const body = await req.json();
+    const { firstLanguage, targetLanguage, immersionLevel } = body;
 
-      if (!session) {
-        return res.status(401).json({ message: 'No token provided, unauthorized' });
-      }
+    const session = cookies().get("session");
 
-      const userRepository = await db.getRepository(User);
-      const user = await userRepository.findOne({ where: { id: session.email } });
-
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-
-      const languageSettingRepository = await db.getRepository(LanguageSetting);
-      const languageSetting = languageSettingRepository.create({
-        firstLanguage,
-        targetLanguage,
-        immersionLevel,
-        user,
-      });
-
-      await languageSettingRepository.save(languageSetting);
-
-      return res.status(200).json({ message: 'Settings saved' });
-    } catch (error) {
-      return res.status(401).json({ message: 'Invalid or expired token' });
+    if (!session) {
+      return new Response(JSON.stringify({ message: 'No token provided, unauthorized' }), { status: 401 });
     }
 
-  } else {
-    return res.status(405).json({ message: 'Method not allowed' });
+    const userRepository = db.getRepository(User);
+    const user = await userRepository.findOne({ where: { clientId: session.value } });
+
+    if (!user) {
+      return new Response(JSON.stringify({ message: 'User not found' }), { status: 404 });
+    }
+
+    const languageSettingRepository = db.getRepository(LanguageSetting);
+    const languageSetting = languageSettingRepository.create({
+      firstLanguage,
+      targetLanguage,
+      immersionLevel,
+      user,
+    });
+
+    await languageSettingRepository.save(languageSetting);
+
+    return new Response(JSON.stringify({ message: 'Settings saved' }), { status: 200 });
+
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'Invalid or expired token' }), { status: 401 });
   }
 }

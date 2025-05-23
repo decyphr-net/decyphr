@@ -26,7 +26,7 @@ export default async function Home({ params: { lang } }: { params: { lang: Local
           </div>
           <div className="flex items-center space-x-2">
             <LocaleSwitcher />
-            <ThemeToggle dict={dict} />
+            <ThemeToggle dict={dict.global} />
           </div>
         </div>
       </nav>

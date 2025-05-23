@@ -1,0 +1,147 @@
+{
+  "footer": {
+    "about": {
+      "title": "About",
+      "description": "We make language learning simple, natural, and powerful by combining AI practice with smart tracking."
+    },
+    "links": {
+      "title": "Quick Links",
+      "login": "Login",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "contact": {
+      "title": "Contact"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Master Languages Naturally",
+      "subtitle": "AI-powered language learning that adapts to you",
+      "cta": "Start Learning Free"
+    },
+    "features": {
+      "translation": {
+        "title": "Smart Translation",
+        "description": "Get context-aware translations with part of speech analysis"
+      },
+      "practice": {
+        "title": "AI Conversation Practice",
+        "description": "Build confidence with stress-free AI chat partners"
+      },
+      "tracking": {
+        "title": "Intelligent Progress Tracking",
+        "description": "Learn efficiently with personalized review schedules"
+      }
+    },
+    "how_it_works": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Choose Your Bot",
+        "description": "Pick a character bot based on your preferred language, region, and interests."
+      },
+      "step2": {
+        "title": "Start Chatting",
+        "description": "Jump into a conversation and practice real, meaningful dialogues at your own pace."
+      },
+      "step3": {
+        "title": "Track & Improve",
+        "description": "Monitor your vocabulary and grammar growth automatically as you learn."
+      }
+    },
+    "testimonials": {
+      "title": "Testimonials",
+      "student": {
+        "feedback": "\"This app made it so easy for me to practice Irish — I feel way more confident now!\"",
+        "name": "- Saoirse, Student"
+      },
+      "traveller": {
+        "feedback": "\"Talking to characters from different regions made learning Portuguese so much fun!\"",
+        "name": "- Lucas, Traveller"
+      },
+      "professional": {
+        "feedback": "\"I love how the system tracks my weak words automatically — it's like having a personal tutor.\"",
+        "name": "- Emily, Professional"
+      }
+    },
+    "cta": {
+      "title": "Ready to Speak Confidently?",
+      "subtitle": "Join learners worldwide mastering languages through meaningful conversation.",
+      "button": "Start Your Journey Today"
+    }
+  },
+  "auth": {
+    "emailPlaceholder": "Enter your email address",
+    "signIn": "Send Magic Link",
+    "sending": "Sending...",
+    "sent": "Magic link sent! Check your inbox.",
+    "error": "Failed to send magic link. Please try again.",
+    "firstTimeLoginTitle": "Set Up Your Language Preferences",
+    "firstLanguage": "Your First Language",
+    "targetLanguage": "Language You’re Learning",
+    "immersionLevel": "Immersion Level",
+    "immersionNormal": "Normal (with hints)",
+    "immersionFull": "Full Immersion (no hints)",
+    "saveSettings": "Save Settings",
+    "selectLanguage": "Select a language",
+    "benefits": {
+      "1": "✅ Chat with AI characters in your target language",
+      "2": "✅ Track weak words and grammar in real time",
+      "3": "✅ Practice daily with structured, natural conversations"
+    },
+    "email": {
+      "subject": "Your Magic Login Link",
+      "greeting": "Welcome to Decyphr!",
+      "intro": "Click the button below to access your account securely.",
+      "button": "Login Now",
+      "note": "If you didn’t request this link, you can safely ignore this email.",
+      "footer": "© 2025 Decyphr. All rights reserved."
+    }
+  },
+  "dashboard": {
+    "stats": {
+      "title": "Your Language Journey",
+      "chatMessages": "Chat Messages Sent",
+      "wordsToPractice": "Words Needing Practice",
+      "wordsMastered": "Words Mastered",
+      "translations": "Translations Completed",
+      "conversations": "AI Conversations Started",
+      "books": "Books Read"
+    },
+    "chat": {
+      "title": "Chat with AI",
+      "description": "Practice your target language through AI conversation.",
+      "cta": "Start Chatting"
+    },
+    "translation": {
+      "title": "Language Processing",
+      "description": "Translate text and analyse grammar structures.",
+      "cta": "Translate Text"
+    },
+    "lexicon": {
+      "title": "Personal Lexicon",
+      "description": "Review and manage words you've learned.",
+      "cta": "View Lexicon"
+    }
+  },
+  "chat": {
+    "start_chat": "Start Chat",
+    "send": "Send",
+    "bot_typing": "Bot is typing...",
+    "select_or_start": "Select or start a chat",
+    "select_bot": "Select a Bot",
+    "age": "Age",
+    "hobbies": "Hobbies",
+    "cancel": "Cancel",
+    "type_message": "Type a message..."
+  },
+  "translate": {
+    "inputPlaceholer": "Enter text to translate...",
+    "translateButton": "Translate",
+    "translateButtonLoading": "Translating...",
+    "translateNoTranslations": "No translations yet. Submit a sentence to get started!",
+    "translatePaginationPrev": "Previous",
+    "translatePaginationNext": "Next",
+    "translatePaginationText": "Page {page} of {totalPages}"
+  }
+}

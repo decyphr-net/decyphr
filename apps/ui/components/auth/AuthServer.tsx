@@ -25,7 +25,7 @@ export default async function AuthServer({ lang }: { lang: Locale }) {
           </div>
           <div className="flex items-center space-x-2">
             <LocaleSwitcher />
-            <ThemeToggle dict={dict} />
+            <ThemeToggle dict={dict.global} />
           </div>
         </div>
       </nav>

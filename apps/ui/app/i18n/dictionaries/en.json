@@ -4,7 +4,8 @@
     "themeToggle": "Toggle Theme",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "settings": "Settings"
   },
   "nav": {
     "home": "Home",
