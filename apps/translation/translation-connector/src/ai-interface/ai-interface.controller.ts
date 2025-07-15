@@ -1,4 +1,4 @@
-import { Controller, Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, Inject, Logger, OnModuleInit, Param } from '@nestjs/common';
 import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 import { AiInterfaceService } from './ai-interface.service';
 import { TranslationDto } from './dto/translation.dto';
@@ -86,6 +86,24 @@ export class AiInterfaceController implements OnModuleInit {
       this.logger.log('Translation request emitted to AI service');
     } catch (error) {
       this.logger.error('Failed to emit translation request', error.stack);
+    }
+  }
+
+  @Get('translations/:clientId')
+  async getTranslationsForClient(@Param('clientId') clientId: string) {
+    this.logger.log(`Fetching translations for client: ${clientId}`);
+    try {
+      const translations = await this.service.getTranslations(clientId);
+      return {
+        success: true,
+        data: translations,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to fetch translations for client ${clientId}:`, error.stack);
+      return {
+        success: false,
+        message: 'Failed to fetch translations',
+      };
     }
   }
 }

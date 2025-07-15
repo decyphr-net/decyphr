@@ -1,9 +1,14 @@
-import { Body, Controller, Get, Logger, OnModuleInit, Param, Post, Res, Sse } from '@nestjs/common';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+import { lastValueFrom } from 'rxjs';
+
+import { HttpService } from '@nestjs/axios';
+import { Body, Controller, Get, Logger, OnModuleInit, Param, Post, Req, Res, Sse, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import { Observable, Subject } from 'rxjs';
 
-import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { AuthService } from 'src/auth/auth.service';
+import { AuthenticatedRequest } from 'src/auth/types/request';
 import { KTableService } from 'src/utils/kafka/ktable.service';
 import { TranslationDto } from './dtos/translation.dto';
 import { TranslationsService } from './translations.service';
@@ -15,6 +20,8 @@ export class TranslationsController implements OnModuleInit {
 
   constructor(
     private readonly translationsService: TranslationsService,
+    private readonly httpService: HttpService,
+    private readonly authService: AuthService,
     private readonly ktableService: KTableService) { }
 
   async onModuleInit() {
@@ -57,7 +64,7 @@ export class TranslationsController implements OnModuleInit {
     return { status: 'ok' };
   }
 
-  @Sse('translations/:clientId')
+  @Sse('translations/events/:clientId')
   sseTranslations(@Param('clientId') clientId: string): Observable<MessageEvent> {
     this.logger.log(`📡 SSE connection opened for clientId=${clientId}`);
     const subject = new Subject<MessageEvent>();
@@ -70,6 +77,24 @@ export class TranslationsController implements OnModuleInit {
     });
 
     return subject.asObservable();
+  }
+
+  @Get('translations/list')
+  async getClientTranslations(@Req() req: AuthenticatedRequest) {
+    const user = req.session?.user;
+
+    if (!user || !user.id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    const clientId = await this.authService.getClientIdFromSession(req);
+
+    const response$ = this.httpService.get(
+      `http://translator:3009/translations/${clientId}`
+    );
+
+    const response = await lastValueFrom(response$);
+    return response.data;
   }
 }
 

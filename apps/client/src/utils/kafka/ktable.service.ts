@@ -48,7 +48,6 @@ export class KTableService implements OnModuleInit, OnModuleDestroy {
 
     await consumer.run({
       eachMessage: async ({ topic, message }) => {
-        console.log("New message!")
         const key = message.key?.toString();
         const value = message.value?.toString();
 
