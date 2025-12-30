@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" hx-boost="true">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -237,9 +237,32 @@
     document.addEventListener('alpine:init', () => {
       Alpine.store('auth', {
         user: null,
-        async init() { try { const res = await fetch('/auth/me', { credentials: 'include' }); if (res.ok) this.user = await res.json(); } catch (err) { console.warn('User not logged in or /api/me failed', err); } },
-        get isLoggedIn() { return !!this.user; }
+        loaded: false,
+
+        async init() {
+          try {
+            const res = await fetch('/auth/me', { credentials: 'include' });
+            if (!res.ok) {
+              this.user = null;
+              return;
+            }
+
+            const data = await res.json();
+
+            // IMPORTANT: extract the actual user
+            this.user = data.user ?? null;
+          } catch {
+            this.user = null;
+          } finally {
+            this.loaded = true;
+          }
+        },
+
+        get isLoggedIn() {
+          return !!this.user;
+        }
       });
+
       Alpine.store('auth').init();
     });
   </script>
