@@ -86,9 +86,6 @@
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
       <a href="/" class="text-2xl font-bold bg-blue-500 bg-clip-text text-transparent">Misneach</a>
       <div class="flex items-center space-x-4">
-        <template x-if="$store.auth.isLoggedIn">
-          <span class="text-sm text-gray-600" x-text="$store.auth.user?.email"></span>
-        </template>
         <div hx-get="/components/locale-switcher.html" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
     </div>
