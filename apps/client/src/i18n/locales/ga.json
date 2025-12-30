@@ -36,7 +36,7 @@
       }
     },
     "why_decyphr": {
-      "title": "Cén Fáth a Roghnóidh Tú Decyphr?",
+      "title": "Cén Fáth a Roghnóidh Tú Misneach?",
       "description": "Comhcheanglaímid foghlaim atá tiomáinte ag AI le huirlisí idirghníomhacha ionas gur féidir leat díriú ar thuiscint, cleachtadh, agus stór focal a choinneáil go nádúrtha.",
       "points": [
         "Foghlaim go nádúrtha trí chleachtaí comhrá-bhunaithe le AI",
@@ -68,7 +68,7 @@
     "testimonials": {
       "title": "Cad a Deir Foghlaimeoirí",
       "student": {
-        "feedback": "\"Chabhraigh Decyphr liom cleachtadh ar Ghaeilge ar bhealach nádúrtha agus taitneamhach. Táim níos muiníní gach lá!\"",
+        "feedback": "\"Chabhraigh Misneach liom cleachtadh ar Ghaeilge ar bhealach nádúrtha agus taitneamhach. Táim níos muiníní gach lá!\"",
         "name": "- Saoirse, Foghlaimeoir"
       },
       "traveller": {
@@ -76,7 +76,7 @@
         "name": "- Lucas, Taistealaí"
       },
       "professional": {
-        "feedback": "\"Is breá liom conas a rianaíonn Decyphr mo laige go huathoibríoch. Cosúil le bheith agam le múinteoir pearsanta!\"",
+        "feedback": "\"Is breá liom conas a rianaíonn Misneach mo laige go huathoibríoch. Cosúil le bheith agam le múinteoir pearsanta!\"",
         "name": "- Emily, Gairmiúil"
       }
     },
@@ -93,9 +93,9 @@
     "pricing": "Praghsanna"
   },
   "auth": {
-    "title": "Fáilte go Decyphr",
+    "title": "Fáilte go Misneach",
     "subtitle": "Foghlaim teangacha le AI atá deartha ag do luas agus do spéis",
-    "why_decyphr": "Cén Fáth a Roghnaigh Decyphr?",
+    "why_decyphr": "Cén Fáth a Roghnaigh Misneach?",
     "emailPlaceholder": "Cuir isteach do sheoladh ríomhphoist",
     "signIn": "Seol Nasc Draíochta",
     "sending": "Á sheoladh...",

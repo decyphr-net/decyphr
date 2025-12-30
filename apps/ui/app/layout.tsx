@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Decyphr - AI-Powered Language Learning',
+  title: 'Misneach - AI-Powered Language Learning',
   description: 'Master languages naturally with AI-powered learning that adapts to you',
 };
 

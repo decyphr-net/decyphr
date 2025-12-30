@@ -36,7 +36,7 @@
       }
     },
     "why_decyphr": {
-      "title": "Por Que Decyphr?",
+      "title": "Por Que Misneach?",
       "description": "Combinamos aprendizagem orientada por IA com ferramentas interativas para que você possa focar em compreender, praticar e reter a língua naturalmente.",
       "points": [
         "Aprenda de forma natural com exercícios de conversação baseados em IA",
@@ -68,7 +68,7 @@
     "testimonials": {
       "title": "O Que os Alunos Dizem",
       "student": {
-        "feedback": "\"Decyphr me ajudou a praticar irlandês de forma natural e agradável. Estou mais confiante a cada dia!\"",
+        "feedback": "\"Misneach me ajudou a praticar irlandês de forma natural e agradável. Estou mais confiante a cada dia!\"",
         "name": "- Saoirse, Estudante"
       },
       "traveller": {
@@ -76,7 +76,7 @@
         "name": "- Lucas, Viajante"
       },
       "professional": {
-        "feedback": "\"Adoro como o Decyphr monitora meus pontos fracos automaticamente. É como ter um tutor pessoal!\"",
+        "feedback": "\"Adoro como o Misneach monitora meus pontos fracos automaticamente. É como ter um tutor pessoal!\"",
         "name": "- Emily, Profissional"
       }
     },
@@ -93,9 +93,9 @@
     "pricing": "Preços"
   },
   "auth": {
-    "title": "Bem-vindo ao Decyphr",
+    "title": "Bem-vindo ao Misneach",
     "subtitle": "Aprendizagem de línguas com IA, adaptada ao seu ritmo e interesses",
-    "why_decyphr": "Por Que Escolher o Decyphr?",
+    "why_decyphr": "Por Que Escolher o Misneach?",
     "emailPlaceholder": "Insira seu endereço de e-mail",
     "signIn": "Enviar link mágico",
     "sending": "Enviando...",

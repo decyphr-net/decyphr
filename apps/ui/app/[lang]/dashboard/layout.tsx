@@ -21,7 +21,7 @@ export default async function DashboardLayout({
       <nav className="border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-red-700 bg-clip-text text-transparent">
-            <Link href={`/${lang}/dashboard`}>Decyphr Dashboard</Link>
+            <Link href={`/${lang}/dashboard`}>Misneach Dashboard</Link>
           </h1>
 
           <div className="hidden md:flex space-x-6">

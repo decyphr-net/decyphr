@@ -44,7 +44,7 @@
       }
     },
     "why_decyphr": {
-      "title": "Why Decyphr?",
+      "title": "Why Misneach?",
       "description": "We combine AI-driven learning with interactive tools so you can focus on understanding, practicing, and retaining language naturally.",
       "points": [
         "Learn naturally with conversation-based AI exercises",
@@ -80,7 +80,7 @@
     "testimonials": {
       "title": "What Learners Say",
       "student": {
-        "feedback": "\"Decyphr helped me practice Irish naturally. I can see my progress every day and feel more confident speaking.\"",
+        "feedback": "\"Misneach helped me practice Irish naturally. I can see my progress every day and feel more confident speaking.\"",
         "name": "- Saoirse, Student"
       },
       "traveller": {
@@ -88,7 +88,7 @@
         "name": "- Lucas, Traveller"
       },
       "professional": {
-        "feedback": "\"Tracking my weak spots automatically while choosing my own learning path is a game-changer. Decyphr feels like a personal tutor.\"",
+        "feedback": "\"Tracking my weak spots automatically while choosing my own learning path is a game-changer. Misneach feels like a personal tutor.\"",
         "name": "- Emily, Professional"
       }
     },
@@ -99,9 +99,9 @@
     }
   },
   "auth": {
-    "title": "Welcome to Decyphr",
+    "title": "Welcome to Misneach",
     "subtitle": "AI-powered language learning designed for your pace and interests",
-    "why_decyphr": "Why Choose Decyphr?",
+    "why_decyphr": "Why Choose Misneach?",
     "emailPlaceholder": "Enter your email address",
     "signIn": "Send Magic Link",
     "sending": "Sending...",
@@ -124,11 +124,11 @@
     ],
     "email": {
       "subject": "Your Magic Login Link",
-      "greeting": "Welcome to Decyphr!",
+      "greeting": "Welcome to Misneach!",
       "intro": "Click the button below to access your account securely.",
       "button": "Login Now",
       "note": "If you didn’t request this link, you can safely ignore this email.",
-      "footer": "© 2025 Decyphr. All rights reserved."
+      "footer": "© 2025 Misneach. All rights reserved."
     }
   },
   "dashboard": {

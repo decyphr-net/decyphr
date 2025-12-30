@@ -23,27 +23,27 @@ import { AuthenticatedRequest } from './types/request';
 const translations = {
   en: {
     subject: 'Your Magic Login Link',
-    greeting: 'Welcome to Decyphr!',
+    greeting: 'Welcome to Misneach!',
     intro: 'Click the button below to access your account securely.',
     button: 'Login Now',
     note: 'If you didn’t request this link, you can safely ignore this email.',
-    footer: '© 2025 Decyphr. All rights reserved.',
+    footer: '© 2025 Misneach. All rights reserved.',
   },
   ga: {
     subject: 'Do Nasc Draíochta Logála Isteach',
-    greeting: 'Fáilte go Decyphr!',
+    greeting: 'Fáilte go Misneach!',
     intro: 'Cliceáil an cnaipe thíos chun rochtain shlán a fháil ar do chuntas.',
     button: 'Logáil Isteach Anois',
     note: 'Mura ndearna tú iarratas ar an nasc seo, is féidir leat neamhaird a dhéanamh de.',
-    footer: '© 2025 Decyphr. Gach ceart ar cosaint.',
+    footer: '© 2025 Misneach. Gach ceart ar cosaint.',
   },
   pt: {
     subject: 'Seu Link Mágico de Login',
-    greeting: 'Bem-vindo ao Decyphr!',
+    greeting: 'Bem-vindo ao Misneach!',
     intro: 'Clique no botão abaixo para acessar sua conta com segurança.',
     button: 'Entrar Agora',
     note: 'Se você não solicitou este link, pode ignorar este e-mail com segurança.',
-    footer: '© 2025 Decyphr. Todos os direitos reservados.',
+    footer: '© 2025 Misneach. Todos os direitos reservados.',
   },
 };
 
