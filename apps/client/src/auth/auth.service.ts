@@ -11,8 +11,8 @@ import * as bcrypt from 'bcryptjs';
 import * as crypto from 'crypto';
 import { Response } from 'express';
 import { readFile } from 'fs/promises';
-import * as nodemailer from 'nodemailer';
 import { join } from 'path';
+import { Resend } from 'resend';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { MagicLink } from './entities/MagicLink';
@@ -49,6 +49,7 @@ const translations = {
 
 @Injectable()
 export class AuthService {
+  private resend;
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
@@ -57,7 +58,9 @@ export class AuthService {
     private readonly magicLinkRepo: Repository<MagicLink>,
 
     private readonly config: ConfigService,
-  ) { }
+  ) {
+    this.resend = new Resend(this.config.get<string>('RESEND_API_KEY'));
+  }
 
   async loadLoginPage(): Promise<string> {
     const loginPath = join(__dirname, '..', '..', 'public', 'pages', 'auth', 'login.html');
@@ -114,16 +117,6 @@ export class AuthService {
     const userLang = user.languageSettings?.[0]?.firstLanguage || 'en';
     const selectedTranslations = translations[userLang] || translations.en;
 
-    const transporter = nodemailer.createTransport({
-      host: this.config.get<string>('SMTP_HOST'),
-      port: this.config.get<number>('SMTP_PORT'),
-      secure: true,
-      auth: {
-        user: this.config.get<string>('SMTP_EMAIL'),
-        pass: this.config.get<string>('SMTP_PASSWORD'),
-      },
-    });
-
     const emailTemplatePath = join(__dirname, '..', '..', 'public', 'email', 'magic-link.html');
     let emailHtml = await readFile(emailTemplatePath, 'utf-8');
 
@@ -137,8 +130,8 @@ export class AuthService {
       .replace(/{{t\.footer}}/g, selectedTranslations.footer);
     console.log(emailHtml);
 
-    await transporter.sendMail({
-      from: this.config.get<string>('SMTP_EMAIL'),
+    await this.resend.emails.send({
+      from: this.config.get<string>('EMAIL_FROM'),
       to: email,
       subject: selectedTranslations.subject,
       html: emailHtml,
