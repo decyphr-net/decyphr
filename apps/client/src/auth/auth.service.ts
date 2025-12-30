@@ -112,7 +112,6 @@ export class AuthService {
 
     const appUrl = this.config.get<string>('APP_URL');
     const verifyUrl = `${appUrl}/auth/verify-request?token=${token}&email=${email}`;
-    console.log(verifyUrl);
 
     const userLang = user.languageSettings?.[0]?.firstLanguage || 'en';
     const selectedTranslations = translations[userLang] || translations.en;
@@ -128,7 +127,20 @@ export class AuthService {
       .replace(/{{t\.button}}/g, selectedTranslations.button)
       .replace(/{{t\.note}}/g, selectedTranslations.note)
       .replace(/{{t\.footer}}/g, selectedTranslations.footer);
-    console.log(emailHtml);
+
+    const deliveryMode = this.config.get<string>('EMAIL_DELIVERY', 'send');
+
+    if (deliveryMode === 'log') {
+      // Clear, grep-friendly logs
+      console.log('—— MAGIC LINK (EMAIL DELIVERY DISABLED) ——');
+      console.log('To:', email);
+      console.log('Verify URL:', verifyUrl);
+      console.log('———————————————');
+
+      return {
+        message: 'Magic link generated (email delivery disabled)',
+      };
+    }
 
     await this.resend.emails.send({
       from: this.config.get<string>('EMAIL_FROM'),
