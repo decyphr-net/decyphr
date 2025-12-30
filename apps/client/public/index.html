@@ -226,11 +226,39 @@
     document.addEventListener('alpine:init', () => {
       Alpine.store('i18n', {
         translations: {},
-        t(key) { return key.split('.').reduce((o, p) => o?.[p], this.translations) || key },
-        load(lang = localStorage.getItem('language') || 'en') {
-          fetch(`/i18n?lang=${lang}`).then(r => r.json()).then(d => this.translations = d);
+
+        languageNames: {
+          en: 'English',
+          ga: 'Gaeilge',
+          pt: 'Português'
+        },
+
+        languageFlags: {
+          en: '🇬🇧',
+          ga: '🇮🇪',
+          pt: '🇵🇹'
+        },
+
+        current: localStorage.getItem('language') || 'en',
+
+        t(key) {
+          return key.split('.').reduce((o, p) => o?.[p], this.translations) ?? key;
+        },
+
+        async load(lang = this.current) {
+          this.current = lang;
+          localStorage.setItem('language', lang);
+
+          const res = await fetch(`/i18n?lang=${lang}`);
+          this.translations = await res.json();
+        },
+
+        // ✅ THIS is what your switcher calls
+        saveLanguage(lang) {
+          this.load(lang);
         }
       });
+
       Alpine.store('i18n').load();
     });
 
