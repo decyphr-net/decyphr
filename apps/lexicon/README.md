@@ -1,99 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Lexicon (apps/lexicon)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS application in the decyphr monorepo that implements the lexicon domain. This service composes domain modules (bank, interaction, statement, translation) and uses TypeORM to persist domain entities to a MariaDB database.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This README is based on the repository files (notably src/app.module.ts and the src/* subdirectories) and contains only details that appear in the codebase.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## What this app is
 
-## Project setup
+- A NestJS application (TypeScript).
+- Uses @nestjs/config's ConfigModule.forRoot() to load environment configuration.
+- Uses TypeORM configured for MariaDB (see src/app.module.ts).
+- The application imports the following domain modules:
+  - TranslationModule
+  - BankModule
+  - StatementModule
+  - InteractionModule
+- The TypeORM entity classes referenced in app.module.ts are:
+  - Interaction
+  - Statement
+  - Word
+  - User
+  - UserWordStatistics
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+## How it interacts with the outside world
 
-```bash
-# development
-$ npm run start
+- Database
+  - The application connects to a MariaDB database via TypeORM.
+  - Connection settings are read from environment variables (see Configuration below).
+  - Entities listed above are registered with TypeORM and will be synchronized at startup (the code sets `synchronize: true` in the TypeORM config).
+- Application bootstrap
+  - The NestJS bootstrap code is in `src/main.ts`. That file controls how the application is started (HTTP server, ports, global pipes/middleware — check the file for details).
+- Modules
+  - Domain logic is organized into modules located under `src/` (for example: `src/bank`, `src/interaction`, `src/statement`, `src/translation`). Inspect each module for controllers, services, and entities to determine the exact API surface and business logic.
+- Containerization
+  - There is a Dockerfile at `apps/lexicon/Dockerfile` for building a container image of the application.
 
-# watch mode
-$ npm run start:dev
+Notes: The repository files used to prepare this README show only the module wiring and TypeORM configuration; they do not include explicit references to any auth, cache, health endpoints, or other runtime integrations in `app.module.ts`. If you need documentation of HTTP endpoints, guards, or other runtime behaviors, check the controller/service files inside each module directory.
 
-# production mode
-$ npm run start:prod
-```
+---
 
-## Run tests
+## Configuration (environment variables)
 
-```bash
-# unit tests
-$ npm run test
+From `src/app.module.ts` (TypeORM configuration) the application expects the following environment variables for database connectivity:
 
-# e2e tests
-$ npm run test:e2e
+- MARIA_DB_HOST
+- MARIA_DB_PORT
+- MARIA_DB_USERNAME
+- MARIA_DB_PASSWORD
+- MARIA_DB_DATABASE
 
-# test coverage
-$ npm run test:cov
-```
+Because ConfigModule.forRoot() is used, other environment-driven configuration may be present in other modules; search the `src/` tree for additional configuration usage.
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Quickstart (local)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1. Install dependencies (run from repo root or from apps/lexicon as your workflow requires):
+   - npm install
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+2. Inspect package.json in `apps/lexicon/package.json` for available scripts and use them (e.g., development or production start scripts). The exact script names live in that file.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+3. Provide the required environment variables (at minimum the MARIA_DB_* variables) and run the app using the repository's preferred script.
 
-## Resources
+4. To build a Docker image (example):
+   - docker build -t decyphr-lexicon:latest -f apps/lexicon/Dockerfile .
 
-Check out a few resources that may come in handy when working with NestJS:
+   Then run, supplying environment variables:
+   - docker run --rm -e MARIA_DB_HOST=... -e MARIA_DB_PORT=... -e MARIA_DB_USERNAME=... -e MARIA_DB_PASSWORD=... -e MARIA_DB_DATABASE=... decyphr-lexicon:latest
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## Project layout (as present in repo)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Key files and directories (found in the repository):
 
-## Stay in touch
+- apps/lexicon/
+  - Dockerfile
+  - package.json
+  - tsconfig.json
+  - tsconfig.build.json
+  - nest-cli.json
+  - src/
+    - app.module.ts
+    - main.ts
+    - bank/            (bank domain module and entities)
+    - interaction/     (interaction domain module and entities)
+    - statement/       (statement domain module and entities)
+    - translation/     (translation domain module)
+  - test/             (tests directory present in repo)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Inspect each module directory for controllers, services, DTOs, entities, and tests to get the complete implementation.
 
-## License
+---
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Tests & linting
+
+- The repository contains test and TypeScript configuration files. See `apps/lexicon/package.json` for the exact test and lint scripts (names and behavior are defined there).
+
+---
+
+## Troubleshooting pointers
+
+- If the application fails to connect to the database:
+  - Verify MARIA_DB_* environment variables.
+  - Ensure the MariaDB server is reachable from where the app is running.
+- If entities are not persisted as expected:
+  - Check that the entity classes are exported and included in the `entities` array in the TypeORM configuration (app.module.ts lists the entities currently in use).
+- For runtime behavior (endpoints, request/response shapes), consult the controller files inside each domain module.
+
+---
+
+## Where to look in the code for more detail
+
+- Bootstrap and global configuration: `src/main.ts`
+- Module wiring and TypeORM config: `src/app.module.ts`
+- Domain implementation:
+  - `src/bank`
+  - `src/interaction`
+  - `src/statement`
+  - `src/translation`
+- Dockerfile: `apps/lexicon/Dockerfile`
+- Scripts & dependencies: `apps/lexicon/package.json`
+- TypeScript config: `apps/lexicon/tsconfig.json`, `apps/lexicon/tsconfig.build.json`

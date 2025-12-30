@@ -1,58 +1,14 @@
 import { z } from 'zod';
 
 /**
- * Schema defining the structure of a word breakdown.
- *
- * This schema represents the details of an individual word's translation,
- * including its alternatives, part of speech, lemma, correctness, and level.
- */
-const WordBreakdownSchema = z.object({
-  /** The original word before translation. */
-  originalWord: z.string(),
-
-  /** The translated word in the target language. */
-  translatedWord: z.string(),
-
-  /** Alternative translations for the word. */
-  alternatives: z.array(z.string()),
-
-  /** The part-of-speech (POS) tag of the word (e.g., noun, verb). */
-  pos_tag: z.string(),
-
-  /** The base or root form of the word. */
-  lemma: z.string(),
-
-  /** A numerical value indicating the correctness of the translation (e.g., 0-1 scale). */
-  correctness: z.number(),
-
-  /** The proficiency level associated with the word (e.g., A1, B2). */
-  level: z.string(),
-
-  /** The corrected word if applicable (e.g., after grammar correction). */
-  correctedWord: z.string(),
-});
-
-/**
  * Schema defining the structure of a translation output.
  *
  * This schema represents the full response of a translation operation,
- * including the detected language, translated text, alternatives, and word breakdown.
+ * including the detected language and translated text.
  */
 export const TranslationOutputSchema = z.object({
-  /** The detected source language of the input text. */
-  detectedLanguage: z.string(),
-
   /** The translated text in the target language. */
-  translatedText: z.string(),
-
-  /** Alternative translations for the entire sentence or phrase. */
-  alternatives: z.array(z.string()),
-
-  /** A detailed breakdown of individual words and their translations. */
-  breakdown: z.array(WordBreakdownSchema),
-
-  /** The grammatical tense of the translated text (e.g., past, present). */
-  tense: z.string(),
+  translated: z.string(),
 });
 
 /**

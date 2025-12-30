@@ -1,226 +1,872 @@
 <!DOCTYPE html>
 <html lang="en" hx-boost="true">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Decyphr</title>
-    <script src="https://unpkg.com/htmx.org"></script>
-    <script src="/scripts/auth/first-login.js" defer></script>
-    <script src="/scripts/dashboard/chat.js" defer></script>
-    <script src="/scripts/dashboard/translations.js" defer></script>
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/franken-ui@2.0.0/dist/css/core.min.css"
-    />
-    <style>[x-cloak] { display: none !important; }</style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decyphr</title>
+  <script src="https://unpkg.com/htmx.org"></script>
+  <script src="/scripts/auth/first-login.js" defer></script>
+  <script src="/scripts/dashboard/chat.js" defer></script>
+  <script src="/scripts/dashboard/translations.js" defer></script>
+  <script src="/scripts/dashboard/lexicon.js" defer></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 
-    <style>
-      @keyframes fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/franken-ui@2.0.0/dist/css/core.min.css" />
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
       }
 
-      @keyframes slide-in {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
       }
 
-      @keyframes zoom-in {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoom-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
       }
 
-      .animate-fade-in {
-        animation: fade-in 1s ease-in-out forwards;
+      to {
+        opacity: 1;
+        transform: scale(1);
       }
+    }
 
-      .animate-slide-in {
-        animation: slide-in 1s ease-out forwards;
-      }
+    .animate-fade-in {
+      animation: fade-in 1s ease-in-out forwards;
+    }
 
-      .animate-fade-in-delay {
-        animation: fade-in 1s ease-in-out 0.5s forwards;
-      }
+    .animate-slide-in {
+      animation: slide-in 1s ease-out forwards;
+    }
 
-      .animate-zoom-in {
-        animation: zoom-in 0.6s ease-out forwards;
-      }
+    .animate-fade-in-delay {
+      animation: fade-in 1s ease-in-out 0.5s forwards;
+    }
 
-      .delay-0   { animation-delay: 0s; }
-      .delay-100 { animation-delay: 0.1s; }
-      .delay-200 { animation-delay: 0.2s; }
-      .delay-300 { animation-delay: 0.3s; }
-    </style>
-  </head>
-  <body x-data>
-    <!-- Shared Navigation -->
-    <nav class="border-b bg-white">
-      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center space-x-8">
-          <a href="/" class="text-2xl font-bold bg-blue-500 bg-clip-text text-transparent">
-            Decyphr
-          </a>
-          <div class="hidden md:flex space-x-6">
+    .animate-zoom-in {
+      animation: zoom-in 0.6s ease-out forwards;
+    }
+
+    .delay-0 {
+      animation-delay: 0s;
+    }
+
+    .delay-100 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-200 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-300 {
+      animation-delay: 0.3s;
+    }
+
+    aside {
+      overflow: visible;
+    }
+  </style>
+</head>
+
+<body x-data>
+  <!-- Shared Navigation -->
+  <div class="flex min-h-screen" x-data="dashboardSidebar()" x-init="init()" @keydown.window.ctrl.b.prevent="toggle()">
+
+    <!-- SIDEBAR -->
+    <aside @mouseenter="if (!sidebarOpen && isDesktop()) hoverExpanded = true"
+      @mouseleave="if (!sidebarOpen && isDesktop()) hoverExpanded = false" :class="isExpanded ? 'w-64' : 'w-16'" class="relative h-screen sticky top-0 flex flex-col
+             bg-gradient-to-b from-teal-500 via-blue-500 to-indigo-600
+             text-white shadow-xl rounded-r-2xl
+             transition-[width] duration-200 ease-out overflow-visible">
+      <!-- Header -->
+      <div class="flex items-center justify-between p-4 border-b border-white/20">
+        <span class="font-bold text-lg tracking-wide transition-opacity"
+          :class="isExpanded ? 'opacity-100' : 'opacity-0 overflow-hidden'">
+          Dashboard
+        </span>
+        <button @click="toggle()" class="p-1 rounded hover:bg-white/10 transition">
+          <svg :class="sidebarOpen ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-1 overflow-y-auto mt-2 px-2 space-y-4">
+        <template x-for="section in navSections" :key="section.title">
+
+          <!-- SECTION -->
+          <div class="space-y-1">
+
+            <!-- SECTION LABEL (only when expanded) -->
+            <div x-show="isExpanded" x-transition.opacity.duration.150ms
+              class="px-3 pt-2 text-[11px] font-semibold uppercase tracking-wide text-white/60" x-text="section.title">
+            </div>
+
+            <!-- ITEMS -->
+            <template x-for="item in section.items" :key="section.title + ':' + item.id">
+              <a :href="item.href" class="relative group flex items-center gap-3 p-3 rounded-lg
+                        transition-all duration-200
+                        hover:bg-white/15
+                        hover:scale-[1.03]" :class="[
+                    isActive(item) ? 'bg-white/25 font-semibold shadow' : '',
+                    isExpanded ? 'justify-start' : 'justify-center'
+                  ]">
+                <!-- ICON -->
+                <i :data-lucide="item.icon" class="w-5 h-5 text-white/90 group-hover:text-white transition"></i>
+
+                <!-- LABEL (expanded only) -->
+                <span x-show="isExpanded" x-transition.opacity.duration.150ms class="whitespace-nowrap"
+                  x-text="item.label"></span>
+
+                <!-- TOOLTIP (collapsed only) -->
+                <div x-show="!isExpanded" x-cloak class="pointer-events-none absolute left-full ml-3
+                           rounded-md bg-gray-900 text-white text-xs
+                           px-3 py-1 opacity-0 scale-95
+                           group-hover:opacity-100 group-hover:scale-100
+                           transition z-50" x-text="item.label"></div>
+              </a>
+            </template>
+          </div>
+        </template>
+      </nav>
+
+      <!-- <div class="px-3 py-4 border-t border-white/20">
+        <button @click="practiceFlyoutOpen = true" class="flex w-full items-center gap-2 px-3 py-2 rounded-lg
+                       bg-white/10 hover:bg-white/15 transition
+                       justify-between" :class="isExpanded ? 'justify-start' : 'justify-center'">
+          <i data-lucide="play-circle" class="w-5 h-5 text-white"></i>
+
+          <span x-show="isExpanded" x-transition.opacity.duration.200ms
+            x-text="$store.i18n.t('dashboard.practiceSession')" class="text-white font-medium">
+            Practice Session
+          </span>
+
+          <svg :class="practiceFlyoutOpen ? 'rotate-90' : ''" class="w-4 h-4 text-white transition-transform"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div> -->
+
+
+      <!-- User Email -->
+      <div x-show="$store.auth?.user?.user" class="px-3 py-4 border-t border-white/20">
+        <div class="flex items-center gap-3 rounded-lg px-3 py-2 bg-white/10 hover:bg-white/15 transition"
+          :class="isExpanded ? 'justify-start' : 'justify-center'">
+          <div class="flex items-center justify-center w-8 h-8 rounded-full bg-white/20">
+            <i data-lucide="user" class="w-4 h-4 text-white"></i>
+          </div>
+          <div x-show="isExpanded" x-transition.opacity.duration.200ms class="min-w-0">
+            <p class="text-xs font-medium text-white/80 truncate" x-text="$store.auth.user.user.email"></p>
           </div>
         </div>
-        <div class="flex items-center space-x-2">
-          <div hx-get="/components/locale-switcher.html" hx-trigger="load" hx-swap="outerHTML"></div>
-        </div>
       </div>
-    </nav>
 
-    <!-- Main Content Swap Zone -->
-    <main id="content" hx-get="{{PARTIAL_ROUTE}}" hx-trigger="load" hx-swap="innerHTML">
-      Loading…
-    </main>
-
-    <footer class="bg-gray-800 text-gray-300 py-10">
-      <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
-        <div>
-          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.about.title')"></h3>
-          <p x-text="$store.i18n.t('footer.about.description')"></p>
-        </div>
-        <div>
-          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.links.title')"></h3>
-          <ul class="space-y-2">
-            <li><a href="/auth/login" class="hover:text-white" x-text="$store.i18n.t('footer.links.login')"></a></li>
-            <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.privacy')"></a></li>
-            <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.terms')"></a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.contact.title')"></h3>
-          <p>Email: support@decyphr.com</p>
-          <p>Twitter: @decyphrapp</p>
-        </div>
+      <!-- Language Switcher Trigger -->
+      <div class="px-3 py-4 border-t border-white/20">
+        <button @click="languageFlyoutOpen = !languageFlyoutOpen"
+          class="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 transition"
+          :class="isExpanded ? 'justify-start' : 'justify-center'" x-ref="languageButton">
+          <i data-lucide="globe" class="w-4 h-4 text-white"></i>
+          <span x-show="isExpanded" x-transition.opacity.duration.200ms>Language</span>
+        </button>
       </div>
-      <div class="mt-8 text-center text-gray-500 text-sm">
-        © 2025 Decyphr. All rights reserved.
+
+      <!-- Sidebar bottom gradient -->
+      <div
+        class="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-indigo-700/60 to-transparent">
       </div>
-    </footer>
+      <div x-show="$store.auth.isLoggedIn" class="px-3 py-4 border-t border-white/20">
+        <button @click="logout()"
+          class="flex items-center gap-2 w-full px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 transition"
+          :class="isExpanded ? 'justify-start' : 'justify-center'">
+          <i data-lucide="log-out" class="w-4 h-4 text-white"></i>
+          <span x-show="isExpanded" x-transition.opacity.duration.200ms>Log out</span>
+        </button>
+      </div>
+    </aside>
+    <div x-show="languageFlyoutOpen" x-cloak @click.outside="languageFlyoutOpen = false"
+      class="absolute bg-white rounded-lg shadow-lg overflow-auto max-h-[80vh] z-50" x-ref="languageFlyout"
+      style="min-width: 12rem;" x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-95">
+      <template x-for="(name, code) in $store.i18n.languageNames" :key="code">
+        <button @click="$store.i18n.saveLanguage(code); languageFlyoutOpen=false"
+          class="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2">
+          <span x-text="$store.i18n.languageFlags[code]"></span>
+          <span x-text="name"></span>
+        </button>
+      </template>
+    </div>
 
-    <!-- i18n setup -->
-    <script>
-      document.addEventListener('alpine:init', () => {
-        Alpine.store('i18n', {
-          translations: {},
-          t(key) {
-            return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key;
-          }
-        });
+    <div x-cloak x-show="practiceFlyoutOpen" @click.outside="practiceFlyoutOpen = false" class="fixed inset-y-0 right-0 w-80 max-w-sm bg-white shadow-lg
+               border-l border-gray-200 z-50
+               transform transition-transform duration-300
+               translate-x-full" :class="practiceFlyoutOpen ? 'translate-x-0' : ''">
 
-        fetch(`/i18n?lang=${localStorage.getItem('language') || 'en'}`)
-          .then(res => res.json())
-          .then(data => {
-            Alpine.store('i18n').translations = data;
-          });
-      });
-    </script>
+      <div class="flex flex-col h-full">
 
-    <!-- Re-init Alpine after HTMX swaps -->
-    <script>
-      document.body.addEventListener('htmx:afterSwap', (e) => {
-        if (window.Alpine && Alpine.initTree) {
-          Alpine.initTree(e.target);
+        <!-- Header -->
+        <div class="p-5 border-b border-gray-200 bg-gradient-to-r from-teal-500 to-blue-600 text-white">
+          <h2 class="text-lg font-semibold tracking-tight flex items-center gap-2">
+            <i data-lucide="play-circle" class="w-5 h-5"></i>
+            Practice Session
+          </h2>
+          <p class="text-sm text-white/80 mt-1">
+            Focused, adaptive language practice
+          </p>
+        </div>
+
+        <!-- Body -->
+        <div class="flex-1 overflow-y-auto p-5 space-y-6 bg-gray-50">
+
+          <!-- Session Type -->
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Session Type
+            </label>
+
+            <div class="grid grid-cols-2 gap-3 mt-2">
+              <button
+                class="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
+                <i data-lucide="message-circle" class="w-6 h-6 text-blue-600"></i>
+                <span class="text-sm font-medium text-gray-800">Conversation</span>
+              </button>
+
+              <button
+                class="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
+                <i data-lucide="edit-3" class="w-6 h-6 text-blue-600"></i>
+                <span class="text-sm font-medium text-gray-800">Corrections</span>
+              </button>
+
+              <button
+                class="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
+                <i data-lucide="repeat" class="w-6 h-6 text-blue-600"></i>
+                <span class="text-sm font-medium text-gray-800">Verbs</span>
+              </button>
+
+              <button
+                class="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
+                <i data-lucide="languages" class="w-6 h-6 text-blue-600"></i>
+                <span class="text-sm font-medium text-gray-800">Mixed</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Duration -->
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Duration
+            </label>
+
+            <select class="mt-2 w-full rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
+              <option>5 minutes</option>
+              <option>10 minutes</option>
+              <option>12 minutes</option>
+              <option>20 minutes</option>
+            </select>
+          </div>
+
+          <!-- Intensity -->
+          <div>
+            <label class="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Intensity
+            </label>
+
+            <div class="flex gap-2 mt-2">
+              <button
+                class="flex-1 px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium hover:bg-gray-100 transition">
+                Easy
+              </button>
+              <button
+                class="flex-1 px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium hover:bg-gray-100 transition">
+                Normal
+              </button>
+              <button
+                class="flex-1 px-3 py-2 rounded-lg bg-white border border-gray-200 text-sm font-medium hover:bg-gray-100 transition">
+                Hard
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-5 border-t border-gray-200 bg-white">
+          <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+             text-white font-semibold
+             bg-gradient-to-r from-teal-500 to-blue-600
+             hover:from-teal-600 hover:to-blue-700
+             hover:scale-[1.02] transition-all">
+            <i data-lucide="play" class="w-5 h-5"></i>
+            Start Session
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="flex flex-col flex-1 min-h-screen">
+      <main id="content" hx-get="{{PARTIAL_ROUTE}}" hx-trigger="load" hx-swap="innerHTML" class="flex-1 min-w-0">
+        Loading…
+      </main>
+    </div>
+
+  </div>
+
+  <footer class="bg-gray-800 text-gray-300 py-10 mt-8">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.about.title')"></h3>
+        <p x-text="$store.i18n.t('footer.about.description')"></p>
+      </div>
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.links.title')"></h3>
+        <ul class="space-y-2">
+          <li><a href="/auth/login" class="hover:text-white" x-text="$store.i18n.t('footer.links.login')"></a></li>
+          <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.privacy')"></a></li>
+          <li><a href="#" class="hover:text-white" x-text="$store.i18n.t('footer.links.terms')"></a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white text-xl font-semibold mb-4" x-text="$store.i18n.t('footer.contact.title')"></h3>
+        <p>Email: support@decyphr.com</p>
+        <p>Twitter: @decyphrapp</p>
+      </div>
+    </div>
+    <div class="mt-8 text-center text-gray-500 text-sm">
+      © 2025 Decyphr. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- Scripts (unchanged) -->
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('i18n', {
+        translations: {},
+        languageNames: { en: "English", ga: "Gaeilge", pt: "Português" },
+        languageFlags: { en: "🇬🇧", ga: "🇮🇪", pt: "🇵🇹" },
+        t(key) { return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key; },
+        saveLanguage(lang) { localStorage.setItem('language', lang); this.loadTranslations(lang); location.reload(); },
+        loadTranslations(lang = localStorage.getItem('language') || 'en') {
+          fetch(`/i18n?lang=${lang}`).then(res => res.json()).then(data => { this.translations = data; });
         }
       });
-    </script>
+      Alpine.store('i18n').loadTranslations();
+    });
 
-    <script>
-      document.addEventListener('alpine:init', () => {
-        // Create the i18n store
-        Alpine.store('i18n', {
-          translations: {},
-          languageNames: {
-            en: "English",
-            ga: "Gaeilge",
-            pt: "Português",
-          },
-          languageFlags: {
-            en: "🇬🇧",
-            ga: "🇮🇪",
-            pt: "🇵🇹",
-          },
-          t(key) {
-            return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key;
-          },
-          saveLanguage(lang) {
-            localStorage.setItem('language', lang);
-            this.loadTranslations(lang);
-            location.reload();
-          },
-          loadTranslations(lang = localStorage.getItem('language') || 'en') {
-            fetch(`/i18n?lang=${lang}`)
-              .then(res => res.json())
-              .then(data => {
-                this.translations = data;
-              });
-          }
+    document.body.addEventListener('htmx:afterSwap', e => {
+      if (window.Alpine?.initTree) Alpine.initTree(e.target);
+      if (window.lucide) {
+        lucide.createIcons(e.target); // Only initialize icons in the swapped content
+      }
+    });
+
+    document.body.addEventListener('htmx:historyRestore', e => {
+      if (window.lucide) {
+        e.target.querySelectorAll('[data-lucide]').forEach(el => {
+          el.dataset.lucideInit = 'true'; // mark as initialized
         });
+        lucide.createIcons({ observe: false });
+      }
+    });
 
-        // Load initial language
-        Alpine.store('i18n').loadTranslations();
-      });
+    document.body.addEventListener('htmx:historyRestore', e => {
+      const sidebar = Alpine.store('sidebar');
+      if (sidebar) {
+        sidebar.hoverExpanded = false;
+      }
+    });
 
-      // Reinit Alpine for all HTMX-injected content
-      document.body.addEventListener('htmx:afterSwap', (e) => {
-        if (window.Alpine && Alpine.initTree) {
-          Alpine.initTree(e.target);
+
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('authForm', () => ({
+        email: '', loading: false, message: '',
+        init() { const params = new URLSearchParams(window.location.search); const prefill = params.get('email'); if (prefill) this.email = prefill; },
+        async submit() {
+          this.loading = true; this.message = '';
+          try {
+            const res = await fetch('/auth/magic-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: this.email }) });
+            const data = await res.json(); this.loading = false;
+            if (res.ok) this.message = Alpine.store('i18n')?.t('auth.sent') || 'Magic link sent!';
+            else this.message = data.error || Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+          } catch (err) { console.error('Magic link error:', err); this.loading = false; this.message = Alpine.store('i18n')?.t('auth.error') || 'Something went wrong'; }
         }
+      }));
+    });
+
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('auth', {
+        user: null,
+        async init() { try { const res = await fetch('/auth/me', { credentials: 'include' }); if (res.ok) this.user = await res.json(); } catch (err) { console.warn('User not logged in or /api/me failed', err); } },
+        get isLoggedIn() { return !!this.user; }
       });
-    </script>
-    <script>
-      document.addEventListener('alpine:init', () => {
-        Alpine.data('authForm', () => ({
-          email: '',
-          loading: false,
-          message: '',
+      Alpine.store('auth').init();
+    });
 
-          init() {
-            const params = new URLSearchParams(window.location.search);
-            const prefill = params.get('email');
-            if (prefill) this.email = prefill;
+    function dashboardSidebar() {
+      return {
+        // ---- persistent state (user intent) ----
+        sidebarOpen: localStorage.getItem('sidebarOpen') === 'true',
+
+        // ---- transient UI state ----
+        hoverExpanded: false,
+
+        languageFlyoutOpen: false,
+        practiceFlyoutOpen: false,
+
+        // ---- derived visual state (THIS drives the UI) ----
+        get isExpanded() {
+          return this.sidebarOpen || this.hoverExpanded;
+        },
+
+        isDesktop() {
+          return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        },
+
+        toggle() {
+          this.sidebarOpen = !this.sidebarOpen;
+          localStorage.setItem('sidebarOpen', this.sidebarOpen);
+        },
+
+        positionLanguageFlyout() {
+          const flyout = this.$refs.languageFlyout;
+          const button = this.$refs.languageButton;
+          if (!flyout || !button) return;
+
+          const rect = button.getBoundingClientRect();
+
+          /* ---------- Horizontal placement (unchanged) ---------- */
+          const left = this.sidebarOpen
+            ? rect.right + 4   // 4 px gap from the sidebar edge
+            : rect.left + 4;   // 4 px gap from the button when collapsed
+
+          /* ---------- Vertical placement ----------
+             Align the * top * of the fly‑out with the * bottom * of the button.
+             No extra gap – they touch each other.*/
+          let top = rect.bottom + window.scrollY;   // <-- key line
+
+          const flyoutHeight = flyout.offsetHeight || 300; // fallback
+          const viewportHeight = window.innerHeight;
+          const viewportTop = window.scrollY;
+          const viewportBottom = viewportTop + viewportHeight;
+
+          // If the fly‑out would overflow the bottom of the viewport, flip it upward
+          if (top + flyoutHeight > viewportBottom) {
+            // Position it *above* the button, keeping the same alignment (top ↔ bottom)
+            top = rect.top + window.scrollY - flyoutHeight;
+          }
+
+          // Clamp to the top of the viewport just in case
+          if (top < viewportTop) {
+            top = viewportTop;
+          }
+
+          // Apply the coordinates
+          flyout.style.top = `1225px`;
+          flyout.style.left = `${left}px`;
+        },
+
+        navSections: [
+          {
+            title: 'Speaking & Writing',
+            items: [
+              { id: 'chat', label: 'Chat', href: '/chat', icon: 'bot' },
+              /**{ id: 'scenario-reviser', label: 'Scenario Reviser', href: '/scenario-reviser', icon: 'layers' },
+              { id: 'mistake-corrector', label: 'Mistake Corrector', href: '/mistake-corrector', icon: 'edit-3' },*/
+            ],
           },
+          {
+            title: 'Vocabulary',
+            items: [
+              { id: 'lexicon', label: 'Lexicon', href: '/lexicon', icon: 'list' },
+              /**{ id: 'vault', label: 'Vault', href: '/vault', icon: 'archive' },
+              { id: 'verb-practicer', label: 'Verb Practicer', href: '/', icon: 'repeat' },*/
+            ],
+          },
+          /**{
+            title: 'Reading & Listening',
+            items: [
+              { id: 'storytime', label: 'Storytime', href: '/', icon: 'book' },
+              { id: 'book-tracker', label: 'Book Tracker', href: '/', icon: 'bookmark' },
+            ],
+          },*/
+          {
+            title: 'Tools',
+            items: [
+              { id: 'tools-translation', label: 'Translation Tool', href: '/translations', icon: 'languages' },
+            ],
+          },
+        ],
 
-          async submit() {
-            this.loading = true;
-            this.message = '';
+        isActive(item) {
+          const current = window.location.pathname.replace(/\/+$/, '');
+          const href = item.href.replace(/\/+$/, '');
+          return current === href;;
+        },
 
-            try {
-              const res = await fetch('/auth/magic-link', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  email: this.email,
-                }),
-              });
+        async logout() {
+          await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+          Alpine.store('auth').user = null;
+          window.location.href = '/auth/login';
+        },
+      };
+    }
 
-              const data = await res.json();
-              this.loading = false;
+    /** function dashboardSidebar() {
+      return {
+        sidebarOpen: false,
+        languageFlyoutOpen: false,
+        activeSection: '',
+        practiceFlyoutOpen: false,
+        sidebarOpen: localStorage.getItem('sidebarOpen') === 'true',
+        hoverExpanded: false,
+        navSections: [
+          {
+            title: 'Speaking & Writing',
+            items: [
+              { id: 'chat', label: 'Chat', href: '/chat', icon: 'bot' },
+              { id: 'scenario-reviser', label: 'Scenario Reviser', href: '/scenario-reviser', icon: 'layers' },
+              { id: 'mistake-corrector', label: 'Mistake Corrector', href: '/mistake-corrector', icon: 'edit-3' },
+            ],
+          },
+          {
+            title: 'Vocabulary',
+            items: [
+              { id: 'lexicon', label: 'Lexicon', href: '/lexicon', icon: 'list' },
+              { id: 'vault', label: 'Vault', href: '/vault', icon: 'archive' },
+              { id: 'verb-practicer', label: 'Verb Practicer', href: '/vault', icon: 'repeat' },
+            ],
+          },
+          {
+            title: 'Reading & Listening',
+            items: [
+              { id: 'storytime', label: 'Storytime', href: '/vault', icon: 'book' },
+              { id: 'book-tracker', label: 'Book Tracker', href: '/vault', icon: 'bookmark' },
+            ],
+          },
+          {
+            title: 'Tools',
+            items: [
+              { id: 'tools-translation', label: 'Translation Tool', href: '/vault', icon: 'languages' },
+            ],
+          },
+        ],
+        async logout() {
+          try {
+            const resp = await fetch('/auth/logout', {
+              method: 'POST',
+              credentials: 'include', // send cookies
+              headers: {
+                'Accept': 'application/json',
+              },
+            });
 
-              if (res.ok) {
-                this.message = Alpine.store('i18n')?.t('auth.sent') || 'Magic link sent!';
-              } else {
-                this.message = data.error || Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
-              }
-            } catch (err) {
-              console.error('Magic link error:', err);
-              this.loading = false;
-              this.message = Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+            if (!resp.ok) {
+              const err = await resp.json();
+              console.error('Logout failed:', err);
+              return;
             }
-          }
-        }));
-      });
 
-      // Re-init Alpine after HTMX swaps
-      document.body.addEventListener('htmx:afterSwap', (e) => {
-        if (window.Alpine && Alpine.initTree) Alpine.initTree(e.target);
+            // Clear Alpine auth store (so UI updates instantly)
+            Alpine.store('auth').user = null;
+
+            // Optional: redirect to the login screen
+            window.location.href = '/auth/login';
+          } catch (e) {
+            console.error('Network error during logout:', e);
+          }
+        },
+        scrollToSection(id) {
+          this.activeSection = id;
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        },
+        init() {
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if (entry.isIntersecting) this.activeSection = entry.target.id; });
+          }, { threshold: 0.6 });
+
+          this.navItems.forEach(item => {
+            const el = document.getElementById(item.id);
+            if (el) observer.observe(el);
+          });
+
+          this.$watch('languageFlyoutOpen', open => { if (open) this.positionLanguageFlyout(); });
+          window.addEventListener('resize', () => { if (this.languageFlyoutOpen) this.positionLanguageFlyout(); });
+        },
+        positionLanguageFlyout() {
+          const flyout = this.$refs.languageFlyout;
+          const button = this.$refs.languageButton;
+          if (!flyout || !button) return;
+
+          const rect = button.getBoundingClientRect();
+
+          /* ---------- Horizontal placement (unchanged) ----------
+          const left = this.sidebarOpen
+            ? rect.right + 4   // 4 px gap from the sidebar edge
+            : rect.left + 4;   // 4 px gap from the button when collapsed
+
+          /* ---------- Vertical placement ----------
+             Align the *top* of the fly‑out with the *bottom* of the button.
+             No extra gap – they touch each other.
+          let top = rect.bottom + window.scrollY;   // <-- key line
+
+          const flyoutHeight = flyout.offsetHeight || 300; // fallback
+          const viewportHeight = window.innerHeight;
+          const viewportTop = window.scrollY;
+          const viewportBottom = viewportTop + viewportHeight;
+
+          // If the fly‑out would overflow the bottom of the viewport, flip it upward
+          if (top + flyoutHeight > viewportBottom) {
+            // Position it *above* the button, keeping the same alignment (top ↔ bottom)
+            top = rect.top + window.scrollY - flyoutHeight;
+          }
+
+          // Clamp to the top of the viewport just in case
+          if (top < viewportTop) {
+            top = viewportTop;
+          }
+
+          // Apply the coordinates
+          flyout.style.top = `1225px`;
+          flyout.style.left = `${left}px`;
+        },
+        isActive(item) {
+          const current = window.location.pathname;
+          return current === item.href || current.startsWith(item.href + '/');
+        },
+        isDesktop() {
+          return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        },
+
+        get isExpanded() {
+          return this.sidebarOpen || this.hoverExpanded;
+        },
+        togglePause() {
+          const chat = this.activeChat;
+          if (!chat?.practiceMeta) return;
+          chat.practiceMeta.paused = !chat.practiceMeta.paused;
+          // If you have a timer function elsewhere, start/stop it here
+          if (chat.practiceMeta.paused) this.stopPracticeTimer();
+          else this.startPracticeTimer();
+        },
+
+        /** Advance to the next step (user clicked “Next”)
+        advancePracticeStep() {
+          const chat = this.activeChat;
+          if (!chat?.practiceMeta) return;
+          this.stopPracticeTimer();   // stop current timer
+
+          // Tell the back‑end we want the next step
+          socket.emit('practice-next', {
+            sessionId: chat.practiceMeta.sessionId,
+            currentIdx: chat.practiceMeta.currentIdx
+          });
+          // UI will be updated when the socket returns the new step (see socket listener)
+        },
+
+      };
+    } */
+  </script>
+  <script>
+    Alpine.store('practice', {
+      // -------------------  State -------------------
+      timerRunning: false,
+      elapsedSec: 0,
+      paused: false,
+      canAdvance: true,          // you can tighten this later
+
+      // Private timer ID (not exposed)
+      _timerId: null,
+
+      // -------------------  Public API -------------------
+      /**
+       * Start a practice session.
+       * `info` should contain:
+       *   {
+       *     steps:          ['chat','translate','quiz'],
+       *     currentIdx:     0,
+       *     maxSecondsPerStep: 45   // optional, omit for untimed steps
+       *   }
+       */
+      start(info) {
+        this.timerRunning = !!info.maxSecondsPerStep;
+        this.elapsedSec = 0;
+        this.paused = false;
+        this.canAdvance = true;
+        // Store the meta data we need for UI (steps, currentIdx, timer)
+        this.steps = info.steps || [];
+        this.currentIdx = info.currentIdx || 0;
+        this.maxSecondsPerStep = info.maxSecondsPerStep || null;
+        this._startTimer(this.maxSecondsPerStep);
+      },
+
+      /** End the current session (finished or aborted) */
+      stop() {
+        this._stopTimer();
+        this.timerRunning = false;
+        this.elapsedSec = 0;
+        this.paused = false;
+        this.canAdvance = false;
+        this.steps = [];
+        this.currentIdx = 0;
+        this.maxSecondsPerStep = null;
+      },
+
+      /** Pause / resume the timer */
+      togglePause() {
+        if (!this.timerRunning) return;
+        this.paused = !this.paused;
+        if (this.paused) this._stopTimer();
+        else this._startTimer(this.maxSecondsPerStep);
+      },
+
+      /** Advance to the next step (user clicks “Next”) */
+      next() {
+        if (!this.canAdvance) return;
+        this._stopTimer();          // stop current timer
+
+        // -------------------------------------------------
+        // Tell the back‑end we want the next step.
+        // Adjust the event name / payload to match your API.
+        // -------------------------------------------------
+        const socket = io('http://127.0.0.1:8000'); // same endpoint you already use
+        socket.emit('practice-next', {
+          // You may want to include a sessionId, currentIdx, etc.
+          // For a generic example we just send an action flag:
+          action: 'next',
+          currentIdx: this.currentIdx
+        });
+
+        // UI will be refreshed when the server sends back the new step
+        // (see the socket listener further down).
+      },
+
+      // -------------------  Internal timer helpers -------------------
+      _startTimer(maxSeconds) {
+        if (!maxSeconds) return;          // untimed step
+        this._stopTimer();                 // safety net
+        this._timerId = setInterval(() => {
+          if (this.paused) return;
+          this.elapsedSec++;
+          // Auto‑advance when the limit is reached (optional)
+          if (this.elapsedSec >= maxSeconds) {
+            this.next();                  // move forward automatically
+          }
+        }, 1000);
+      },
+
+      _stopTimer() {
+        clearInterval(this._timerId);
+        this._timerId = null;
+      }
+    });
+
+    /* ------------------------------------------------------------
+       3️⃣  Socket listener – receives the next‑step payload
+       ------------------------------------------------------------ */
+    document.addEventListener('alpine:init', () => {
+      const socket = io('http://127.0.0.1:8000');
+
+      // Expected payload from the server:
+      // {
+      //   steps: ['chat','translate','quiz'],
+      //   currentIdx: 1,
+      //   maxSecondsPerStep: 30   // optional
+      // }
+      socket.off('practice-next');
+      socket.on('practice-next', data => {
+        const practice = Alpine.store('practice');
+
+        // Replace the steps array if the server sent a new one
+        if (Array.isArray(data.steps)) practice.steps = data.steps;
+
+        // Update the current index (fallback to 0 if undefined)
+        practice.currentIdx = data.currentIdx ?? 0;
+
+        // Update timer for the new step
+        if (data.maxSecondsPerStep) {
+          practice.timerRunning = true;
+          practice.maxSecondsPerStep = data.maxSecondsPerStep;
+          practice._startTimer(data.maxSecondsPerStep);
+        } else {
+          practice.timerRunning = false;
+          practice.maxSecondsPerStep = null;
+          practice._stopTimer();
+        }
+
+        // Reset elapsed seconds and pause flag for the new step
+        practice.elapsedSec = 0;
+        practice.paused = false;
+        practice.canAdvance = true;
       });
-    </script>
-  </body>
+    });
+
+    /* ------------------------------------------------------------
+       4️⃣  Helper API – expose methods for any page component
+       ------------------------------------------------------------ */
+    window.practiceAPI = {
+      /**
+       * Call from any page component to start a session.
+       * `info` must match the shape expected by the store.start():
+       *   {
+       *     steps: ['chat','translate','quiz'],
+       *     currentIdx: 0,
+       *     maxSecondsPerStep: 45   // optional
+       *   }
+       */
+      startSession(info) {
+        Alpine.store('practice').start(info);
+      },
+
+      /** Stop the current session */
+      stopSession() {
+        Alpine.store('practice').stop();
+      },
+
+      /** Toggle pause / resume */
+      togglePause() {
+        Alpine.store('practice').togglePause();
+      },
+
+      /** Advance to the next step */
+      nextStep() {
+        Alpine.store('practice').next();
+      }
+    };
+  </script>
+
+</body>
+
 </html>

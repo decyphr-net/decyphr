@@ -1,92 +1,85 @@
-<section class="py-12" x-data="translationApp()" x-init="init">
-  <div class="container mx-auto p-4 flex flex-col items-center gap-4">
-    <h2 class="text-2xl font-bold" x-text="$store.i18n.t('dashboard.translation.title')"></h2>
+<section class="py-12" x-data="translationApp()" x-init="init()">
+  <div class="max-w-6xl mx-auto px-6 space-y-10">
 
-    <!-- Translation Input -->
-    <div class="w-full max-w-4xl">
-      <textarea
-        x-model="text"
-        class="w-full p-3 border rounded mb-4"
-        :placeholder="$store.i18n.t('translate.inputPlaceholer')"
-      ></textarea>
-      <button
-        @click="submit"
-        :disabled="loading"
-        class="w-full px-4 py-2 font-semibold rounded bg-blue-500 text-white"
-        x-init="$el.textContent = $store.i18n?.t('translate.translateButton') || 'Translate'"
-        x-effect="$el.textContent = loading
-          ? ($store.i18n?.t('translate.translateButtonLoading') || 'Translating...')
-          : ($store.i18n?.t('translate.translateButton') || 'Translate')"
-      ></button>
-    </div>
+    <!-- HEADER -->
+    <header class="space-y-2">
+      <h1 class="text-3xl font-bold text-emerald-600">Translation</h1>
+      <p class="text-gray-600">Translate text and inspect individual words inline.</p>
+    </header>
 
-    <!-- Translation List -->
-    <div class="w-full max-w-4xl mt-8">
-      <div x-show="pendingTranslation" class="mb-4 p-4 border rounded flex justify-center">
-        <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span class="ml-2" x-text="$store.i18n.t('translate.translateButtonLoading') || 'Translating...'"></span>
+    <!-- INPUT CARD -->
+    <section class="rounded-xl border bg-white p-6 space-y-4">
+      <label class="block text-sm font-medium text-gray-700">Source text</label>
+      <textarea x-model="text"
+        class="w-full min-h-[180px] rounded-lg border p-4 text-sm leading-relaxed focus:border-emerald-500 focus:ring-emerald-500"
+        placeholder="Paste or type text to translate…"></textarea>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-gray-500" x-text="`${text.length} characters`"></span>
+        <button @click="submit" :disabled="loading"
+          class="rounded-full bg-emerald-600 px-6 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-40"
+          x-text="loading ? 'Translating…' : 'Translate'"></button>
       </div>
-      <template x-if="Array.isArray(translations) && translations.length > 0">
-        <div>
-          <template x-for="translation in paginatedTranslations" :key="translation.id">
-            <div class="mb-4 p-4 border rounded">
-              <p class="font-semibold text-lg" x-text="translation.originalText"></p>
-              <p class="text-gray-600 mb-2" x-text="translation.translatedText"></p>
+    </section>
 
-              <div class="flex flex-wrap gap-2" x-data="{ tooltip: null }">
-                <template x-for="(token, tokenIndex) in translation.breakdown" :key="`token_${translation.id}_${tokenIndex}`">
-                  <div class="relative group cursor-pointer bg-gray-100 px-2 py-1 rounded hover:bg-gray-200"
-                      @mouseenter="tooltip = token"
-                      @mouseleave="tooltip = null">
-                    <span x-text="token.correctedWord"></span>
+    <!-- TRANSLATION CARDS -->
+    <template x-for="translation in paginatedTranslations" :key="translation.id">
+      <div class="rounded-lg border bg-white p-4 space-y-3 relative">
 
-                    <div x-show="tooltip !== null"
-                        class="absolute z-10 bg-white border p-2 shadow rounded mt-1 text-sm w-48"
-                        x-transition>
-                      <template x-if="tooltip !== null">
-                        <ul>
-                          <li><strong>Translation:</strong> <span x-text="tooltip.translatedWord || 'N/A'"></span></li>
-                          <li><strong>Level:</strong> <span x-text="tooltip.level || 'N/A'"></span></li>
-                          <li><strong>POS:</strong> <span x-text="tooltip.pos_tag || 'N/A'"></span></li>
-                          <li><strong>Lemma:</strong> <span x-text="tooltip.lemma || 'N/A'"></span></li>
-                        </ul>
-                      </template>
-                    </div>
-                  </div>
-                </template>
+        <!-- LOADING SPINNER (per-card) -->
+        <div x-show="!translation.translated" class="flex items-center gap-3 text-emerald-600">
+          <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+          <span class="text-sm">Translating…</span>
+        </div>
+
+        <!-- Original / Translated Text -->
+        <div x-show="translation.translated">
+          <p class="font-semibold text-lg" x-text="translation.originalText"></p>
+          <p class="text-gray-600" x-text="translation.translated"></p>
+
+          <!-- Tokens -->
+          <div class="flex flex-wrap gap-2 mt-3" x-show="translation.flatTokens.length">
+            <template x-for="(token, i) in translation.flatTokens" :key="`token_${translation.id}_${i}`">
+              <div class="relative group cursor-pointer" x-data="{ open: false }" @mouseenter="open = true"
+                @mouseleave="open = false">
+                <span class="bg-gray-100 px-2 py-1 rounded text-sm hover:bg-gray-200"
+                  x-text="token.correctedWord || token.surface || token.text">
+                </span>
+
+                <div x-show="open" class="absolute z-10 bg-white border p-2 shadow rounded mt-1 text-sm w-48"
+                  x-transition>
+                  <ul class="space-y-1">
+                    <li><strong>Surface:</strong> <span x-text="token.surface || 'N/A'"></span></li>
+                    <li><strong>POS:</strong> <span x-text="token.pos || 'N/A'"></span></li>
+                    <li><strong>Lemma:</strong> <span x-text="token.lemma || 'N/A'"></span></li>
+                    <li><strong>Normalized:</strong> <span x-text="token.normalised || 'N/A'"></span></li>
+                  </ul>
+                </div>
               </div>
-            </div>
-          </template>
+            </template>
+          </div>
         </div>
-      </template>
-      <template x-if="!Array.isArray(translations) || translations.length === 0">
-        <p x-text="$store.i18n.t('translate.translateNoTranslations')"></p>
-      </template>
+      </div>
+    </template>
 
-      <template x-if="Array.isArray(translations) && translations.length > limit">
-        <div class="flex justify-center gap-4 mt-6">
-          <button
-            class="px-4 py-2 bg-gray-200 rounded"
-            :disabled="page === 1"
-            @click="page--"
-            x-text="$store.i18n.t('translate.translatePaginationPrev')"
-          ></button>
+    <!-- EMPTY STATE -->
+    <template x-if="translations.length === 0">
+      <p class="text-sm italic text-gray-500">No translations yet.</p>
+    </template>
 
-          <span class="text-lg font-semibold">
-            <span x-text="$store.i18n.t('translate.translatePaginationText').replace('{page}', page).replace('{totalPages}', totalPages)"></span>
-          </span>
+    <!-- PAGINATION -->
+    <template x-if="translations.length > limit">
+      <div class="flex items-center justify-center gap-6 mt-4">
+        <button @click="page--" :disabled="page === 1"
+          class="rounded-md border px-3 py-1 text-sm disabled:opacity-40">Previous</button>
+        <span class="text-sm font-medium">Page <span x-text="page"></span> of <span x-text="totalPages"></span></span>
+        <button @click="page++" :disabled="page === totalPages"
+          class="rounded-md border px-3 py-1 text-sm disabled:opacity-40">Next</button>
+      </div>
+    </template>
 
-          <button
-            class="px-4 py-2 bg-gray-200 rounded"
-            :disabled="page === totalPages"
-            @click="page++"
-            x-text="$store.i18n.t('translate.translatePaginationNext')"
-          ></button>
-        </div>
-      </template>
-    </div>
   </div>
 </section>

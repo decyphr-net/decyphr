@@ -2,80 +2,96 @@ import {
   Interaction,
   UserWordStatistics,
 } from 'src/interaction/interaction.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 /**
- * Represents a word entity in the system, including its token, part-of-speech tag,
- * language, and lemma. Each word can have multiple associated interactions.
+ * Deterministic normalisation helper (small & dependency-free).
+ *
+ * Important fixes:
+ * - punctuation removal happens before final trim so we don't return a single
+ *   space ' ' for tokens that are only punctuation.
+ * - returns empty string '' when the resulting token is empty so entity hook
+ *   can set normalised -> null and avoid inserting empty/space values.
  */
-@Entity('words')
-export class Word {
-  /**
-   * Unique identifier for each word.
-   * This is the primary key for the word entity.
-   */
-  @PrimaryGeneratedColumn()
-  id: number;
+function computeNormalised(value?: string): string {
+  if (!value) return '';
+  // Unicode normalization and diacritic folding
+  let s = value.normalize('NFKC');
+  s = s.normalize('NFD').replace(/\p{Diacritic}/gu, '').normalize('NFC');
 
-  /**
-   * The word token, which represents the word in its surface form.
-   * This field is required and must be a string with a maximum length of 50 characters.
-   */
-  @Column({ name: 'token', nullable: false, length: 50 })
-  word: string;
+  // Lowercase and collapse whitespace/punctuation in a safe order:
+  s = s.toLowerCase();
 
-  /**
-   * The part-of-speech tag for the word, indicating its grammatical role.
-   * This field is required and must be a string.
-   */
-  @Column({ name: 'tag', nullable: false })
-  tag: string;
+  // Replace non-letter/number/apostrophe/hyphen with a single space
+  s = s.replace(/[^\p{L}\p{N}'\-]+/gu, ' ');
 
-  /**
-   * The language in which the word is used.
-   * This field is required and must be a string.
-   */
-  @Column({ name: 'language', nullable: false })
-  language: string;
+  // Collapse multiple spaces, then trim leading/trailing spaces
+  s = s.replace(/\s+/g, ' ').trim();
 
-  /**
-   * The lemma (base form) of the word.
-   * This field is required and must be a string with a maximum length of 15 characters.
-   */
-  @Column({ name: 'lemma', nullable: false, length: 15 })
-  lemma: string;
+  // If result is empty after trimming, return empty string
+  if (s.length === 0) return '';
 
-  /**
-   * A list of interactions associated with this word.
-   * Each interaction represents a user's engagement with the word.
-   */
-  @OneToMany(() => Interaction, (interaction) => interaction.word)
-  interactions: Interaction[];
+  // Truncate to safe length
+  if (s.length > 100) s = s.slice(0, 100);
+  return s;
 }
 
 /**
- * Represents a user entity, uniquely identified by their clientId. Each user can have multiple associated interactions.
+ * Word entity.
+ * Unique index is on normalised only (no language) per earlier discussion.
  */
-@Entity('users')
-export class User {
-  /**
-   * Unique identifier for each user.
-   * This is the primary key for the user entity.
-   */
+@Entity('words')
+@Index(['normalised', 'language'], { unique: true })
+export class Word {
   @PrimaryGeneratedColumn()
   id: number;
 
-  /**
-   * A unique client identifier assigned to each user.
-   * This field is required, must be a string, and is unique across all users.
-   */
+  @Column({ name: 'token', nullable: false, length: 100 })
+  word: string;
+
+  // Keep nullable for safe deployment/backfill; will set to NOT NULL after backfill.
+  @Column({ name: 'normalised', nullable: true, length: 100 })
+  normalised: string | null;
+
+  @Column({ name: 'tag', nullable: false })
+  tag: string;
+
+  @Column({ name: 'language', nullable: false })
+  language: string;
+
+  @Column({ name: 'lemma', nullable: false, length: 50 })
+  lemma: string;
+
+  @OneToMany(() => Interaction, (interaction) => interaction.word)
+  interactions: Interaction[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  ensureNormalised() {
+    // Compute canonical normalised form from surface 'word' if normalised absent/empty;
+    // if computeNormalised returns empty string, set normalised to null to avoid empty-string
+    // unique-index collisions.
+    const computed = computeNormalised(this.normalised || this.word || '');
+    this.normalised = computed === '' ? null : computed;
+  }
+}
+
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ name: 'clientId', nullable: false, unique: true })
   clientId: string;
 
-  /**
-   * A list of interactions associated with this user.
-   * Each interaction represents a user's engagement with words.
-   */
   @OneToMany(() => Interaction, (interaction) => interaction.user)
   interactions: Interaction[];
 

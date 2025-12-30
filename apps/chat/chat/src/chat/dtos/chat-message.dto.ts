@@ -1,3 +1,8 @@
+export interface InteractionMetadata {
+  type: string;
+  timestamp: number;
+}
+
 export default interface ChatMessagePayload {
   /**
    * The type of message event, must be 'message'.
@@ -31,4 +36,6 @@ export default interface ChatMessagePayload {
    * The language to translate to.
    */
   langToTranslateTo: string;
+
+  interaction: InteractionMetadata;
 }

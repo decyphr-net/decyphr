@@ -1,6 +1,4 @@
 import { Controller, Logger } from '@nestjs/common';
-import { EventPattern, Payload, Transport } from '@nestjs/microservices';
-import { TextTranslatedPayloadDto } from './dto/payload.dto';
 import { TranslationService } from './translation.service';
 
 /**
@@ -24,18 +22,18 @@ export class TranslationController {
    *
    * Logs the received payload and delegates further processing to the TranslationService.
    */
-  @EventPattern('lexicon.update', Transport.KAFKA)
-  async handleEvent(
-    @Payload() payload: TextTranslatedPayloadDto,
-  ): Promise<void> {
-    this.logger.log('Received translation response', JSON.stringify(payload));
+  // @EventPattern('lexicon.update', Transport.KAFKA)
+  // async handleEvent(
+  //   @Payload() payload: TextTranslatedPayloadDto,
+  // ): Promise<void> {
+  //   this.logger.log('Received translation response', JSON.stringify(payload));
 
-    try {
-      await this.translationService.handleTranslation(payload);
-      this.logger.log('Translation processed successfully');
-    } catch (error) {
-      this.logger.error('Error processing translation', error.stack);
-      throw error;
-    }
-  }
+  //   try {
+  //     await this.translationService.handleTranslation(payload);
+  //     this.logger.log('Translation processed successfully');
+  //   } catch (error) {
+  //     this.logger.error('Error processing translation', error.stack);
+  //     throw error;
+  //   }
+  // }
 }

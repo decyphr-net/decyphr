@@ -19,7 +19,7 @@ type Token = {
 type Translation = {
   id: string;
   originalText: string;
-  translatedText: string;
+  translated: string;
   sourceLang: string;
   targetLang: string;
   createdAt?: string;
@@ -62,7 +62,7 @@ export default function TranslationCard({ translation }: Props) {
         </Card.CardDescription>
       </Card.CardHeader>
       <Card.CardContent className="text-lg font-medium">
-        {translation.translatedText}
+        {translation.translated}
       </Card.CardContent>
     </Card.Card>
   );

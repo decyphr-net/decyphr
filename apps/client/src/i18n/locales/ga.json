@@ -16,57 +16,73 @@
   },
   "home": {
     "hero": {
-      "title": "Máistir Teangacha go Nádúrtha",
-      "subtitle": "Foghlaim teanga faoi thiomáint AI a oireann duit",
-      "cta": "Tosaigh ag Foghlaim Saor in Aisce"
+      "title": "Bain Máistreacht ar Theangacha go Nádúrtha",
+      "subtitle": "Foghlaim agus cleacht teangacha go héasca le huirlisí cumhachtacha AI a oireann duit.",
+      "cta": "Tosaigh ag Foghlaim Saor"
     },
     "features": {
+      "title": "Gnéithe a Thaitneoidh Leat",
       "translation": {
         "title": "Aistriúchán Cliste",
-        "description": "Faigh aistriúcháin le tuiscint ar pháirt na bhfocal"
+        "description": "Faigh aistriúcháin agus anailís gramadaí atá feasach ar chomhthéacs láithreach, ionas go dtuigfidh tú gach focal."
       },
       "practice": {
-        "title": "Cleachtadh Comhrá AI",
-        "description": "Tóg muinín le comhpháirtithe comhrá suaimhneach AI"
+        "title": "Cleachtadh Comhrá le AI",
+        "description": "Bain líofacht agus muinín tríd an gcomhrá idirghníomhach saor ó strus le carachtair AI."
       },
       "tracking": {
-        "title": "Rianú Dul Chun Cinn Cliste",
-        "description": "Foghlaim go héifeachtach le sceidil athbhreithnithe pearsanta"
+        "title": "Rianú Dul Chun Cinn Pearsantaithe",
+        "description": "Rianaigh do fhoclóir, gramadach agus scileanna comhrá go huathoibríoch chun foghlaim níos tapúla agus níos cliste."
       }
+    },
+    "why_decyphr": {
+      "title": "Cén Fáth a Roghnóidh Tú Decyphr?",
+      "description": "Comhcheanglaímid foghlaim atá tiomáinte ag AI le huirlisí idirghníomhacha ionas gur féidir leat díriú ar thuiscint, cleachtadh, agus stór focal a choinneáil go nádúrtha.",
+      "points": [
+        "Foghlaim go nádúrtha trí chleachtaí comhrá-bhunaithe le AI",
+        "Seiceáil leideanna do théacs ar bith, agus feicinn táscairí inniúlachta ar gach focal",
+        "Cleachtadh seisiúin threoraithe nó saor-inúsáidte, bunaithe ar do stíl foghlama",
+        "Léigh agus ionsaigh teanga trí do ghnéithe is fearr leat",
+        "Lena chinntiú go bhfuil tú réidh le cumarsáid phraiticiúil trí shainmhíniú radharcanna fíor-shaoil",
+        "Rianaigh do fhás go héasca le painéil chliste",
+        "Cleachtadh am ar bith, áit ar bith, le cleachtaí AI solúbtha",
+        "Cumasaigh ábhar de réir do spéis agus do spriocanna foghlama",
+        "Dírigh ar fhoghlaim, ní ar gheimhfhógraíocht, chun dul chun cinn a dhéanamh go hiontaofa"
+      ]
     },
     "how_it_works": {
       "title": "Conas a Oibríonn Sé",
       "step1": {
-        "title": "Roghnaigh Do Bhoth",
-        "description": "Roghnaigh bot carachtair bunaithe ar do theanga agus suimeanna."
+        "title": "Roghnaigh Do Chompánach AI",
+        "description": "Roghnaigh bot carachtar a oireann do do theanga sprioc, spéiseanna, agus spriocanna foghlama."
       },
       "step2": {
-        "title": "Tosaigh Ag Comhrá",
-        "description": "Tosaigh comhrá agus cleachtaigh dialóga nádúrtha leat féin."
+        "title": "Glac Páirt i gComhrá Fíor",
+        "description": "Comhráigh, léigh, agus críochnaigh cleachtaí ag do luas féin le cásanna pearsantaithe agus bríomhar."
       },
       "step3": {
         "title": "Rianaigh & Feabhsaigh",
-        "description": "Déan monatóireacht ar do fhoclóir agus do ghramadach go huathoibríoch."
+        "description": "Faigh aiseolas uathoibríoch, rianaigh dul chun cinn, agus daingnigh do chuid laige le cleachtadh dírithe."
       }
     },
     "testimonials": {
-      "title": "Teistiméireachtaí",
+      "title": "Cad a Deir Foghlaimeoirí",
       "student": {
-        "feedback": "\"Chabhraigh an aip seo liom cleachtadh ar an nGaeilge — táim níos muiníní anois!\"",
-        "name": "- Saoirse, Mac Léinn"
+        "feedback": "\"Chabhraigh Decyphr liom cleachtadh ar Ghaeilge ar bhealach nádúrtha agus taitneamhach. Táim níos muiníní gach lá!\"",
+        "name": "- Saoirse, Foghlaimeoir"
       },
       "traveller": {
-        "feedback": "\"Bhí sé an-spraíúil comhrá a dhéanamh le carachtair ó réigiúin éagsúla!\"",
+        "feedback": "\"Rinne úsáid a bhaint as bots AI ó réigiúin éagsúla an foghlaim Phortaingéilis taitneamhach agus tumtha.\"",
         "name": "- Lucas, Taistealaí"
       },
       "professional": {
-        "feedback": "\"Is maith liom an chaoi a rianaíonn an córas mo laigí — cosúil le meantóir pearsanta.\"",
-        "name": "- Emily, Gairmí"
+        "feedback": "\"Is breá liom conas a rianaíonn Decyphr mo laige go huathoibríoch. Cosúil le bheith agam le múinteoir pearsanta!\"",
+        "name": "- Emily, Gairmiúil"
       }
     },
     "cta": {
       "title": "Réidh le Labhairt go Muiníneach?",
-      "subtitle": "Bí le foghlaimeoirí ar fud an domhain ag máistirú teangacha nua trí chomhrá bríoch.",
+      "subtitle": "Bí páirteach le mílte foghlaimeoirí ar fud an domhain ag bainistiú teangacha go nádúrtha trí chomhrá agus cleachtadh bunaithe ar AI.",
       "button": "Tosaigh Do Thuras Inniu"
     }
   },
@@ -77,6 +93,9 @@
     "pricing": "Praghsanna"
   },
   "auth": {
+    "title": "Fáilte go Decyphr",
+    "subtitle": "Foghlaim teangacha le AI atá deartha ag do luas agus do spéis",
+    "why_decyphr": "Cén Fáth a Roghnaigh Decyphr?",
     "emailPlaceholder": "Cuir isteach do sheoladh ríomhphoist",
     "signIn": "Seol Nasc Draíochta",
     "sending": "Á sheoladh...",
@@ -90,25 +109,37 @@
     "immersionFull": "Tumadh Iomlán (gan leideanna)",
     "saveSettings": "Sábháil Socruithe",
     "selectLanguage": "Roghnaigh teanga",
-    "benefits": {
-      "1": "✅ Labhair le carachtair AI i do sprioctheanga",
-      "2": "✅ Rianaigh focail agus gramadach lag i bhfíor-am",
-      "3": "✅ Cleachtaigh go laethúil le comhráite struchtúrtha nádúrtha"
-    }
+    "benefits": [
+      "Comhrá le carachtair AI i do theanga spriocdhírithe",
+      "Rianú focal lag agus gramadach i bhfíor-am",
+      "Cleachtadh laethúil le comhrá struchtúrtha, nádúrtha",
+      "Faigh leid agus míniú láithreach ar aon téacs",
+      "Foghlaim trí léamh agus trí shcéalta oiriúnaithe do do chuid spéiseanna"
+    ]
   },
   "dashboard": {
-    "stats": {
-      "title": "Do Thuras Teanga",
-      "chatMessages": "Teachtaireachtaí Comhrá Seolta",
-      "wordsToPractice": "Focail atá le Cleachtadh",
-      "wordsMastered": "Focail Máistreáilte",
-      "translations": "Aistriúcháin Críochnaithe",
-      "conversations": "Comhráite AI Tosaigh",
-      "books": "Leabhair Léite"
+    "navbar": {
+      "speakingWriting": "Labhairt & Scríobh",
+      "vocabulary": "Stór Focal",
+      "readingListening": "Léamh & Éisteacht",
+      "tools": "Uirlisí"
     },
+    "sections": {
+      "speakingWriting": "Labhairt & Scríobh",
+      "vocabulary": "Stór Focal",
+      "readingListening": "Léamh & Éisteacht",
+      "tools": "Uirlisí Teanga"
+    },
+    "practice": {
+      "title": "Cleachtadh Treoraithe",
+      "subtitle": "Tosaigh seisiún amaithe le meascán de chomhrá, léitheoireacht, agus cártaí foghlama.",
+      "durationLabel": "Fad cleachtaidh laethúil",
+      "cta": "Tosaigh Cleachtadh"
+    },
+    "orBuildYourOwn": "nó déan do shaincheacht féin",
     "chat": {
-      "title": "Comhrá le hAI",
-      "description": "Cleacht do sprioctheanga trí chomhrá le hintleacht shaorga.",
+      "title": "Comhrá le AI",
+      "description": "Cleacht do theanga sprioc trí chomhrá le AI.",
       "cta": "Tosaigh Comhrá"
     },
     "translation": {
@@ -117,9 +148,44 @@
       "cta": "Aistrigh Téacs"
     },
     "lexicon": {
-      "title": "Mo Lúibín",
+      "title": "Lexicon Pearsanta",
       "description": "Athbhreithnigh agus bainistigh na focail atá foghlamtha agat.",
-      "cta": "Féach ar an Lúibín"
+      "cta": "Féach Lexicon"
+    },
+    "storytime": {
+      "title": "Am Scéil",
+      "description": "Léigh scéalta gearra agus freagair ceisteanna tuisceana.",
+      "cta": "Tosaigh Scéalta"
+    },
+    "scenarioReviser": {
+      "title": "Athbhreithniú Radharcanna",
+      "description": "Cleacht aistí réaltacha ag úsáid do theanga sprioc.",
+      "cta": "Tosaigh Radharc"
+    },
+    "verbPracticer": {
+      "title": "Cleachtóir Briathra",
+      "description": "Líon na bearnaí chun cleachtadh briathra a dhéanamh.",
+      "cta": "Cleacht Briathra"
+    },
+    "mistakeCorrector": {
+      "title": "Ceartóir Botúin",
+      "description": "Cuir abairtí isteach agus faigh aiseolas ar earráidí.",
+      "cta": "Seiceáil Abairtí"
+    },
+    "vault": {
+      "title": "Vault Aistriúcháin",
+      "description": "Stóráil, athbhreithnigh agus athúsáid do aistriúcháin phearsanta.",
+      "cta": "Oscail an Vault"
+    },
+    "bookTracker": {
+      "title": "Rianaire Leabhar",
+      "description": "Coinnigh taifead ar an méid a léann tú.",
+      "cta": "Oscail an Rianaire"
+    },
+    "toolsTranslation": {
+      "title": "Aistriúcháin",
+      "description": "Aistrigh téacsanna go tapa.",
+      "cta": "Aistrigh"
     }
   },
   "chat": {
@@ -141,5 +207,17 @@
     "translatePaginationPrev": "Roimhe Seo",
     "translatePaginationNext": "Ar Aghaidh",
     "translatePaginationText": "Leathanach {page} as {totalPages}"
+  },
+  "lexicon": {
+    "title": "Do Idirghníomhaíochtaí Focal",
+    "table": {
+      "word": "Focal",
+      "type": "Cineál",
+      "family": "Teaghlach",
+      "familiarity": "Eolas",
+      "revise": "Ní mór Athbhreithniú",
+      "action": "Gníomh"
+    },
+    "noWords": "Níl Aon Idirghníomhaíochtaí Focal"
   }
 }

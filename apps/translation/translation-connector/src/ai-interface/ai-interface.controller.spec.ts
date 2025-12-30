@@ -68,10 +68,7 @@ describe('AiInterfaceController', () => {
         clientId: 'client123',
         statement: 'Hello, world!',
         translationResponse: {
-          detectedLanguage: 'en',
-          translatedText: 'Hola, mundo!',
-          alternatives: ['Hola', 'Saludo'],
-          breakdown: [],
+          translated: 'Hola, mundo!',
         },
       };
 
@@ -87,10 +84,7 @@ describe('AiInterfaceController', () => {
         clientId: 'client123',
         statement: 'Hello, world!',
         translationResponse: {
-          detectedLanguage: 'en',
-          translatedText: 'Hola, mundo!',
-          alternatives: ['Hola', 'Saludo'],
-          breakdown: [],
+          translated: 'Hola, mundo!',
         },
       };
 

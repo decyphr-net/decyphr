@@ -1,116 +1,73 @@
-document.addEventListener('alpine:init', () => {
-  Alpine.data('translationApp', () => ({
+function translationApp() {
+  return {
+    /* ============================
+       STATE
+    ============================ */
     text: '',
     loading: false,
-    translations: [],
     pendingTranslation: false,
+    translations: [],
     page: 1,
     limit: 5,
     clientId: '',
-    initialized: false,
+    eventSource: null,
+    translationCache: {}, // NEW: stores merged translation+nlp by requestId
 
+    /* ============================
+       INITIALISATION
+    ============================ */
     async init() {
       try {
-        const sessionRes = await fetch('/auth/me');
-        const session = await sessionRes.json();
-        this.clientId = session.user?.clientId || '';
+        this.limit = Number(this.limit) || 5;
+
+        const sessRes = await fetch('/auth/me');
+        const sess = await sessRes.json();
+
+        this.clientId = sess.user?.clientId?.trim();
+        if (!this.clientId) throw new Error('clientId missing');
 
         await this.loadExistingTranslations();
-
-        this.setupEventSource();
-
-        this.initialized = true;
-      } catch (error) {
-        console.error('Initialization error:', error);
-      }
-    },
-
-    // Load existing translations from server
-    async loadExistingTranslations() {
-      try {
-        const response = await fetch(`/translations/list`);
-
-        if (!response.ok) {
-          throw new Error('Failed to load translations');
-        }
-
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.data)) {
-          this.translations = data.data.map(t => {
-            return this.normalizeTranslation(t);
-          });
-        } else {
-          this.translations = [];
-        }
-      } catch (error) {
-        console.error('Error loading existing translations:', error);
-        this.translations = [];
-      }
-    },
-
-    normalizeTranslation(translation) {
-      return {
-        id: translation.id || this.generateUniqueId(),
-        originalText: String(translation.originalText || ''),
-        translatedText: String(translation.translatedText || ''),
-        breakdown: Array.isArray(translation.breakdown) ? translation.breakdown : []
-      };
-    },
-
-    setupEventSource() {
-      if (this.eventSource) {
-        this.eventSource.close();
-      }
-
-      this.eventSource = new EventSource(`/translations/events/${this.clientId}`);
-
-      this.eventSource.onmessage = (event) => {
-        try {
-          const message = JSON.parse(event.data);
-          if (!message) return;
-
-          this.$nextTick(() => {
-            this.translations = [this.normalizeTranslation(message), ...this.translations];
-            this.pendingTranslation = false;
-          });
-        } catch (error) {
-          console.error('Error processing SSE message:', error);
-          this.pendingTranslation = false;
-        }
-      };
-
-      this.eventSource.onerror = (error) => {
-        console.error('SSE connection error:', error);
+        this.openSSE();
+      } catch (e) {
+        console.error('❌ init error:', e);
         this.pendingTranslation = false;
-        setTimeout(() => this.setupEventSource(), 5000);
-      };
-    },
-
-    generateUniqueId() {
-      return `trans_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    },
-
-    // Safe paginated translations getter
-    get paginatedTranslations() {
-      if (!Array.isArray(this.translations)) {
-        console.warn('Translations is not an array');
-        return [];
       }
-
-      const start = (this.page - 1) * this.limit;
-      const end = start + this.limit;
-
-      return this.translations
-        .slice(start, end)
-        .filter(t => t && typeof t === 'object');
     },
 
-    get totalPages() {
-      const length = Array.isArray(this.translations) ? this.translations.length : 0;
-      return Math.max(1, Math.ceil(length / this.limit));
+    /* ============================
+       LOAD HISTORIC LIST
+    ============================ */
+    async loadExistingTranslations() {
+      this.loading = true;
+      try {
+        const res = await fetch('/translations/list');
+        if (!res.ok) throw new Error('Failed to fetch list');
+
+        const payload = await res.json();
+        const list = payload?.data ?? payload;
+
+        if (!Array.isArray(list)) throw new Error('List payload not an array');
+
+        // merge into cache
+        list.forEach(item => {
+          const id = item.id || item.requestId;
+          this.translationCache[id] = { ...this.translationCache[id], ...item };
+        });
+
+        this.translations = Object.values(this.translationCache).map(item => this.normalizePayload(item));
+        this.sortTranslations();
+        console.log(this.translations)
+      } catch (e) {
+        console.error('❌ error loading list:', e);
+        this.translations = [];
+      } finally {
+        this.loading = false;
+      }
     },
 
+    /* ============================
+       SUBMIT NEW TRANSLATION
+    ============================ */
     async submit() {
       if (!this.text.trim() || !this.clientId) return;
 
@@ -124,22 +81,156 @@ document.addEventListener('alpine:init', () => {
           body: JSON.stringify({
             text: this.text,
             clientId: this.clientId
-          }),
+          })
         });
         this.text = '';
-      } catch (error) {
-        console.error('Translation error:', error);
+      } catch (e) {
+        console.error('❌ submit error:', e);
         this.pendingTranslation = false;
       } finally {
         this.loading = false;
       }
     },
 
-    // Cleanup when component is removed
-    destroy() {
+    /* ============================
+       SSE HANDLER
+    ============================ */
+    openSSE() {
       if (this.eventSource) {
-        this.eventSource.close();
+        console.warn('SSE already open, skipping');
+        return;
       }
+
+      const url = `/translations/events/${this.clientId}`;
+      console.info('🔗 Opening SSE →', url);
+
+      this.eventSource = new EventSource(url);
+
+      this.eventSource.onmessage = ev => {
+        try {
+          const raw = JSON.parse(ev.data);
+          console.log('raw:', raw);
+
+          // Use backend ID or requestId, no fallback generation for backend translations
+          const id = raw.translation?.id || raw.id || raw.requestId;
+          if (!id) {
+            console.warn('❌ Skipping event with no ID', raw);
+            return;
+          }
+          console.log('id:', id);
+
+          // Initialize cache if first time
+          if (!this.translationCache[id]) {
+            this.translationCache[id] = {
+              id,
+              originalText: '',
+              translated: '',
+              sentences: []
+            };
+          }
+
+          const cached = this.translationCache[id];
+
+          // Merge translation
+          if (raw.translation) {
+            cached.originalText = raw.translation.originalText || cached.originalText;
+            cached.translated = raw.translation.translated || cached.translated;
+            cached.createdAt = raw.translation.createdAt || cached.createdAt;
+          }
+
+          // Merge NLP sentences safely
+          if (raw.nlp?.sentences) {
+            cached.sentences = raw.nlp.sentences.map(s => ({
+              ...s,
+              tokens: Array.isArray(s.tokens) ? s.tokens : []
+            }));
+          }
+
+          // Guarantee sentences is always an array
+          if (!Array.isArray(cached.sentences)) cached.sentences = [];
+
+          // Normalize for template
+          const entry = this.normalizePayload(cached);
+
+          Alpine.nextTick(() => {
+            const idx = this.translations.findIndex(t => t.id === entry.id);
+            if (idx >= 0) {
+              Object.assign(this.translations[idx], entry);
+            } else {
+              this.translations.unshift(entry);
+            }
+
+            this.sortTranslations();
+
+            // Show spinner only if any translation missing
+            this.pendingTranslation = Object.values(this.translationCache).some(t => !t.translated);
+          });
+
+        } catch (err) {
+          console.error('❌ SSE parsing error:', err);
+        }
+      };
+
+      this.eventSource.onerror = err => {
+        console.error('❌ SSE error →', err);
+        if (this.eventSource) {
+          this.eventSource.close();
+          this.eventSource = null;
+        }
+        // Retry after 5s
+        setTimeout(() => this.openSSE(), 5000);
+      };
+    },
+
+    /* ============================
+       NORMALISATION
+    ============================ */
+    normalizePayload(raw) {
+      const tr = raw.translation || raw;
+
+      const sentences = Array.isArray(raw.sentences)
+        ? raw.sentences.map(s => ({ ...s, tokens: Array.isArray(s.tokens) ? s.tokens : [] }))
+        : [];
+
+      // Flatten all tokens for easy template use
+      const flatTokens = sentences.flatMap(s => s.tokens);
+
+      return {
+        id: tr.id || tr.requestId,
+        originalText: tr.originalText || '',
+        translated: tr.translated || '',
+        createdAt: tr.createdAt || new Date().toISOString(),
+        sentences,
+        flatTokens
+      };
+    },
+
+    sortTranslations() {
+      this.translations.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    },
+
+    generateUniqueId() {
+      return `tmp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    },
+
+    /* ============================
+       PAGINATION
+    ============================ */
+    get paginatedTranslations() {
+      const start = (this.page - 1) * this.limit;
+      const end = start + this.limit;
+      return this.translations.slice(start, end);
+    },
+
+    get totalPages() {
+      return Math.max(1, Math.ceil(this.translations.length / this.limit));
+    },
+
+    /* ============================
+       CLEANUP
+    ============================ */
+    destroy() {
+      if (this.eventSource) this.eventSource.close();
     }
-  }));
-});
+  };
+}

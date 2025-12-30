@@ -9,13 +9,15 @@ import { MagicLink } from './auth/entities/MagicLink';
 import { User } from './auth/entities/User';
 import { BotsModule } from './bots/bots.module';
 import { ChatModule } from './chat/chat.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { I18nController } from './i18n/i18n.controller';
 import { I18nModule } from './i18n/i18n.module';
+import { LexiconModule } from './lexicon/lexicon.module';
 import { LanguageSetting } from './settings/entities/LanguageSetting';
 import { SettingsModule } from './settings/settings.module';
-import { DashboardModule } from './dashboard/dashboard.module';
-import { UtilsModule } from './utils/utils.module';
 import { TranslationsModule } from './translations/translations.module';
+import { UtilsModule } from './utils/utils.module';
+import { VaultModule } from './vault/vault.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { TranslationsModule } from './translations/translations.module';
     DashboardModule,
     UtilsModule,
     TranslationsModule,
+    LexiconModule,
+    VaultModule
   ],
   controllers: [AppController, I18nController],
 })

@@ -22,9 +22,7 @@ export class AuthController {
 
   @Get('login')
   async getLogin(@Res() res: Response) {
-    const html = await this.authService.loadLayoutWithPartial(
-      '/auth/login-partial',
-    );
+    const html = await this.authService.loadLoginPage();
     return res.send(html);
   }
 
@@ -112,6 +110,7 @@ export class AuthController {
       req.session.user = {
         id: user.id,
         clientId: user.clientId,
+        email: user.email
       };
 
       const settings = await this.settingsService.getUserLanguageSettings(
@@ -131,6 +130,37 @@ export class AuthController {
 
   @Get('/me')
   getMe(@Req() req: AuthenticatedRequest) {
-    return req.session;
+    return {
+      loggedIn: !!req.session.user,
+      user: req.session.user
+        ? {
+          id: req.session.user.id,
+          clientId: req.session.user.clientId,
+          email: req.session.user.email,
+        }
+        : null
+    };
+  }
+
+  @Post('logout')
+  async logout(@Req() req: Request, @Res() res: Response) {
+    // If you store the session ID in a signed cookie called "session"
+    // (the same cookie you read in `submitFirstLogin`), clear it.
+    // Adjust the cookie name/options if yours differ.
+    res.clearCookie('session', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+
+    // Optionally also destroy any server‑side session store entry.
+    // Example for an in‑memory store:
+    // if ((req as any).session) {
+    //   (req as any).session.destroy(() => {});
+    // }
+
+    // Respond with a 200 and a tiny JSON payload – the front‑end can
+    // decide where to navigate next.
+    return res.status(HttpStatus.OK).json({ ok: true });
   }
 }

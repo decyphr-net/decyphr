@@ -54,8 +54,7 @@ describe('StatementService', () => {
       clientId: 'client123',
       interactionType: 'active',
       translationResponse: {
-        detectedLanguage: 'en',
-        translatedText: 'Hola, mundo!',
+        translated: 'Hola, mundo!',
         tense: 'present',
         breakdown: [
           {
@@ -65,7 +64,6 @@ describe('StatementService', () => {
             lemma: 'hello',
             level: 'A1',
             pos_tag: 'interjection',
-            alternatives: ['Hi', 'Hey'],
           },
         ],
       },

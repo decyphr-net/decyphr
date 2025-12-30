@@ -1,10 +1,15 @@
 // save-translation.dto.ts
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 /**
  * DTO for the translation data to be saved.
  */
 export class SaveTranslationDto {
+
+  @IsString()
+  @IsNotEmpty()
+  requestId: string;
+
   @IsString()
   clientId: string;
 
@@ -12,27 +17,8 @@ export class SaveTranslationDto {
   originalText: string;
 
   @IsString()
-  detectedLanguage: string;
-
-  @IsString()
   targetLanguage: string;
 
   @IsString()
-  translatedText: string;
-
-  @IsArray()
-  @IsOptional()
-  alternatives: string[];
-
-  @IsArray()
-  breakdown: {
-    originalWord: string;
-    translatedWord: string;
-    alternatives: string[];
-    pos_tag: string;
-    lemma: string;
-    correctness: number;
-    level: string;
-    correctedWord: string;
-  }[];
+  translated: string;
 }

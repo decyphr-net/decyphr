@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StatementService } from 'src/statement/statement.service';
 import {
-  BreakdownDto,
   TextTranslatedPayloadDto,
   TranslationResponseDto,
 } from './dto/payload.dto';
@@ -32,14 +31,12 @@ describe('TranslationService', () => {
           translatedWord: 'hola',
           lemma: 'hello',
           level: 'A1',
-          pos_tag: 'verb',
-          alternatives: ['hi', 'hey'],
+          pos_tag: 'verb'
         },
       ];
 
       const translationResponse: TranslationResponseDto = {
-        detectedLanguage: 'en',
-        translatedText: 'Hola, mundo!',
+        translated: 'Hola, mundo!',
         tense: 'present',
         breakdown: breakdown,
       };
@@ -72,15 +69,12 @@ describe('TranslationService', () => {
           lemma: 'hello',
           level: 'A1',
           pos_tag: 'verb',
-          alternatives: ['hi', 'hey'],
         },
       ];
 
       const translationResponse: TranslationResponseDto = {
-        detectedLanguage: 'en',
-        translatedText: 'Hola, mundo!',
+        translated: 'Hola, mundo!',
         tense: 'present',
-        breakdown: breakdown,
       };
 
       const payload: TextTranslatedPayloadDto = {

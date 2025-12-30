@@ -20,18 +20,18 @@ export class StatementService {
   ) { }
 
   /**
-   * Stores the translation statement and related breakdown information for a user.
+   * Stores the translation statement information for a user.
    *
    * @param message - The translation payload that contains the statement, translation details, and metadata.
-   * @returns A promise that resolves when the statement and breakdown information have been stored.
+   * @returns A promise that resolves when the statement information have been stored.
    */
   async storeStatement(message: TextTranslatedPayloadDto): Promise<void> {
     try {
       const timestamp = new Date(+message.timestamp);
 
       const statement = await this.statementRepository.create({
-        statement: message.statement.replace(/(\r\n|\n|\r)/gm, ''), // Removing unwanted line breaks
-        language: message.translationResponse.detectedLanguage,
+        statement: message.statement.replace(/(\r\n|\n|\r)/gm, ''),
+        language: message.translationResponse.sourceLanguage,
         timestamp: timestamp,
         source: message.source,
         clientId: message.clientId,
@@ -40,13 +40,6 @@ export class StatementService {
       this.logger.log('Storing statement: ', statement);
 
       await this.statementRepository.save(statement);
-
-      await this.bankService.saveBreakdownForUser(
-        message.translationResponse.breakdown,
-        message.clientId,
-        message.translationResponse.detectedLanguage,
-        message.interactionType,
-      );
     } catch (error) {
       this.logger.error('Failed to store statement', error.stack);
       throw error;

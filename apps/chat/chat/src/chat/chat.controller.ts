@@ -61,8 +61,13 @@ export class ChatController {
     }
 
     try {
-      await this.chatService.storeUserMessage(payload, 'user');
-      this.logger.log(`✅ Stored user message for chatId=${payload.chatId}`);
+      // store and get the stored DB message (with id + timestamp)
+      const stored = await this.chatService.storeUserMessage(payload, 'user');
+
+      this.logger.log(
+        `✅ Stored & produced user message chatId=${payload.chatId}`,
+      );
+
     } catch (error) {
       this.logger.error(
         `❌ Failed to store message: ${error.message}`,
@@ -80,11 +85,6 @@ export class ChatController {
     this.logger.log(
       `📥 Received ChatMessagePayload: ${JSON.stringify(payload)}`,
     );
-
-    if (payload.type !== 'message') {
-      this.logger.warn(`Ignored payload with invalid type: ${payload.type}`);
-      return;
-    }
 
     try {
       await this.chatService.storeUserMessage(payload, 'bot');

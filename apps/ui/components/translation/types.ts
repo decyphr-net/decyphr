@@ -9,9 +9,8 @@ export type Token = {
 export type Translation = {
   id: string;
   originalText: string;
-  translatedText: string;
+  translated: string;
   sourceLang: string;
   targetLang: string;
-  breakdown: Token[];
   createdAt?: string;
 };

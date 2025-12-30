@@ -5,6 +5,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
  * the source and target languages, the text to be translated, and the client ID.
  */
 export class TranslationDto {
+
+  @IsString()
+  requestId?: string;
   /**
    * The source language of the text to be translated.
    * @example "en"

@@ -1,40 +1,39 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
 
-/**
- * Data Transfer Object (DTO) for translation requests.
- *
- * This DTO defines the required structure for translating text, including
- * optional language parameters and a client identifier.
- */
-export class TranslateDto {
-  /**
-   * The text to be translated.
-   */
+export class InteractionMetadata {
+  @IsString()
+  @IsNotEmpty()
+  type: string;
+
+  @IsNumber()
+  timestamp: number;
+}
+
+export class TranslationDto {
+  @IsString()
+  @IsNotEmpty()
+  requestId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  sourceLanguage: string;
+
+  @IsString()
+  @IsNotEmpty()
+  targetLanguage: string;
+
   @IsString()
   @IsNotEmpty()
   text: string;
 
-  /**
-   * The target language for translation (optional).
-   * If not provided, the system may use a default target language.
-   */
-  @IsString()
-  @IsOptional()
-  targetLanguage: string;
-
-  /**
-   * The source language of the text (optional).
-   * If not provided, the system may attempt to detect the language automatically.
-   */
-  @IsString()
-  @IsOptional()
-  sourceLanguage: string;
-
-  /**
-   * A unique identifier for the client making the request.
-   * This ensures that the translation request is associated with a specific user or session.
-   */
   @IsString()
   @IsNotEmpty()
   clientId: string;
+
+  @ValidateNested()
+  @Type(() => InteractionMetadata)
+  interactions: InteractionMetadata;
+
+  payload: { text: string };
 }

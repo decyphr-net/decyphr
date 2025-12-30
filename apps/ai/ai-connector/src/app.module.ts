@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatModule } from './chat/chat.module';
 import { EnrichmentModule } from './enrichment/enrichment.module';
+import { GuessModule } from './guess/guess.module';
 import { TranslationModule } from './translation/translation.module';
 import { UtilsModule } from './utils/utils.module';
 
@@ -16,6 +17,7 @@ import { UtilsModule } from './utils/utils.module';
     ChatModule,
     UtilsModule,
     EnrichmentModule,
+    GuessModule
   ],
   controllers: [AppController],
   providers: [AppService],

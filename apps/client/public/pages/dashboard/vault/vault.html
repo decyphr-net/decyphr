@@ -1,0 +1,480 @@
+
+<div class="container mx-auto px-4 py-12 space-y-12"
+       x-data="vault()"
+       x-init="init()">
+
+    <!-- HERO / ADD ENTRY -->
+    <div class="p-8 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl shadow-lg text-center text-white hover:shadow-2xl transition-shadow border overflow-hidden">
+      <h2 class="text-2xl md:text-3xl font-bold">Add Text to Vault</h2>
+      <p class="mt-2 text-sm opacity-90 max-w-md mx-auto">
+        Store and practice your vocabulary effortlessly
+      </p>
+
+      <textarea x-model="newText"
+                placeholder="Enter text here..."
+                class="mt-4 w-full p-4 rounded-xl text-gray-900 focus:ring-2 focus:ring-emerald-300 focus:outline-none resize-none shadow-sm"
+                rows="3"></textarea>
+
+      <button @click="addVaultEntry()"
+              class="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold bg-white text-emerald-600 hover:bg-gray-100 shadow transition-all">
+        Add to Vault
+      </button>
+    </div>
+
+    <!-- VAULT ENTRIES -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <template x-for="card in vaultEntries" :key="card.id">
+        <div class="flex flex-col bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6 space-y-4">
+
+          <!-- Highlighted text -->
+          <div class="text-gray-900 text-base leading-relaxed cursor-pointer"
+               @click="card.showInput = true">
+            <template x-for="(part, idx) in highlightedChunks(card.text, { annotations: card.annotations })" :key="idx">
+              <span class="px-0.5 rounded"
+                :class="{
+                  'text-emerald-700 bg-emerald-100 font-semibold': part.status === 'correct',
+                  'text-red-700 bg-red-100': part.status === 'missing',
+                  'text-gray-900': part.status === 'neutral'
+                }"
+                x-text="part.text"
+                :title="part.note || ''"></span>
+            </template>
+
+            <!-- fallback when there is no evaluation yet -->
+            <template x-if="!card.annotations?.length">
+              <span x-text="card.text"></span>
+            </template>
+          </div>
+
+          <!-- Feedback -->
+          <div x-show="!card.pending && card.error" class="text-red-500 text-sm" x-text="card.error"></div>
+          <div x-show="!card.pending && card.solved" class="text-emerald-600 font-bold" x-text="card.translation"></div>
+
+          <!-- Guess input -->
+          <div x-show="card.showInput && !card.solved" class="space-y-2">
+            <input type="text"
+                   x-model="card.guess"
+                   placeholder="Type your translation guess"
+                   class="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-300 focus:outline-none"/>
+            <div x-show="card.pending" class="text-sm text-gray-500">Checking…</div>
+            <button x-show="!card.pending"
+                    @click="checkGuess(card)"
+                    class="px-4 py-2 rounded-xl bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition-all shadow">
+              Check
+            </button>
+            <p x-show="card.error" class="text-red-500 text-sm" x-text="card.error"></p>
+          </div>
+
+          <!-- Reveal translation (once solved) -->
+          <div x-show="card.solved" class="pt-4 border-t border-gray-200 text-gray-700">
+            <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Translation</div>
+            <div class="font-semibold text-emerald-600" x-text="card.translation"></div>
+          </div>
+
+        </div>
+      </template>
+    </div>
+  </div>
+<!--
+
+<script>
+function vault() {
+  return {
+    newText: '',
+    vaultEntries: [],
+    lexicon: {},
+    eventSource: null,
+
+    async init() {
+      await this.loadVaultEntries();
+      await this.loadLexicon();
+      this.initSSE();
+    },
+
+    initSSE() {
+      if (this.eventSource) return;
+
+      this.eventSource = new EventSource('/vault/events/fa902138-7f75-4af4-aff7-a4b3d401ad4d');
+
+      this.eventSource.onmessage = (event) => {
+        try {
+          console.log('SSE raw:', event.data);
+          const update = JSON.parse(event.data);
+          console.log('Parsed update:', update);
+          this.handleVaultUpdate(update);
+        } catch (e) {
+          console.error('Invalid SSE payload', event.data);
+        }
+      };
+
+      this.eventSource.onerror = (err) => {
+        console.error('SSE error', err);
+      };
+    },
+
+    handleVaultUpdate(update) {
+      const card = this.vaultEntries.find(v => v.attemptId === update.attemptId);
+      if (!card) return;
+
+      const evaluation = update.evaluation;
+      const solved =
+        evaluation.overall === 'correct' ||
+        evaluation.overall === 'partially_correct';
+
+      // Mutate the existing object in-place — Alpine will detect this
+      Object.assign(card, {
+        pending: false,
+        solved,
+        evaluation,
+        hasEvaluation: true,
+        translation: solved ? evaluation.notes || 'Correct' : null,
+        error: solved ? null : evaluation.notes || 'Incorrect',
+      });
+    },
+
+    get missingCount() {
+      return Object.values(this.summary.chunkStatus ?? {})
+        .filter(s => s === 'missing').length;
+    },
+
+    get correctCount() {
+      return Object.values(this.summary.chunkStatus ?? {})
+        .filter(s => s === 'correct').length;
+    },
+
+    normalizeAnnotations(annotations) {
+      if (!annotations?.length) return [];
+
+      const map = new Map<number, typeof annotations[0]>();
+
+      for (const ann of annotations) {
+        const key = `${ann.start}:${ann.end}`;
+        const existing = map.get(key);
+
+        // If we already have a “missing” entry and now see a “correct”, overwrite it
+        if (existing && existing.status === 'missing' && ann.status === 'correct') {
+          map.set(key, ann);
+          continue;
+        }
+
+        // Otherwise keep the first one we encounter (correct wins because we push it first)
+        if (!existing) {
+          map.set(key, ann);
+        }
+      }
+
+      return [...map.values()].sort((a, b) => a.start - b.start);
+    },
+
+    async loadVaultEntries() {
+      try {
+        const res = await fetch('/vault/list');
+        if (!res.ok) throw new Error('Failed to fetch vault entries');
+
+        const data = await res.json();
+
+        this.vaultEntries = data.map(item => {
+          const lastAttempt = item.attempts?.at(-1) ?? null;
+          const evaluation = lastAttempt?.evaluation ?? null;
+
+          return {
+            id: item.id,
+            text: item.text,
+            // always present, even if null
+            evaluation,
+            guess: '',
+            solved: !!evaluation && ['correct','partially_correct'].includes(evaluation.overall),
+            translation: evaluation?.notes ?? null,
+            error: null,
+            pending: false,
+            showInput: true,
+            attempts: item.attempts ?? [],
+            // extra flag used by the UI to know whether we ever got an evaluation
+            hasEvaluation: !!evaluation,
+          };
+        });
+
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    highlightedChunks(text, evaluation) {
+      const annotations = this.normalizeAnnotations(evaluation?.annotations);
+
+      if (!annotations.length) return [{ text, status: 'neutral' }];
+
+      const parts = [];
+      let currentIndex = 0;
+
+      for (const ann of annotations) {
+        if (ann.start > currentIndex) {
+          parts.push({ text: text.slice(currentIndex, ann.start), status: 'neutral' });
+        }
+
+        parts.push({
+          text: text.slice(ann.start, ann.end),
+          status: ann.status,
+          note: ann.note
+        });
+
+        currentIndex = ann.end;
+      }
+
+      if (currentIndex < text.length) {
+        parts.push({ text: text.slice(currentIndex), status: 'neutral' });
+      }
+
+      return parts;
+    },
+
+    async loadLexicon() {
+      try {
+        const res = await fetch('/lexicon/user');
+        if (!res.ok) throw new Error('Failed to fetch lexicon');
+
+        const data = await res.json();
+        this.lexicon = {};
+
+        data.forEach(entry => {
+          if (entry.word) {
+            this.lexicon[entry.word.toLowerCase()] = entry.score;
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async addVaultEntry() {
+      if (!this.newText.trim()) return;
+
+      try {
+        const res = await fetch('/vault', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: this.newText })
+        });
+
+        if (!res.ok) throw new Error('Failed to create vault entry');
+
+        const data = await res.json();
+
+
+        this.vaultEntries.push({
+          id: data.vaultId,
+          text: this.newText,
+          guess: '',
+          solved: false,
+          translation: null,
+          evaluation: null,
+          error: null,
+          pending: false,
+          showInput: false
+        });
+
+        this.newText = '';
+      } catch (err) {
+        console.error(err);
+      }
+    },
+
+    async checkGuess(card) {
+      card.error = null;
+      card.pending = true;
+
+      try {
+        // Generate a temporary attemptId (UUID)
+        const tempAttemptId = crypto.randomUUID();
+        card.attemptId = tempAttemptId;
+
+        const res = await fetch(`/vault/${card.id}/guess`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            guess: card.guess,
+            original: card.text,
+            attemptId: tempAttemptId // send to backend
+          })
+        });
+
+        if (!res.ok) throw new Error('Guess failed');
+      } catch (err) {
+        console.error(err);
+        card.error = 'Failed to submit guess';
+        card.pending = false;
+      }
+    }
+  };
+}
+</script> -->
+<script>
+// -------------------------------------------------
+//  Minimal copy of the component you already have
+// -------------------------------------------------
+window.vault = function () {
+  return {
+    newText: '',
+    vaultEntries: [],
+    lexicon: {},
+    eventSource: null,
+
+    async init() {
+      await this.loadVaultEntries();
+      await this.loadLexicon();
+      this.initSSE();
+    },
+
+    /* ----------  SSE ---------- */
+    initSSE() {
+      if (this.eventSource) return;
+      this.eventSource = new EventSource('/vault/events/fa902138-7f75-4af4-aff7-a4b3d401ad4d');
+      this.eventSource.onmessage = ev => {
+        try {
+          const update = JSON.parse(ev.data);
+          this.handleVaultUpdate(update);
+        } catch (e) {
+          console.error('Bad SSE payload', ev.data);
+        }
+      };
+      this.eventSource.onerror = err => console.error('SSE error', err);
+    },
+
+    handleVaultUpdate(update) {
+      const card = this.vaultEntries.find(v => v.attemptId === update.attemptId);
+      if (!card) return;
+      const solved = ['correct', 'partially_correct'].includes(update.evaluation.overall);
+      Object.assign(card, {
+        pending: false,
+        solved,
+        evaluation: update.evaluation,
+        translation: solved ? update.evaluation.notes || 'Correct' : null,
+        error: solved ? null : update.evaluation.notes || 'Incorrect',
+      });
+    },
+
+    /* ----------  Loading ---------- */
+    async loadVaultEntries() {
+      const res = await fetch('/vault/list');
+      if (!res.ok) throw new Error('Failed to fetch vault entries');
+      const data = await res.json();
+
+      // Each entry already contains `annotations` (produced by the BE).
+      this.vaultEntries = data.map(item => ({
+        id: item.id,
+        text: item.text,
+        // <-- NEW: keep the raw annotations array
+        annotations: item.annotations ?? [],
+
+        // The UI still needs a few booleans for the guess UI
+        guess: '',
+        solved: item.solved ?? false,
+        translation: null,
+        pending: false,
+        showInput: true,
+      }));
+    },
+
+    async loadLexicon() {
+      const res = await fetch('/lexicon/user');
+      if (!res.ok) throw new Error('Failed to fetch lexicon');
+      const data = await res.json();
+      this.lexicon = {};
+      data.forEach(e => {
+        if (e.word) this.lexicon[e.word.toLowerCase()] = e.score;
+      });
+    },
+
+    /* ----------  Adding a new entry ---------- */
+    async addVaultEntry() {
+      if (!this.newText.trim()) return;
+      const res = await fetch('/vault', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: this.newText })
+      });
+      if (!res.ok) throw new Error('Create failed');
+      const { vaultId } = await res.json();
+      this.vaultEntries.push({
+        id: vaultId,
+        text: this.newText,
+        annotations: item.annotations ?? [],
+        guess: '',
+        solved: false,
+        translation: null,
+        pending: false,
+        showInput: false,
+      });
+      this.newText = '';
+    },
+
+    /* ----------  Checking a guess ---------- */
+    async checkGuess(card) {
+      card.error = null;
+      card.pending = true;
+      const tempId = crypto.randomUUID();
+      card.attemptId = tempId;               // keep it on the card for SSE matching
+      await fetch(`/vault/${card.id}/guess`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guess: card.guess,
+          original: card.text,
+          attemptId: tempId
+        })
+      }).catch(err => {
+        console.error(err);
+        card.error = 'Failed to submit guess';
+        card.pending = false;
+      });
+    },
+
+    /* ----------  Highlight helper ---------- */
+    normalizeAnnotations(annotations) {
+      if (!annotations?.length) return [];
+
+      const map = new Map();
+      for (const ann of annotations) {
+        const key = `${ann.start}:${ann.end}`;
+        const existing = map.get(key);
+        // “correct” wins over “missing”
+        if (!existing || (existing.status === 'missing' && ann.status === 'correct')) {
+          map.set(key, ann);
+        }
+      }
+      return [...map.values()].sort((a, b) => a.start - b.start);
+    },
+
+    /* -------------------------------------------------------------
+      Turn raw text + {annotations:[…]} → coloured parts
+      ------------------------------------------------------------- */
+    highlightedChunks(text, source) {
+      // `source` can be the whole evaluation object or just {annotations: […]}
+      const anns = this.normalizeAnnotations(source?.annotations);
+
+      // No annotations → whole string stays neutral
+      if (!anns.length) return [{ text, status: 'neutral' }];
+
+      const parts = [];
+      let cur = 0;
+
+      for (const a of anns) {
+        if (a.start > cur) {
+          parts.push({ text: text.slice(cur, a.start), status: 'neutral' });
+        }
+        parts.push({
+          text: text.slice(a.start, a.end),
+          status: a.status,          // "correct" or "missing"
+          note: a.note,
+        });
+        cur = a.end;
+      }
+
+      if (cur < text.length) {
+        parts.push({ text: text.slice(cur), status: 'neutral' });
+      }
+      return parts;
+    },
+  };
+};
+</script>

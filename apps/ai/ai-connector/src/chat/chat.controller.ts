@@ -9,7 +9,7 @@ export class ChatAiConsumer {
 
   constructor(private readonly chatService: ChatService) { }
 
-  @MessagePattern('chat.message')
+  @MessagePattern('chat.full')
   async handleChatMessage(@Payload() payload: ChatMessagePayload) {
     this.logger.log(
       `📥 Received ChatMessagePayload: ${JSON.stringify(payload)}`,

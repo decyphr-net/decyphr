@@ -37,11 +37,14 @@ export class ChatController implements OnModuleInit {
    */
   async onModuleInit() {
     await this.kafkaService.consume(
-      ['chat.started', 'chat.response'],
+      ['chat.started', 'chat.bot.response'],
       'chat-ui-group',
       async (payload) => {
+        console.log(payload)
         const messageValue = payload.message.value?.toString() ?? '{}';
+        console.log(messageValue)
         const parsed = JSON.parse(messageValue);
+        console.log(parsed)
 
         if (parsed.type === 'started') {
           await this.handleChatStarted(payload);
@@ -51,7 +54,7 @@ export class ChatController implements OnModuleInit {
       },
     );
 
-    this.logger.log('Subscribed to Kafka topics chat.started, chat.response');
+    this.logger.log('Subscribed to Kafka topics chat.started, chat.bot.response');
   }
 
   /**
@@ -126,16 +129,20 @@ export class ChatController implements OnModuleInit {
   ) {
     const user = await this.authService.getUserFromSession(req);
 
+    const interaction = {
+      type: 'chat_message',
+      timestamp: new Date()
+    };
+
     const payload = {
       type: 'message',
       chatId: body.chatId,
       botId: body.botId,
       clientId: user.clientId,
       messages: body.messages,
+      interaction,
       langToTranslateTo: user.languageSettings?.[0]?.firstLanguage
     };
-
-    console.log(payload);
 
     this.logger.debug(
       `Producing chat.message for clientId=${user.clientId}, chatId=${body.chatId}`,

@@ -4,16 +4,16 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AiInterfaceController } from './ai-interface.controller';
 import { AiInterfaceService } from './ai-interface.service';
-import { Translation, WordBreakdown } from './translation.entity';
+import { Translation } from './translation.entity';
 
 @Module({
   imports: [
-    ConfigModule, // Import ConfigModule to access environment variables
+    ConfigModule,
     ClientsModule.registerAsync([
       {
         name: 'TRANSLATION',
-        imports: [ConfigModule], // Ensure ConfigModule is available
-        inject: [ConfigService], // Inject ConfigService for accessing environment variables
+        imports: [ConfigModule],
+        inject: [ConfigService],
         useFactory: async (configService: ConfigService) => ({
           transport: Transport.KAFKA,
           options: {
@@ -37,7 +37,7 @@ import { Translation, WordBreakdown } from './translation.entity';
         }),
       },
     ]),
-    TypeOrmModule.forFeature([Translation, WordBreakdown]),
+    TypeOrmModule.forFeature([Translation]),
   ],
   providers: [AiInterfaceService],
   controllers: [AiInterfaceController],

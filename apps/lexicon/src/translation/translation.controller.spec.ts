@@ -54,8 +54,7 @@ describe('TranslationController', () => {
       clientId: 'client123',
       interactionType: 'active',
       translationResponse: {
-        detectedLanguage: 'en',
-        translatedText: 'Hola, mundo!',
+        translated: 'Hola, mundo!',
         tense: 'present',
         breakdown: [
           {
@@ -65,7 +64,6 @@ describe('TranslationController', () => {
             lemma: 'hello',
             level: 'A1',
             pos_tag: 'verb',
-            alternatives: ['hi', 'hey'],
           },
         ],
       },
@@ -89,8 +87,7 @@ describe('TranslationController', () => {
       clientId: 'client123',
       interactionType: 'active',
       translationResponse: {
-        detectedLanguage: 'en',
-        translatedText: 'Hola, mundo!',
+        translated: 'Hola, mundo!',
         tense: 'present',
         breakdown: [
           {
@@ -100,7 +97,6 @@ describe('TranslationController', () => {
             lemma: 'hello',
             level: 'A1',
             pos_tag: 'verb',
-            alternatives: ['hi', 'hey'],
           },
         ],
       },

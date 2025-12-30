@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { EnrichmentModule } from 'src/enrichment/enrichment.module';
 import { GroqProvider } from 'src/providers/groq.provider';
+import { RedisService } from 'src/utils/redis/redis.service';
 import { TranslationController } from './translation.controller';
 import { TranslationService } from './translation.service';
 
@@ -31,7 +32,7 @@ import { TranslationService } from './translation.service';
     ]),
     EnrichmentModule,
   ],
-  providers: [GroqProvider, TranslationService],
+  providers: [GroqProvider, TranslationService, RedisService],
   controllers: [TranslationController],
   exports: [TranslationService],
 })

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SaveTranslationResult } from './dto/save-translation-result.dto';
 import { SaveTranslationDto } from './dto/save-translation.dto';
-import { Translation, WordBreakdown } from './translation.entity';
+import { Translation } from './translation.entity';
 
 /**
  * Service responsible for handling translations, saving them to the database,
@@ -20,7 +20,7 @@ export class AiInterfaceService {
   ) { }
 
   /**
-   * Saves a translation to the database along with its breakdown.
+   * Saves a translation to the database.
    *
    * @param data The translation data to be saved.
    * @returns A plain object representation of the saved translation.
@@ -30,31 +30,11 @@ export class AiInterfaceService {
   ): Promise<SaveTranslationResult> {
     this.logger.log(`Saving translation for client: ${data.clientId}`);
 
-    // Ensure breakdown is defined and is an array
-    const breakdownData = Array.isArray(data.breakdown) ? data.breakdown : [];
-
     const translation = this.translationRepository.create({
       clientId: data.clientId,
       originalText: data.originalText,
-      detectedLanguage: data.detectedLanguage,
       targetLanguage: data.targetLanguage,
-      translatedText: data.translatedText,
-      alternatives: data.alternatives || [],
-    });
-
-    translation.breakdown = breakdownData.map((word) => {
-      const wordBreakdown = new WordBreakdown();
-      wordBreakdown.originalWord = word.originalWord;
-      wordBreakdown.translatedWord = word.translatedWord;
-      wordBreakdown.alternatives = JSON.stringify(word.alternatives || []);
-      wordBreakdown.pos_tag = word.pos_tag;
-      wordBreakdown.lemma = word.lemma;
-      wordBreakdown.correctness = word.correctness;
-      wordBreakdown.level = word.level;
-      wordBreakdown.correctedWord = word.correctedWord;
-      wordBreakdown.translation = translation;
-
-      return wordBreakdown;
+      translated: data.translated,
     });
 
     const savedTranslation = await this.translationRepository.save(translation);
@@ -63,21 +43,8 @@ export class AiInterfaceService {
       id: savedTranslation.id,
       clientId: savedTranslation.clientId,
       originalText: savedTranslation.originalText,
-      detectedLanguage: savedTranslation.detectedLanguage,
       targetLanguage: savedTranslation.targetLanguage,
-      translatedText: savedTranslation.translatedText,
-      alternatives: savedTranslation.alternatives,
-      breakdown: savedTranslation.breakdown.map((wordBreakdown) => ({
-        id: wordBreakdown.id,
-        originalWord: wordBreakdown.originalWord,
-        translatedWord: wordBreakdown.translatedWord,
-        alternatives: JSON.parse(wordBreakdown.alternatives || '[]'),
-        pos_tag: wordBreakdown.pos_tag,
-        lemma: wordBreakdown.lemma,
-        correctness: wordBreakdown.correctness,
-        level: wordBreakdown.level,
-        correctedWord: wordBreakdown.correctedWord,
-      })),
+      translated: savedTranslation.translated,
       createdAt: savedTranslation.createdAt,
     };
   }
@@ -95,7 +62,6 @@ export class AiInterfaceService {
       const translations = await this.translationRepository.find({
         where: { clientId },
         order: { createdAt: 'DESC' },
-        relations: ['breakdown'],
       });
 
       this.logger.log(

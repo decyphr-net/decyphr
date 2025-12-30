@@ -45,7 +45,7 @@ export class EnrichmentService {
       targetMessage.content,
       payload.clientId,
       bot.language,
-      payload.langToTranslateTo,
+      payload.language,
       interactionType,
       'chat',
     );
@@ -82,11 +82,11 @@ export class EnrichmentService {
     interactionType: 'active' | 'passive',
     source: 'chat' | 'translation' | 'manual',
   ) {
-    const translationResponse = await this.groqProvider.getStructuredResponse({
+    const translationResponse = await this.groqProvider.translateSimple(
       text,
       sourceLang,
       targetLang,
-    });
+    );
 
     await this.kafkaClient.emit(
       'lexicon.update',

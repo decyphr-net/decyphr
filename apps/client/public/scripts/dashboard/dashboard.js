@@ -1,8 +1,16 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data('dashboard', () => ({
     stats: [],
+    practiceDuration: 5,
+    activeSection: '',
 
     init() {
+      this.initStats();
+      this.initScrollSpy();
+      if (window.lucide) window.lucide.createIcons();
+    },
+
+    initStats() {
       const t = Alpine.store('i18n').t;
       const finalValues = [234, 17, 112, 86, 29, 10];
 
@@ -27,6 +35,19 @@ document.addEventListener('alpine:init', () => {
           }
         }, 20);
       });
+    },
+
+    initScrollSpy() {
+      const sections = document.querySelectorAll('section[data-section]');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            this.activeSection = entry.target.dataset.section;
+          }
+        });
+      }, { threshold: 0.5 });
+
+      sections.forEach(section => observer.observe(section));
     }
-  }))
+  }));
 });

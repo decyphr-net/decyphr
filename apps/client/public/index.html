@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" hx-boost="true">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decyphr</title>
+  <script src="https://unpkg.com/htmx.org"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoom-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 1s ease-in-out forwards;
+    }
+
+    .animate-slide-in {
+      animation: slide-in 1s ease-out forwards;
+    }
+
+    .animate-zoom-in {
+      animation: zoom-in 0.6s ease-out forwards;
+    }
+
+    .delay-0 {
+      animation-delay: 0s;
+    }
+
+    .delay-100 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-200 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-300 {
+      animation-delay: 0.3s;
+    }
+  </style>
+</head>
+
+<body x-data>
+  <!-- NAV -->
+  <nav class="border-b bg-white">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="text-2xl font-bold bg-blue-500 bg-clip-text text-transparent">Decyphr</a>
+      <div class="flex items-center space-x-4">
+        <template x-if="$store.auth.isLoggedIn">
+          <span class="text-sm text-gray-600" x-text="$store.auth.user?.email"></span>
+        </template>
+        <div hx-get="/components/locale-switcher.html" hx-trigger="load" hx-swap="outerHTML"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="relative py-24 bg-gradient-to-r from-teal-400 to-blue-500 text-white text-center overflow-hidden">
+    <div class="max-w-4xl mx-auto px-4 space-y-6 animate-fade-in">
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight bg-white/20 backdrop-blur-md rounded-lg p-4">
+        <span x-text="$store.i18n.t('home.hero.title')"></span>
+      </h1>
+      <p class="text-xl md:text-2xl text-white/90" x-text="$store.i18n.t('home.hero.subtitle')"></p>
+      <a x-bind:href="() => $store.auth.isLoggedIn ? '/dashboard' : '/auth/login'"
+        class="inline-flex items-center justify-center px-8 py-4 mt-6 rounded-md bg-white text-blue-600 font-semibold text-lg hover:scale-105 transform transition shadow-lg"
+        x-text="$store.i18n.t('home.cta.button')">
+      </a>
+    </div>
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-0 left-1/2 w-[300px] h-[300px] bg-white/10 rounded-full animate-zoom-in"></div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4 text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold" x-text="$store.i18n.t('home.features.title')">Features You’ll Love</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+      <div class="bg-white p-6 rounded-lg shadow-lg animate-slide-in delay-0">
+        <div class="mb-4">
+          <i data-lucide="languages" class="w-12 h-12 mx-auto text-blue-500"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" x-text="$store.i18n.t('home.features.translation.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.features.translation.description')"></p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg animate-slide-in delay-100">
+        <div class="mb-4">
+          <i data-lucide="message-circle" class="w-12 h-12 mx-auto text-green-500"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" x-text="$store.i18n.t('home.features.practice.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.features.practice.description')"></p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-lg animate-slide-in delay-200">
+        <div class="mb-4">
+          <i data-lucide="bar-chart-2" class="w-12 h-12 mx-auto text-yellow-500"></i>
+        </div>
+        <h3 class="text-xl font-semibold mb-2" x-text="$store.i18n.t('home.features.tracking.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.features.tracking.description')"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="py-20">
+    <div class="max-w-6xl mx-auto px-4 text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold" x-text="$store.i18n.t('home.how_it_works.title')"></h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 text-left">
+      <div class="p-6 animate-fade-in delay-0">
+        <h3 class="text-2xl font-semibold mb-2" x-text="$store.i18n.t('home.how_it_works.step1.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.how_it_works.step1.description')"></p>
+      </div>
+      <div class="p-6 animate-fade-in delay-100">
+        <h3 class="text-2xl font-semibold mb-2" x-text="$store.i18n.t('home.how_it_works.step2.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.how_it_works.step2.description')"></p>
+      </div>
+      <div class="p-6 animate-fade-in delay-200">
+        <h3 class="text-2xl font-semibold mb-2" x-text="$store.i18n.t('home.how_it_works.step3.title')"></h3>
+        <p class="text-gray-600" x-text="$store.i18n.t('home.how_it_works.step3.description')"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY DECYPHR -->
+  <section class="py-20 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-center">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold mb-12" x-text="$store.i18n.t('home.why_decyphr.title')">
+        Why Decyphr?
+      </h2>
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-10">
+        <template x-for="(point, index) in $store.i18n.t('home.why_decyphr.points')" :key="index">
+          <div class="p-6 bg-white bg-opacity-10 rounded-lg shadow-lg animate-slide-in" :class="`delay-${index * 100}`">
+            <i data-lucide="star" class="w-12 h-12 mx-auto mb-4"></i>
+            <p class="text-white font-semibold" x-text="point"></p>
+          </div>
+        </template>
+      </div>
+      <p class="mt-8 max-w-3xl mx-auto text-lg" x-text="$store.i18n.t('home.why_decyphr.description')">
+        We combine AI-driven practice with smart learning tools to help you speak confidently, understand faster, and
+        enjoy the journey.
+      </p>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-20 bg-gray-100 text-center">
+    <div class="max-w-6xl mx-auto px-4 mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6" x-text="$store.i18n.t('home.testimonials.title')">Testimonials
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+      <div class="p-6 animate-fade-in delay-0">
+        <p class="italic text-gray-600 mb-4" x-text="$store.i18n.t('home.testimonials.student.feedback')"></p>
+        <h4 class="font-semibold text-gray-700" x-text="$store.i18n.t('home.testimonials.student.name')"></h4>
+      </div>
+      <div class="p-6 animate-fade-in delay-100">
+        <p class="italic text-gray-600 mb-4" x-text="$store.i18n.t('home.testimonials.traveller.feedback')"></p>
+        <h4 class="font-semibold text-gray-700" x-text="$store.i18n.t('home.testimonials.traveller.name')"></h4>
+      </div>
+      <div class="p-6 animate-fade-in delay-200">
+        <p class="italic text-gray-600 mb-4" x-text="$store.i18n.t('home.testimonials.professional.feedback')"></p>
+        <h4 class="font-semibold text-gray-700" x-text="$store.i18n.t('home.testimonials.professional.name')"></h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="py-20 bg-gradient-to-r from-teal-400 to-blue-500 text-white text-center">
+    <div class="max-w-4xl mx-auto px-4">
+      <h2 class="text-4xl font-bold mb-4" x-text="$store.i18n.t('home.cta.title')"></h2>
+      <p class="text-lg mb-8" x-text="$store.i18n.t('home.cta.subtitle')"></p>
+      <a :href="$store.auth.isLoggedIn ? '/dashboard' : '/auth/login'"
+        class="inline-flex items-center justify-center px-8 py-4 rounded-md bg-white text-blue-600 font-semibold hover:scale-105 transform transition shadow-lg"
+        x-text="$store.i18n.t('home.cta.button')">
+      </a>
+    </div>
+  </section>
+
+  <script>
+    lucide?.createIcons();
+  </script>
+
+  <!-- ALPINE i18n -->
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('i18n', {
+        translations: {},
+        t(key) { return key.split('.').reduce((o, p) => o?.[p], this.translations) || key },
+        load(lang = localStorage.getItem('language') || 'en') {
+          fetch(`/i18n?lang=${lang}`).then(r => r.json()).then(d => this.translations = d);
+        }
+      });
+      Alpine.store('i18n').load();
+    });
+
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('auth', {
+        user: null,
+        async init() { try { const res = await fetch('/auth/me', { credentials: 'include' }); if (res.ok) this.user = await res.json(); } catch (err) { console.warn('User not logged in or /api/me failed', err); } },
+        get isLoggedIn() { return !!this.user; }
+      });
+      Alpine.store('auth').init();
+    });
+  </script>
+</body>
+
+</html>

@@ -16,57 +16,73 @@
   },
   "home": {
     "hero": {
-      "title": "Domine Idiomas Naturalmente",
-      "subtitle": "Aprendizado de idiomas impulsionado por IA que se adapta a você",
+      "title": "Domine Línguas Naturalmente",
+      "subtitle": "Aprenda e pratique línguas sem esforço com ferramentas impulsionadas por IA que se adaptam a você.",
       "cta": "Comece a Aprender Gratuitamente"
     },
     "features": {
+      "title": "Funcionalidades Que Vai Adorar",
       "translation": {
         "title": "Tradução Inteligente",
-        "description": "Obtenha traduções com análise contextual e gramatical"
+        "description": "Obtenha traduções instantâneas e análise gramatical consciente do contexto, para que cada palavra faça sentido."
       },
       "practice": {
         "title": "Prática de Conversação com IA",
-        "description": "Ganhe confiança conversando com parceiros de IA sem pressão"
+        "description": "Construa fluência e confiança através de chats interativos sem stress com personagens de IA."
       },
       "tracking": {
-        "title": "Acompanhamento de Progresso Inteligente",
-        "description": "Aprenda com eficiência com planos de revisão personalizados"
+        "title": "Acompanhamento de Progresso Personalizado",
+        "description": "Acompanhe automaticamente seu vocabulário, gramática e habilidades de conversação para aprender de forma mais rápida e inteligente."
       }
+    },
+    "why_decyphr": {
+      "title": "Por Que Decyphr?",
+      "description": "Combinamos aprendizagem orientada por IA com ferramentas interativas para que você possa focar em compreender, praticar e reter a língua naturalmente.",
+      "points": [
+        "Aprenda de forma natural com exercícios de conversação baseados em IA",
+        "Ver dicas para qualquer texto e indicadores de proficiência em cada palavra",
+        "Pratique sessões guiadas ou livres, de acordo com seu estilo de aprendizagem",
+        "Leia e absorva a língua através dos seus gêneros favoritos",
+        "Simule cenários da vida real para se preparar para a comunicação prática",
+        "Acompanhe seu progresso facilmente com dashboards inteligentes",
+        "Pratique a qualquer hora e em qualquer lugar com exercícios flexíveis orientados por IA",
+        "Personalize o conteúdo de acordo com seus interesses e objetivos de aprendizagem",
+        "Concentre-se na aprendizagem, não na gamificação, para um progresso significativo"
+      ]
     },
     "how_it_works": {
       "title": "Como Funciona",
       "step1": {
-        "title": "Escolha Seu Bot",
-        "description": "Escolha um bot de personagem baseado na sua língua, região e interesses."
+        "title": "Escolha Seu Companheiro de IA",
+        "description": "Escolha um bot de personagem que corresponda ao seu idioma-alvo, interesses e objetivos de aprendizagem."
       },
       "step2": {
-        "title": "Comece a Conversar",
-        "description": "Inicie uma conversa e pratique diálogos naturais no seu ritmo."
+        "title": "Participe de Conversas Reais",
+        "description": "Converse, leia e complete exercícios no seu próprio ritmo com cenários significativos e personalizados."
       },
       "step3": {
         "title": "Acompanhe & Melhore",
-        "description": "Monitore seu vocabulário e gramática automaticamente enquanto aprende."
+        "description": "Receba feedback automático, monitore seu progresso e fortaleça pontos fracos com prática direcionada."
       }
     },
     "testimonials": {
-      "title": "Depoimentos",
+      "title": "O Que os Alunos Dizem",
       "student": {
-        "feedback": "\"Este app facilitou muito a prática do irlandês — estou muito mais confiante!\"",
+        "feedback": "\"Decyphr me ajudou a praticar irlandês de forma natural e agradável. Estou mais confiante a cada dia!\"",
         "name": "- Saoirse, Estudante"
       },
       "traveller": {
-        "feedback": "\"Conversar com personagens de diferentes regiões tornou aprender português muito mais divertido!\"",
+        "feedback": "\"Usar bots de IA de diferentes regiões tornou aprender português divertido e imersivo.\"",
         "name": "- Lucas, Viajante"
       },
       "professional": {
-        "feedback": "\"Adoro como o sistema rastreia automaticamente minhas palavras fracas — como um tutor pessoal.\"",
+        "feedback": "\"Adoro como o Decyphr monitora meus pontos fracos automaticamente. É como ter um tutor pessoal!\"",
         "name": "- Emily, Profissional"
       }
     },
     "cta": {
       "title": "Pronto para Falar com Confiança?",
-      "subtitle": "Junte-se a aprendizes do mundo inteiro dominando novos idiomas com conversas significativas.",
+      "subtitle": "Junte-se a milhares de aprendizes em todo o mundo dominando idiomas naturalmente através de conversas e práticas guiadas por IA.",
       "button": "Comece Sua Jornada Hoje"
     }
   },
@@ -77,6 +93,9 @@
     "pricing": "Preços"
   },
   "auth": {
+    "title": "Bem-vindo ao Decyphr",
+    "subtitle": "Aprendizagem de línguas com IA, adaptada ao seu ritmo e interesses",
+    "why_decyphr": "Por Que Escolher o Decyphr?",
     "emailPlaceholder": "Insira seu endereço de e-mail",
     "signIn": "Enviar link mágico",
     "sending": "Enviando...",
@@ -90,25 +109,36 @@
     "immersionFull": "Imersão Total (sem dicas)",
     "saveSettings": "Salvar Configurações",
     "selectLanguage": "Selecione um idioma",
-    "benefits": {
-      "1": "✅ Converse com personagens de IA no seu idioma de destino",
-      "2": "✅ Acompanhe palavras fracas e gramática em tempo real",
-      "3": "✅ Pratique diariamente com conversas naturais e estruturadas"
-    }
+    "benefits": [
+      "Converse com personagens de IA no seu idioma alvo",
+      "Acompanhe palavras fracas e gramática em tempo real",
+      "Pratique diariamente com conversas estruturadas e naturais",
+      "Receba dicas e explicações instantâneas para qualquer texto",
+      "Aprenda através de leitura e cenários adaptados aos seus interesses"
+    ]
   },
   "dashboard": {
-    "stats": {
-      "title": "Sua Jornada Linguística",
-      "chatMessages": "Mensagens de Chat Enviadas",
-      "wordsToPractice": "Palavras para Praticar",
-      "wordsMastered": "Palavras Dominadas",
-      "translations": "Traduções Concluídas",
-      "conversations": "Conversas com IA Iniciadas",
-      "books": "Livros Lidos"
+    "navbar": {
+      "vocabulary": "Vocabulário",
+      "readingListening": "Leitura e Audição",
+      "speakingWriting": "Expressão Oral e Escrita"
     },
+    "sections": {
+      "speakingWriting": "Expressão Oral e Escrita",
+      "vocabulary": "Vocabulário",
+      "readingListening": "Leitura e Audição",
+      "tools": "Ferramentas de Língua"
+    },
+    "practice": {
+      "title": "Prática Guiada",
+      "subtitle": "Comece uma sessão cronometrada com uma mistura de conversa, leitura e flashcards.",
+      "durationLabel": "Duração diária de prática",
+      "cta": "Iniciar Prática"
+    },
+    "orBuildYourOwn": "ou construa a sua própria",
     "chat": {
-      "title": "Conversar com IA",
-      "description": "Pratique seu idioma alvo com conversas com IA.",
+      "title": "Converse com AI",
+      "description": "Pratique sua língua-alvo através de conversas com AI.",
       "cta": "Começar Conversa"
     },
     "translation": {
@@ -117,9 +147,34 @@
       "cta": "Traduzir Texto"
     },
     "lexicon": {
-      "title": "Léxico Pessoal",
-      "description": "Revise e gerencie palavras aprendidas.",
-      "cta": "Ver Léxico"
+      "title": "Lexicon Pessoal",
+      "description": "Revise e gerencie palavras que você aprendeu.",
+      "cta": "Ver Lexicon"
+    },
+    "storytime": {
+      "title": "Hora da História",
+      "description": "Leia histórias curtas e responda perguntas de compreensão.",
+      "cta": "Começar História"
+    },
+    "scenarioReviser": {
+      "title": "Revisor de Cenários",
+      "description": "Pratique cenários da vida real usando sua língua-alvo.",
+      "cta": "Iniciar Cenário"
+    },
+    "verbPracticer": {
+      "title": "Praticador de Verbos",
+      "description": "Preencha os espaços em branco para praticar conjugações de verbos.",
+      "cta": "Praticar Verbos"
+    },
+    "bookTracker": {
+      "title": "Registo de Leituras",
+      "description": "Acompanha o que já leste.",
+      "cta": "Abrir Registo"
+    },
+    "toolsTranslation": {
+      "title": "Traduções",
+      "description": "Traduz textos rapidamente.",
+      "cta": "Traduzir"
     }
   },
   "chat": {
@@ -141,5 +196,17 @@
     "translatePaginationPrev": "Anterior",
     "translatePaginationNext": "Próximo",
     "translatePaginationText": "Página {page} de {totalPages}"
+  },
+  "lexicon": {
+    "title": "Suas Interações com Palavras",
+    "table": {
+      "word": "Palavra",
+      "type": "Tipo",
+      "family": "Família",
+      "familiarity": "Familiaridade",
+      "revise": "Precisa de Revisão",
+      "action": "Ação"
+    },
+    "noWords": "Nenhuma Interação com Palavras"
   }
 }

@@ -13,6 +13,13 @@ export class KTableService implements OnModuleInit, OnModuleDestroy {
   private tables: Map<string, Map<string, any>> = new Map();
   private subscribers = new Map<string, Set<(key: string, value: any) => void>>();
 
+  constructor() {
+    this.logger.log(
+      `🔧 KTableService instantiated – pid:${process.pid} ts:${Date.now()}`,
+    );
+  }
+
+
   async onModuleInit() {
     this.logger.log('KTableService initialized');
   }

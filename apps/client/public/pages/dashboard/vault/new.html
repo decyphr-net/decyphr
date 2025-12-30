@@ -1,0 +1,90 @@
+<!-- <div class="container mx-auto px-4 py-12 space-y-12 bg-gray-50/50" x-data="vault()" x-init="init()">
+
+  <!-- =============================== -->
+  <!-- HERO / ADD ENTRY -->
+  <!-- =============================== -->
+  <div class="p-8 bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-2xl shadow-lg text-center text-white hover:shadow-2xl transition-shadow border overflow-hidden">
+    <h2 class="text-2xl md:text-3xl font-bold">Add Text to Vault</h2>
+    <p class="mt-2 text-sm opacity-90 max-w-md mx-auto">Store and practice your vocabulary effortlessly</p>
+
+    <textarea x-model="newText"
+              placeholder="Enter text here..."
+              class="mt-4 w-full p-4 rounded-xl text-gray-900 focus:ring-2 focus:ring-emerald-300 focus:outline-none resize-none shadow-sm"
+              rows="3"></textarea>
+
+    <button @click="addVaultEntry()"
+            class="mt-4 inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold bg-white text-emerald-600 hover:bg-gray-100 shadow transition-all">
+      Add to Vault
+    </button>
+  </div>
+
+  <!-- =============================== -->
+  <!-- VAULT ENTRIES -->
+  <!-- =============================== -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <template x-for="card in vaultEntries" :key="card.id">
+      <div class="flex flex-col bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all p-6 space-y-4">
+
+        <!-- Original Text with Attempt Highlighting -->
+        <div class="text-gray-900 text-base leading-relaxed cursor-pointer"
+            @click="card.showInput = true">
+
+          <template x-if="card.evaluation">
+            <template
+              x-for="(part, idx) in highlightedChunks(card.text, card.evaluation)"
+              :key="idx"
+            >
+              <span
+                class="px-0.5 rounded"
+                :class="{
+                  'text-emerald-700 bg-emerald-100 font-semibold': part.status === 'correct',
+                  'text-red-700 bg-red-100': part.status === 'missing',
+                  'text-gray-900': part.status === 'neutral'
+                }"
+                x-text="part.text"
+                :title="part.note || ''"
+              ></span>
+            </template>
+          </template>
+
+          <template x-if="!card.evaluation">
+            <span x-text="card.text"></span>
+          </template>
+
+        </div>
+
+
+        <!-- Feedback Messages -->
+        <div x-show="!card.pending && card.error" x-text="card.error" class="text-red-500 text-sm"></div>
+        <div x-show="!card.pending && card.solved" x-text="card.translation" class="text-emerald-600 font-bold"></div>
+
+        <!-- Guess Input -->
+        <div x-show="card.showInput && !card.solved" class="space-y-2">
+          <input type="text" x-model="card.guess"
+                 placeholder="Type your translation guess"
+                 class="w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-2 focus:ring-emerald-300 focus:outline-none"/>
+
+          <div x-show="card.pending" class="text-sm text-gray-500">Checking…</div>
+
+          <button x-show="!card.pending" @click="checkGuess(card)"
+                  class="px-4 py-2 rounded-xl bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition-all shadow">
+            Check
+          </button>
+
+          <p x-show="card.error" x-text="card.error" class="text-red-500 text-sm"></p>
+        </div>
+
+        <!-- Reveal Translation -->
+        <div x-show="card.solved" class="pt-4 border-t border-gray-200 text-gray-700">
+          <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Translation</div>
+          <div x-text="card.translation" class="font-semibold text-emerald-600"></div>
+        </div>
+      </div>
+    </template>
+
+  </div>
+
+</div>
+
+<div class="hidden text-emerald-700 bg-emerald-100 text-red-700 bg-red-100"></div> -->

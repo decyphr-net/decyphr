@@ -30,6 +30,7 @@
     "@nestjs/serve-static": "^5.0.3",
     "@nestjs/testing": "^11.0.13",
     "@nestjs/typeorm": "^11.0.0",
+    "@nestjs/microservices": "^11.0.13",
     "@nestjs/websockets": "^11.0.13",
     "alpinejs": "^3.14.9",
     "bcryptjs": "^3.0.2",
@@ -45,7 +46,9 @@
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1",
     "typeorm": "^0.3.22",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "ulid": "3.0.1",
+    "ioredis": "^5.6.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.7",

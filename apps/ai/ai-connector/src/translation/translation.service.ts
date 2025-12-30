@@ -1,8 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
-import { EnrichmentService } from 'src/enrichment/enrichment.service';
 import { GroqProvider } from 'src/providers/groq.provider';
-import { TranslateDto } from './translation-request.dto';
+import { TranslationDto } from './translation-request.dto';
 
 @Injectable()
 export class TranslationService {
@@ -10,35 +9,35 @@ export class TranslationService {
   constructor(
     @Inject('TRANSLATION') private readonly translationClient: ClientKafka,
     private readonly groqProvider: GroqProvider,
-    private readonly enrichmentService: EnrichmentService
   ) { }
-  async handleTranslation(payload: TranslateDto): Promise<void> {
-    if (!payload.sourceLanguage || !payload.targetLanguage) {
-      throw new Error(
-        '❌ sourceLang or targetLang is missing inside getTranslation()',
-      );
-    }
+
+  async handleTranslation(payload: TranslationDto): Promise<void> {
+
+    const { requestId, clientId, sourceLanguage, targetLanguage, interactions, payload: innerPayload } = payload;
 
     const translation = await this.groqProvider.translateSimple(
-      payload.text,
-      payload.sourceLanguage,
-      payload.targetLanguage
+      innerPayload.text,
+      sourceLanguage,
+      targetLanguage
     );
 
-    this.translationClient.emit(
-      'ai.translation.response', translation
-    );
+    const responseMessage = {
+      requestId,
+      clientId,
+      sourceLanguage,
+      targetLanguage,
+      translated: translation.translated,
+      originalText: innerPayload.text,
+      interaction: interactions[0]
+    };
 
-    this.enrichmentService.enrichText(
-      translation.original,
-      payload.clientId,
-      translation.sourceLang,
-      translation.targetLang,
-      'manual'
-    );
+    await this.translationClient.emit('translation.complete', {
+      key: payload.requestId,
+      value: responseMessage,
+    });
 
     this.logger.log(
-      `📤 Translation response emitted for clientId: ${payload.clientId}`,
+      `📤 Translation COMPLETE emitted for requestId=${payload.requestId}`
     );
   }
 }

@@ -48,7 +48,7 @@ services:
     depends_on:
       - kafka
     ports:
-      - "9091:8080"
+      - "9095:8080"
     environment:
       KAFKA_CLUSTERS_0_NAME: kafka
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
@@ -95,7 +95,13 @@ services:
     depends_on:
       - kafka
       - mariadb
-
+  nlp:
+    build:
+      context: ./nlp
+    container_name: nlp
+    ports:
+      - "8300:8300"
+    restart: unless-stopped
   lexicon:
     build:
       context: ./apps/lexicon

@@ -1,94 +1,29 @@
-import { Type } from 'class-transformer';
 import {
-  IsArray,
   IsNotEmpty,
   IsNumber,
-  IsString,
-  ValidateNested,
+  IsString
 } from 'class-validator';
 
 /**
- * Represents a breakdown of a translated word, containing details such as its original form, lemma,
- * part-of-speech tag, and possible alternatives.
- */
-export class BreakdownDto {
-  /**
-   * Unique identifier for the breakdown entry.
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `id` is required' })
-  @IsString()
-  id: string;
-
-  /**
-   * The original word before translation.
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `originalWord` is required' })
-  @IsString()
-  originalWord: string;
-
-  /**
-   * The translated form of the original word.
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `translatedWord` is required' })
-  @IsString()
-  translatedWord: string;
-
-  /**
-   * The lemma of the word (the base form).
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `lemma` is required' })
-  @IsString()
-  lemma: string;
-
-  /**
-   * The level of difficulty or classification of the word.
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `level` is required' })
-  @IsString()
-  level: string;
-
-  /**
-   * The part-of-speech (POS) tag associated with the word.
-   * This field is required and must be a string.
-   */
-  @IsNotEmpty({ message: 'Field `pos_tag` is required' })
-  @IsString()
-  pos_tag: string;
-
-  /**
-   * A list of alternative translations or words related to the original word.
-   * This field is required and must be an array of strings.
-   */
-  @IsArray()
-  @IsString({ each: true }) // Ensures each element is a string
-  alternatives: string[];
-}
-
-/**
  * Represents the response containing the translation of a statement, including the detected language,
- * translated text, and a breakdown of the translated words.
+ * translated text.
  */
 export class TranslationResponseDto {
   /**
    * The language in which the text was detected.
    * This field is required and must be a string.
    */
-  @IsNotEmpty({ message: 'Field `detectedLanguage` is required' })
+  @IsNotEmpty({ message: 'Field `sourceLanguage` is required' })
   @IsString()
-  detectedLanguage: string;
+  sourceLanguage: string;
 
   /**
    * The translated version of the statement.
    * This field is required and must be a string.
    */
-  @IsNotEmpty({ message: 'Field `translatedText` is required' })
+  @IsNotEmpty({ message: 'Field `translated` is required' })
   @IsString()
-  translatedText: string;
+  translated: string;
 
   /**
    * The tense of the translated statement (e.g., past, present, future).
@@ -97,16 +32,6 @@ export class TranslationResponseDto {
   @IsNotEmpty({ message: 'Field `tense` is required' })
   @IsString()
   tense: string;
-
-  /**
-   * A list of breakdowns for each word in the translated statement.
-   * This field is required and must be an array of BreakdownDto objects.
-   */
-  @IsNotEmpty({ message: 'Field `breakdown` is required' })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => BreakdownDto)
-  breakdown: BreakdownDto[];
 }
 
 /**
@@ -163,7 +88,7 @@ export class TextTranslatedPayloadDto {
   interactionType: string;
 
   /**
-   * The translation response containing the translated text and its breakdown.
+   * The translation response containing the translated text.
    * This field is required and must be a TranslationResponseDto object.
    */
   @IsNotEmpty({ message: 'Field `translationResponse` is required' })

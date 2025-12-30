@@ -36,39 +36,42 @@ export class AiInterfaceController implements OnModuleInit {
    *
    * @param response The translation response received from Kafka.
    */
-  // TODO: For now, use the full breakdown provided by the `lexicon.update`
-  @MessagePattern('lexicon.update')
-  async handleTranslationResponse(response: any) {
+  @MessagePattern('translation.complete')
+  async handleTranslationResponse(message: any) {
     try {
-      this.logger.log(
-        `Received translation response: ${JSON.stringify(response)}`,
-      );
+      this.logger.log(`Received translation response: ${JSON.stringify(message)}`);
 
-      if (!response || !response.translationResponse) {
-        this.logger.error('Invalid Kafka message: Missing translationResponse');
+      const value = message;
+
+      if (!value?.requestId) {
+        this.logger.error('Invalid Kafka message: Missing requestId');
         return;
       }
 
-      const translation = await this.service.saveTranslation({
-        clientId: response.clientId,
-        originalText: response.statement,
-        detectedLanguage: response.translationResponse.detectedLanguage,
-        targetLanguage: 'en',
-        translatedText: response.translationResponse.translatedText,
-        alternatives: response.translationResponse.alternatives || [],
-        breakdown: Array.isArray(response.translationResponse.breakdown)
-          ? response.translationResponse.breakdown
-          : [],
-      });
+      const record = {
+        requestId: value.requestId,
+        clientId: value.clientId,
+        sourceLanguage: value.sourceLanguage,
+        targetLanguage: value.targetLanguage,
+        originalText: value.originalText,
+        translated: value.translated,
+      };
 
-      const key = `${response.clientId}|${response.sourceLanguage}|${response.targetLanguage}`;
+      // Store to database
+      const translation = await this.service.saveTranslation(record);
 
+      // Use the SAME key used since initial request
+      const key = record.requestId;
+
+      // Emit to KTable topic
       await this.client.emit('translation.response.table', { key, value: translation });
-      this.logger.log('✅ Translation response emitted to translation.response.table topic');
+      this.logger.log('✅ Stored + emitted translation.response.table');
+
     } catch (error) {
       this.logger.error('Failed to handle translation response', error);
     }
   }
+
 
   /**
    * Handles translation request messages from Kafka.
@@ -79,11 +82,17 @@ export class AiInterfaceController implements OnModuleInit {
    */
   @MessagePattern('translation.translate')
   async translateText(@Payload() translationRequest: TranslationDto) {
-    this.logger.log('Received translation request from Kafka');
+    this.logger.log(
+      `Received translation request from Kafka: ${JSON.stringify(translationRequest)}`
+    );
 
     try {
-      this.client.emit('ai.translation.request', translationRequest);
-      this.logger.log('Translation request emitted to AI service');
+      await this.client.emit('ai.translation.request', {
+        key: translationRequest.requestId,
+        value: translationRequest,
+      });
+
+      this.logger.log(`Translation request emitted to AI service with key ${translationRequest.requestId}`);
     } catch (error) {
       this.logger.error('Failed to emit translation request', error.stack);
     }

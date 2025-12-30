@@ -16,61 +16,92 @@
   },
   "home": {
     "hero": {
-      "title": "Master Languages Naturally",
-      "subtitle": "AI-powered language learning that adapts to you",
+      "title": "Master Languages Your Way",
+      "subtitle": "AI-aided language learning that adapts to you. Choose your content, track your words, and practice in meaningful contexts — no gamification distractions.",
       "cta": "Start Learning Free"
     },
     "features": {
+      "title": "Features You’ll Love",
       "translation": {
-        "title": "Smart Translation",
-        "description": "Get context-aware translations with part of speech analysis"
+        "title": "Smart Translation & Grammar Hints",
+        "description": "Instant, context-aware translations with visual indicators for your proficiency on each word. Learn to translate yourself while tracking your growth."
       },
       "practice": {
-        "title": "AI Conversation Practice",
-        "description": "Build confidence with stress-free AI chat partners"
+        "title": "Interactive AI Practice",
+        "description": "Engage in conversation, read texts, and try exercises designed for your learning style. Practice daily or in guided sessions tailored to your pace."
       },
       "tracking": {
-        "title": "Intelligent Progress Tracking",
-        "description": "Learn efficiently with personalized review schedules"
+        "title": "Personalized Progress Dashboard",
+        "description": "Monitor vocabulary, grammar, and conversation growth. Visual cues highlight weak areas, so you know exactly what to practice."
+      },
+      "reading": {
+        "title": "Genre-Based Reading",
+        "description": "Read books and articles in your preferred genres to naturally acquire vocabulary and expressions relevant to your interests."
+      },
+      "scenarios": {
+        "title": "Scenario Simulation",
+        "description": "Practice everyday situations — cooking, cleaning, travel, or work scenarios — and build confidence in real-world language use."
       }
+    },
+    "why_decyphr": {
+      "title": "Why Decyphr?",
+      "description": "We combine AI-driven learning with interactive tools so you can focus on understanding, practicing, and retaining language naturally.",
+      "points": [
+        "Learn naturally with conversation-based AI exercises",
+        "Check hints for any text, and see proficiency indicators on each word",
+        "Practice guided sessions or free-form, based on your learning style",
+        "Read and absorb language through your favorite genres",
+        "Simulate real-life scenarios to prepare for practical communication",
+        "Track your growth effortlessly with smart dashboards",
+        "Practice anytime, anywhere, with flexible AI-driven exercises",
+        "Customize content to your interests and learning goals",
+        "Focus on learning, not gamification, to make progress meaningful"
+      ]
     },
     "how_it_works": {
       "title": "How It Works",
       "step1": {
-        "title": "Choose Your Bot",
-        "description": "Pick a character bot based on your preferred language, region, and interests."
+        "title": "Pick Your AI Companion",
+        "description": "Choose a character bot that matches your target language, interests, and learning goals. Decide if you want a casual conversation or structured practice."
       },
       "step2": {
-        "title": "Start Chatting",
-        "description": "Jump into a conversation and practice real, meaningful dialogues at your own pace."
+        "title": "Engage in Real Conversation",
+        "description": "Chat, read, and complete exercises with interactive AI. Practice texts, books, or scenarios that matter to you, with hints and proficiency feedback."
       },
       "step3": {
         "title": "Track & Improve",
-        "description": "Monitor your vocabulary and grammar growth automatically as you learn."
+        "description": "Monitor your vocabulary and grammar growth. Use the dashboard to focus on weak spots and reinforce what matters most, while keeping practice enjoyable."
+      },
+      "step4": {
+        "title": "Daily or Guided Practice",
+        "description": "Start a timed session every day, or choose what you want to practice based on your learning style. Keep learning consistent, flexible, and effective."
       }
     },
     "testimonials": {
-      "title": "Testimonials",
+      "title": "What Learners Say",
       "student": {
-        "feedback": "\"This app made it so easy for me to practice Irish — I feel way more confident now!\"",
+        "feedback": "\"Decyphr helped me practice Irish naturally. I can see my progress every day and feel more confident speaking.\"",
         "name": "- Saoirse, Student"
       },
       "traveller": {
-        "feedback": "\"Talking to characters from different regions made learning Portuguese so much fun!\"",
+        "feedback": "\"Using AI bots from different regions made Portuguese come alive. I can interact naturally, not just memorize words.\"",
         "name": "- Lucas, Traveller"
       },
       "professional": {
-        "feedback": "\"I love how the system tracks my weak words automatically — it's like having a personal tutor.\"",
+        "feedback": "\"Tracking my weak spots automatically while choosing my own learning path is a game-changer. Decyphr feels like a personal tutor.\"",
         "name": "- Emily, Professional"
       }
     },
     "cta": {
-      "title": "Ready to Speak Confidently?",
-      "subtitle": "Join learners worldwide mastering languages through meaningful conversation.",
+      "title": "Ready to Take Control of Your Language Learning?",
+      "subtitle": "Join thousands of learners mastering languages naturally with AI-powered practice and guidance.",
       "button": "Start Your Journey Today"
     }
   },
   "auth": {
+    "title": "Welcome to Decyphr",
+    "subtitle": "AI-powered language learning designed for your pace and interests",
+    "why_decyphr": "Why Choose Decyphr?",
     "emailPlaceholder": "Enter your email address",
     "signIn": "Send Magic Link",
     "sending": "Sending...",
@@ -84,11 +115,13 @@
     "immersionFull": "Full Immersion (no hints)",
     "saveSettings": "Save Settings",
     "selectLanguage": "Select a language",
-    "benefits": {
-      "1": "✅ Chat with AI characters in your target language",
-      "2": "✅ Track weak words and grammar in real time",
-      "3": "✅ Practice daily with structured, natural conversations"
-    },
+    "benefits": [
+      "Chat with AI characters in your target language",
+      "Track weak words and grammar in real time",
+      "Practice daily with structured, natural conversations",
+      "Receive instant hints and explanations for any text",
+      "Learn through reading and scenarios tailored to your interests"
+    ],
     "email": {
       "subject": "Your Magic Login Link",
       "greeting": "Welcome to Decyphr!",
@@ -99,15 +132,25 @@
     }
   },
   "dashboard": {
-    "stats": {
-      "title": "Your Language Journey",
-      "chatMessages": "Chat Messages Sent",
-      "wordsToPractice": "Words Needing Practice",
-      "wordsMastered": "Words Mastered",
-      "translations": "Translations Completed",
-      "conversations": "AI Conversations Started",
-      "books": "Books Read"
+    "navbar": {
+      "speakingWriting": "Speaking & Writing",
+      "vocabulary": "Vocabulary",
+      "readingListening": "Reading & Listening",
+      "tools": "Tools"
     },
+    "sections": {
+      "speakingWriting": "Speaking & Writing",
+      "vocabulary": "Vocabulary",
+      "readingListening": "Reading & Listening",
+      "tools": "Language Tools"
+    },
+    "practice": {
+      "title": "Guided Practice",
+      "subtitle": "Start a timed session with a mix of conversation, reading, and flashcards.",
+      "durationLabel": "Daily practice duration",
+      "cta": "Start Practice"
+    },
+    "orBuildYourOwn": "or build your own",
     "chat": {
       "title": "Chat with AI",
       "description": "Practice your target language through AI conversation.",
@@ -122,6 +165,41 @@
       "title": "Personal Lexicon",
       "description": "Review and manage words you've learned.",
       "cta": "View Lexicon"
+    },
+    "storytime": {
+      "title": "Storytime",
+      "description": "Read short stories and answer comprehension questions.",
+      "cta": "Start Storytime"
+    },
+    "scenarioReviser": {
+      "title": "Scenario Reviser",
+      "description": "Practice real-life scenarios using your target language.",
+      "cta": "Start Scenario"
+    },
+    "verbPracticer": {
+      "title": "Verb Practicer",
+      "description": "Fill in the blanks to practice verb conjugations.",
+      "cta": "Practice Verbs"
+    },
+    "mistakeCorrector": {
+      "title": "Mistake Corrector",
+      "description": "Submit sentences and get feedback on errors.",
+      "cta": "Check Sentences"
+    },
+    "vault": {
+      "title": "Translation Vault",
+      "description": "Store, review, and reuse your personal translations.",
+      "cta": "Open Vault"
+    },
+    "bookTracker": {
+      "title": "Book Tracker",
+      "description": "Keep track of what you read.",
+      "cta": "Open Tracker"
+    },
+    "toolsTranslation": {
+      "title": "Translations",
+      "description": "Translate texts quickly.",
+      "cta": "Translate"
     }
   },
   "chat": {
@@ -143,5 +221,17 @@
     "translatePaginationPrev": "Previous",
     "translatePaginationNext": "Next",
     "translatePaginationText": "Page {page} of {totalPages}"
+  },
+  "lexicon": {
+    "title": "Your Word Interactions",
+    "table": {
+      "word": "Word",
+      "type": "Type",
+      "family": "Family",
+      "familiarity": "Familiarity",
+      "revise": "Needs Revision",
+      "action": "Action"
+    },
+    "noWords": "No Word Interactions"
   }
 }

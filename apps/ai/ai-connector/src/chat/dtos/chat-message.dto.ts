@@ -30,5 +30,5 @@ export default interface ChatMessagePayload {
   /**
    * The language to translate to.
    */
-  langToTranslateTo: string;
+  language: string;
 }

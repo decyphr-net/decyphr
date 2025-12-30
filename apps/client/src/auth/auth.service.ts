@@ -59,6 +59,11 @@ export class AuthService {
     private readonly config: ConfigService,
   ) { }
 
+  async loadLoginPage(): Promise<string> {
+    const loginPath = join(__dirname, '..', '..', 'public', 'pages', 'auth', 'login.html');
+    return readFile(loginPath, 'utf-8');
+  }
+
   async loadLayoutWithPartial(partialRoute: string): Promise<string> {
     const layoutPath = join(__dirname, '..', '..', 'public', 'layout.html');
     const layoutHtml = await readFile(layoutPath, 'utf-8');
