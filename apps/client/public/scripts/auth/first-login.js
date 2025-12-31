@@ -5,25 +5,32 @@ window.firstLoginForm = function () {
       { value: 'ga', label: 'Gaeilge' },
       { value: 'pt', label: 'Português' },
     ],
-    firstLanguage: localStorage.getItem('language') || 'en',
+
+    firstLanguage: '',
     targetLanguage: '',
     immersionLevel: 'normal',
 
     get filteredLanguages() {
-      return this.languages.filter((lang) => lang.value !== this.firstLanguage);
+      return this.languages.filter(
+        (lang) => lang.value !== this.firstLanguage
+      );
     },
 
     init() {
-      const filtered = this.languages.filter(
-        (lang) => lang.value !== this.firstLanguage,
-      );
-      if (filtered.length > 0) {
-        this.targetLanguage = filtered[0].value;
+      // If UI language exists, *suggest* it — don't force it
+      const uiLang = localStorage.getItem('language');
+      if (uiLang && this.languages.some(l => l.value === uiLang)) {
+        this.firstLanguage = uiLang;
       }
+    },
 
-      const params = new URLSearchParams(window.location.search);
-      const prefill = params.get('email');
-      if (prefill) this.email = prefill;
+    $watch: {
+      firstLanguage(value) {
+        const available = this.languages.filter(
+          (lang) => lang.value !== value
+        );
+        this.targetLanguage = available.length ? available[0].value : '';
+      }
     },
 
     async submit() {
