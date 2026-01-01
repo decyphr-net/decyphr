@@ -46,8 +46,10 @@ window.firstLoginForm = function () {
         body: JSON.stringify(body),
       });
 
-      if (res.redirected) {
-        window.location.href = res.url;
+      const data = await res.json();
+
+      if (data.redirect) {
+        window.location.href = data.redirect;
       }
     },
   };

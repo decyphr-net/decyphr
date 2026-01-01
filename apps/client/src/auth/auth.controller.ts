@@ -79,7 +79,7 @@ export class AuthController {
         body.immersionLevel,
       );
 
-      return res.redirect('/dashboard');
+      return res.status(HttpStatus.OK).json({ redirect: '/dashboard' });;
     } catch (err) {
       return res
         .status(HttpStatus.INTERNAL_SERVER_ERROR)

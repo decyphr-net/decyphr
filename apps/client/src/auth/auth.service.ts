@@ -184,7 +184,7 @@ export class AuthService {
 
     res.cookie('session', user.clientId, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7 * 1000, // 7 days
       path: '/',
     });
