@@ -8,9 +8,7 @@ export class I18nController {
 
   @Get()
   getTranslation(@Query('lang') lang = 'en') {
-    const isDev = process.env.NODE_ENV !== 'production';
-    const baseDir = isDev ? path.join(process.cwd(), 'src') : __dirname;
-    const filePath = path.join(baseDir, 'locales', `${lang}.json`);
+    const filePath = path.join(__dirname, 'locales', `${lang}.json`);
 
     this.logger.log(`Looking for translation file at: ${filePath}`);
 
