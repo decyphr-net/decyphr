@@ -34,14 +34,6 @@ export class AuthController {
 
   @Get('first-login')
   async getFirstLogin(@Res() res: Response) {
-    const html = await this.authService.loadLayoutWithPartial(
-      '/auth/first-login-partial',
-    );
-    return res.send(html);
-  }
-
-  @Get('first-login-partial')
-  async getFirstLoginPartial(@Res() res: Response) {
     const html = await this.authService.loadPartial('auth/first-login.html');
     return res.send(html);
   }

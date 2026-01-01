@@ -1,61 +1,268 @@
-<div class="flex items-center justify-center p-8 bg-gray-50 min-h-screen">
-  <div x-data="firstLoginForm()" x-init="init"
-    class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 animate-slide-in transition-all duration-500 hover:shadow-2xl">
-    <h1 class="text-3xl font-bold mb-4 animate-fade-in delay-0" x-text="$store.i18n.t('auth.firstTimeLoginTitle')"></h1>
+<!DOCTYPE html>
+<html lang="en" hx-boost="true">
 
-    <p class="text-gray-600 mb-6 animate-fade-in delay-100" x-text="$store.i18n.t('auth.firstTimeLoginSubtitle')"></p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Misneach</title>
+  <script src="/scripts/auth/first-login.js" defer></script>
+  <script src="https://unpkg.com/htmx.org"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-    <form @submit.prevent="submit" class="space-y-5">
-      <!-- First Language -->
-      <div class="animate-fade-in delay-200">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          x-text="$store.i18n.t('auth.firstLanguage')"></label>
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+  <style>
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+      }
 
-        <select x-model="firstLanguage" required class="w-full px-4 py-2 border border-gray-300 rounded-md
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes zoom-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 1s ease-in-out forwards;
+    }
+
+    .animate-slide-in {
+      animation: slide-in 1s ease-out forwards;
+    }
+
+    .animate-zoom-in {
+      animation: zoom-in 0.6s ease-out forwards;
+    }
+
+    .delay-0 {
+      animation-delay: 0s;
+    }
+
+    .delay-100 {
+      animation-delay: 0.1s;
+    }
+
+    .delay-200 {
+      animation-delay: 0.2s;
+    }
+
+    .delay-300 {
+      animation-delay: 0.3s;
+    }
+  </style>
+</head>
+
+<body x-data>
+  <!-- NAV -->
+  <nav class="border-b bg-white">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <a href="/" class="text-2xl font-bold bg-blue-500 bg-clip-text text-transparent">Misneach</a>
+      <div class="flex items-center space-x-4">
+        <div hx-get="/components/locale-switcher.html" hx-trigger="load" hx-swap="outerHTML"></div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="min-h-screen grid grid-cols-1">
+    <div class="flex items-center justify-center p-8 bg-gray-50 min-h-screen">
+      <div x-data="firstLoginForm()" x-init="init"
+        class="w-full max-w-md bg-white rounded-xl shadow-lg p-8 animate-slide-in transition-all duration-500 hover:shadow-2xl">
+        <h1 class="text-3xl font-bold mb-4 animate-fade-in delay-0" x-text="$store.i18n.t('auth.firstTimeLoginTitle')">
+        </h1>
+
+        <p class="text-gray-600 mb-6 animate-fade-in delay-100" x-text="$store.i18n.t('auth.firstTimeLoginSubtitle')">
+        </p>
+
+        <form @submit.prevent="submit" class="space-y-5">
+          <!-- First Language -->
+          <div class="animate-fade-in delay-200">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              x-text="$store.i18n.t('auth.firstLanguage')"></label>
+
+            <select x-model="firstLanguage" required class="w-full px-4 py-2 border border-gray-300 rounded-md
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  focus:scale-105 transform transition-all duration-300">
-          <template x-for="lang in languages" :key="lang.value">
-            <option :value="lang.value" x-text="lang.label"></option>
-          </template>
-        </select>
-      </div>
+              <template x-for="lang in languages" :key="lang.value">
+                <option :value="lang.value" x-text="lang.label"></option>
+              </template>
+            </select>
+          </div>
 
-      <!-- Target Language -->
-      <div class="animate-fade-in delay-300">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          x-text="$store.i18n.t('auth.targetLanguage')"></label>
+          <!-- Target Language -->
+          <div class="animate-fade-in delay-300">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              x-text="$store.i18n.t('auth.targetLanguage')"></label>
 
-        <select x-model="targetLanguage" required class="w-full px-4 py-2 border border-gray-300 rounded-md
+            <select x-model="targetLanguage" required class="w-full px-4 py-2 border border-gray-300 rounded-md
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  focus:scale-105 transform transition-all duration-300">
-          <template x-for="lang in filteredLanguages" :key="lang.value">
-            <option :value="lang.value" x-text="lang.label"></option>
-          </template>
-        </select>
-      </div>
+              <template x-for="lang in filteredLanguages" :key="lang.value">
+                <option :value="lang.value" x-text="lang.label"></option>
+              </template>
+            </select>
+          </div>
 
-      <!-- Immersion Level -->
-      <div class="animate-fade-in delay-300">
-        <label class="block text-sm font-medium text-gray-700 mb-1"
-          x-text="$store.i18n.t('auth.immersionLevel')"></label>
+          <!-- Immersion Level -->
+          <div class="animate-fade-in delay-300">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              x-text="$store.i18n.t('auth.immersionLevel')"></label>
 
-        <select x-model="immersionLevel" class="w-full px-4 py-2 border border-gray-300 rounded-md
+            <select x-model="immersionLevel" class="w-full px-4 py-2 border border-gray-300 rounded-md
                  focus:outline-none focus:ring-2 focus:ring-blue-500
                  focus:scale-105 transform transition-all duration-300">
-          <option value="normal" x-text="$store.i18n.t('auth.immersionNormal')"></option>
-          <option value="full" x-text="$store.i18n.t('auth.immersionFull')"></option>
-        </select>
-      </div>
+              <option value="normal" x-text="$store.i18n.t('auth.immersionNormal')"></option>
+              <option value="full" x-text="$store.i18n.t('auth.immersionFull')"></option>
+            </select>
+          </div>
 
-      <!-- Submit -->
-      <button type="submit" class="w-full px-4 py-2 rounded-md
+          <!-- Submit -->
+          <button type="submit" class="w-full px-4 py-2 rounded-md
                bg-gradient-to-r from-teal-400 to-blue-500
                text-white font-semibold
                hover:from-teal-500 hover:to-blue-600
                hover:scale-105 transform transition-all duration-300
                animate-fade-in delay-300">
-        <span x-text="$store.i18n.t('auth.saveSettings')"></span>
-      </button>
-    </form>
+            <span x-text="$store.i18n.t('auth.saveSettings')"></span>
+          </button>
+        </form>
+      </div>
+    </div>
   </div>
-</div>
+
+
+  <script>
+    lucide?.createIcons();
+  </script>
+
+  <!-- ALPINE i18n -->
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('i18n', {
+        translations: {},
+
+        languageNames: {
+          en: 'English',
+          ga: 'Gaeilge',
+          pt: 'Português'
+        },
+
+        languageFlags: {
+          en: '🇬🇧',
+          ga: '🇮🇪',
+          pt: '🇵🇹'
+        },
+
+        current: localStorage.getItem('language') || 'en',
+
+        t(key) {
+          return key.split('.').reduce((o, p) => o?.[p], this.translations) ?? key;
+        },
+
+        async load(lang = this.current) {
+          this.current = lang;
+          localStorage.setItem('language', lang);
+
+          const res = await fetch(`/i18n?lang=${lang}`);
+          this.translations = await res.json();
+        },
+
+        // ✅ THIS is what your switcher calls
+        saveLanguage(lang) {
+          this.load(lang);
+        }
+      });
+
+      Alpine.store('i18n').load();
+    });
+  </script>
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('authForm', () => ({
+        email: '',
+        loading: false,
+        sent: false,
+        message: '',
+
+        init() {
+          const params = new URLSearchParams(window.location.search);
+          const prefill = params.get('email');
+          if (prefill) this.email = prefill;
+        },
+
+        async submit() {
+          this.loading = true;
+          this.message = '';
+
+          try {
+            // Make the request
+            const res = await fetch('/auth/magic-link', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: this.email,
+                locale: localStorage.getItem('language') || 'en'
+              })
+            });
+
+            // Parse JSON safely
+            let data = {};
+            try {
+              data = await res.json();
+            } catch { }
+
+            this.loading = false;
+
+            // Show message regardless of status
+            if (res.ok) {
+              this.message = data.message || 'Magic link sent!';
+              this.sent = true; // mark as sent
+            } else {
+              this.message = data.error || 'Something went wrong';
+            }
+
+          } catch (err) {
+            console.error('Failed to send magic link:', err);
+            this.loading = false;
+            this.message = Alpine.store('i18n')?.t('auth.error') || 'Something went wrong';
+          }
+        }
+      }));
+    });
+
+    // Re-init Alpine after HTMX swaps
+    document.body.addEventListener('htmx:afterSwap', (e) => {
+      if (window.Alpine && Alpine.initTree) Alpine.initTree(e.target);
+    });
+  </script>
+</body>
+
+</html>
