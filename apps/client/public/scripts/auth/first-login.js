@@ -6,31 +6,39 @@ window.firstLoginForm = function () {
       { value: 'pt', label: 'Português' },
     ],
 
-    firstLanguage: '',
+    firstLanguage: localStorage.getItem('language') || 'en',
     targetLanguage: '',
     immersionLevel: 'normal',
 
     get filteredLanguages() {
       return this.languages.filter(
-        (lang) => lang.value !== this.firstLanguage
+        lang => lang.value !== this.firstLanguage
       );
     },
 
     init() {
-      // If UI language exists, *suggest* it — don't force it
-      const uiLang = localStorage.getItem('language');
-      if (uiLang && this.languages.some(l => l.value === uiLang)) {
-        this.firstLanguage = uiLang;
+      // Validate first language
+      if (!this.languages.some(l => l.value === this.firstLanguage)) {
+        this.firstLanguage = 'en';
       }
+
+      // Initial target language
+      this.updateTargetLanguage(this.firstLanguage);
+
+      // React to changes
+      this.$watch('firstLanguage', (value) => {
+        this.updateTargetLanguage(value);
+      });
     },
 
-    $watch: {
-      firstLanguage(value) {
-        const available = this.languages.filter(
-          (lang) => lang.value !== value
-        );
-        this.targetLanguage = available.length ? available[0].value : '';
-      }
+    updateTargetLanguage(firstLang) {
+      const available = this.languages.filter(
+        lang => lang.value !== firstLang
+      );
+
+      this.targetLanguage = available.length
+        ? available[0].value
+        : '';
     },
 
     async submit() {
