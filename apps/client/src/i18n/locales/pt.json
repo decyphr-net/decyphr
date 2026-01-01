@@ -102,6 +102,7 @@
     "sent": "Link mágico enviado! Verifique sua caixa de entrada.",
     "error": "Falha ao enviar o link mágico. Tente novamente.",
     "firstTimeLoginTitle": "Configure Suas Preferências de Idioma",
+    "firstTimeLoginSubtitle": "Diga-nos quais são os seus idiomas para personalizarmos a sua experiência de aprendizagem.",
     "firstLanguage": "Sua Língua Nativa",
     "targetLanguage": "Idioma que Está a Aprender",
     "immersionLevel": "Nível de Imersão",

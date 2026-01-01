@@ -108,6 +108,7 @@
     "sent": "Magic link sent! Check your inbox.",
     "error": "Failed to send magic link. Please try again.",
     "firstTimeLoginTitle": "Set Up Your Language Preferences",
+    "firstTimeLoginSubtitle": "Tell us your languages so we can personalise your learning experience.",
     "firstLanguage": "Your First Language",
     "targetLanguage": "Language You’re Learning",
     "immersionLevel": "Immersion Level",
