@@ -199,15 +199,33 @@
     "translatePaginationText": "Página {page} de {totalPages}"
   },
   "lexicon": {
-    "title": "Suas Interações com Palavras",
+    "title": "Vocabulário",
+    "subtitle": "A sua lista pessoal de palavras, com níveis de confiança para acompanhar o progresso.",
+    "jumpToTable": "Ver palavras",
+    "searchPlaceholder": "Pesquisar palavras…",
+    "stats": {
+      "words": "Palavras",
+      "avgConfidence": "Confiança média",
+      "lastUpdate": "Última atualização"
+    },
+    "buckets": {
+      "high": "Confiante (≥ 0.80)",
+      "medium": "Em progresso (0.51–0.80)",
+      "low": "Precisa de prática (≤ 0.50)"
+    },
     "table": {
       "word": "Palavra",
-      "type": "Tipo",
-      "family": "Família",
-      "familiarity": "Familiaridade",
-      "revise": "Precisa de Revisão",
-      "action": "Ação"
+      "baseForm": "Forma base",
+      "partOfSpeech": "Tipo de palavra",
+      "confidence": "Confiança"
     },
-    "noWords": "Nenhuma Interação com Palavras"
+    "empty": {
+      "title": "A sua lista de palavras está vazia.",
+      "cta": "Importar palavras"
+    },
+    "pagination": {
+      "prev": "Anterior",
+      "next": "Seguinte"
+    }
   }
 }

@@ -1,123 +1,19 @@
-<!-- Lexicon page – refreshed
-<section
-  class="py-12 flex flex-col gap-8"
-  x-data="lexiconPage()"
-  x-init="init()"
->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-    <h2 class="text-3xl font-bold text-emerald-600 text-center"
-        x-text="$store.i18n.t('lexicon.title')">
-    </h2>
-
-    <div x-show="loading" class="flex justify-center items-center py-8">
-      <svg class="animate-spin h-8 w-8 text-emerald-600"
-           xmlns="http://www.w3.org/2000/svg"
-           fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10"
-                stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor"
-              d="M4 12a8 8 0 018-8v8z"></path>
-      </svg>
-    </div>
-
-    <div x-show="!loading"
-         class="overflow-x-auto bg-emerald-50 rounded-xl shadow-sm border border-gray-200">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-emerald-100">
-          <tr>
-            <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800">Word</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800">Base Form</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800">Part of Speech</th>
-            <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800">Confidence</th>
-          </tr>
-        </thead>
-
-        <tbody class="bg-white divide-y divide-gray-200">
-          <template x-for="item in paginatedData" :key="item.id">
-            <tr class="hover:bg-emerald-50 transition-colors">
-              <td class="px-4 py-2" x-text="item.lemma"></td>
-              <td class="px-4 py-2" x-text="item.normalised || item.lemma"></td>
-              <td class="px-4 py-2" x-text="item.tag || '-'"></td>
-
-              <td class="px-4 py-2">
-                <span
-                  class="inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white"
-                  :class="{
-                    /* 0‑1 range → colour mapping */
-                    'bg-green-600'  : Number(item.stats?.score) > 0.80,
-                    'bg-yellow-500' : Number(item.stats?.score) > 0.50 && Number(item.stats?.score) <= 0.80,
-                    'bg-red-600'    : Number(item.stats?.score) <= 0.50
-                  }"
-                  x-text="Number(item.stats?.score).toFixed(2)">
-                </span>
-              </td>
-            </tr>
-          </template>
-
-          <tr x-show="snapshot.length === 0">
-            <td colspan="4"
-                class="px-4 py-8 text-center text-gray-500 italic">
-              No entries yet – loading snapshot…
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="flex items-center justify-between py-4 px-2 text-sm text-gray-600"
-        x-show="!loading && totalPages > 1">
-
-      <div x-text="rangeLabel"></div>
-
-      <div class="flex items-center space-x-2">
-        <button @click="prevPage()"
-                :disabled="currentPage === 1"
-                class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed">
-          ‹ Prev
-        </button>
-
-        <template x-for="page in Array.from({length: totalPages}, (_, i) => i + 1)" :key="page">
-          <button @click="goToPage(page)"
-                  :class="page === currentPage ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-800'"
-                  class="px-2 py-1 rounded hover:bg-emerald-500 hover:text-white">
-            <span x-text="page"></span>
-          </button>
-        </template>
-
-        <button @click="nextPage()"
-                :disabled="currentPage === totalPages"
-                class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed">
-          Next ›
-        </button>
-      </div>
-    </div>
-    </div>
-  </div>
-</section>  -->
-
-<!-- <script src="/scripts/dashboard/lexicon.js" defer></script> -->
-
 <!-- ====================== LEXICON PAGE ====================== -->
-<section
-  class="py-12 flex flex-col gap-12"
-  x-data="lexiconPage()"
-  x-init="init()"
->
+<section class="py-12 flex flex-col gap-12" x-data="lexiconPage()" x-init="init()">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- ==== HERO ==== -->
-    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in">
-      <h1 class="text-4xl font-extrabold tracking-tight"
-          x-text="$store.i18n.t('lexicon.title')">
-        Lexicon
+    <div
+      class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in">
+      <h1 class="text-4xl font-extrabold tracking-tight" x-text="$store.i18n.t('lexicon.title')">
       </h1>
-      <p class="mt-3 text-lg opacity-90"
-         x-text="$store.i18n.t('lexicon.subtitle')">
-        Your personal vocabulary bank – see confidence scores and track progress.
+      <p class="mt-3 text-lg opacity-90" x-text="$store.i18n.t('lexicon.subtitle')">
       </p>
-      <button class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition"
-              @click="scrollToSection('lexicon-table')">
+      <button
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition"
+        @click="scrollToSection('lexicon-table')">
         <i data-lucide="arrow-down" class="w-5 h-5"></i>
-        Jump to table
+        <span x-text="$store.i18n.t('lexicon.jumpToTable')"></span>
       </button>
     </div>
 
@@ -129,9 +25,8 @@
           <i data-lucide="list" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Words</p>
-          <p class="text-xl font-semibold text-gray-800"
-             x-text="snapshot.length">
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.words')"></p>
+          <p class="text-xl font-semibold text-gray-800" x-text="snapshot.length">
             0
           </p>
         </div>
@@ -143,9 +38,9 @@
           <i data-lucide="star" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Avg. confidence</p>
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.avgConfidence')"></p>
           <p class="text-xl font-semibold text-gray-800"
-             x-text="snapshot.length ? (snapshot.reduce((s,i)=>s+Number(i.stats?.score||0),0)/snapshot.length).toFixed(2) : '--'">
+            x-text="snapshot.length ? (snapshot.reduce((s,i)=>s+Number(i.stats?.score||0),0)/snapshot.length).toFixed(2) : '--'">
             --
           </p>
         </div>
@@ -157,9 +52,10 @@
           <i data-lucide="clock" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Last update</p>
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.lastUpdate')">Last update
+          </p>
           <p class="text-xl font-semibold text-gray-800"
-             x-text="snapshot.length ? new Date(snapshot[0].stats?.updatedAt || Date.now()).toLocaleDateString() : '--'">
+            x-text="snapshot.length ? new Date(snapshot[0].stats?.updatedAt || Date.now()).toLocaleDateString() : '--'">
             --
           </p>
         </div>
@@ -173,7 +69,7 @@
           <i data-lucide="thumbs-up" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Confident (≥ 0.80)</p>
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.high')"></p>
           <p class="text-2xl font-bold text-green-600" x-text="highCount">0</p>
         </div>
       </div>
@@ -184,7 +80,7 @@
           <i data-lucide="meh" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Moderate (0.51‑0.80)</p>
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.medium')"></p>
           <p class="text-2xl font-bold text-yellow-600" x-text="mediumCount">0</p>
         </div>
       </div>
@@ -195,7 +91,7 @@
           <i data-lucide="thumbs-down" class="w-6 h-6"></i>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-500">Needs work (≤ 0.50)</p>
+          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.low')"></p>
           <p class="text-2xl font-bold text-red-600" x-text="lowCount">0</p>
         </div>
       </div>
@@ -203,59 +99,50 @@
 
     <div class="mt-6 flex items-center justify-between">
       <div class="relative w-full max-w-sm">
-        <input type="text"
-              placeholder="Search words…"
-              class="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-              x-model="searchTerm"
-              @input.debounce="currentPage = 1"
-        />
-        <i data-lucide="search"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+        <input type="text" placeholder="Search words…"
+          class="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500"
+          x-model="searchTerm" @input.debounce="currentPage = 1" />
+        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
       </div>
     </div>
     <!-- ==== TABLE CONTAINER ==== -->
-    <div id="lexicon-table"
-         class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
+    <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
 
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-emerald-100">
           <tr>
             <!-- Word (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-                @click="setSort('lemma')">
-              Word
+              @click="setSort('lemma')" x-text="$store.i18n.t('lexicon.table.word')">
               <span x-show="sortKey === 'lemma'" class="ml-1">
-                <i data-lucide="chevron-up"   x-show="sortDir === 'asc'"></i>
+                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
               </span>
             </th>
 
             <!-- Base Form (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-                @click="setSort('normalised')">
-              Base Form
+              @click="setSort('normalised')" x-text="$store.i18n.t('lexicon.table.baseForm')">
               <span x-show="sortKey === 'normalised'" class="ml-1">
-                <i data-lucide="chevron-up"   x-show="sortDir === 'asc'"></i>
+                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
               </span>
             </th>
 
             <!-- Part of Speech (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-                @click="setSort('tag')">
-              Part of Speech
+              @click="setSort('tag')" x-text="$store.i18n.t('lexicon.table.partOfSpeech')">
               <span x-show="sortKey === 'tag'" class="ml-1">
-                <i data-lucide="chevron-up"   x-show="sortDir === 'asc'"></i>
+                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
               </span>
             </th>
 
             <!-- Confidence (numeric) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-                @click="setSort('score')">
-              Confidence
+              @click="setSort('score')" x-text="$store.i18n.t('lexicon.table.confidence')">
               <span x-show="sortKey === 'score'" class="ml-1">
-                <i data-lucide="chevron-up"   x-show="sortDir === 'asc'"></i>
+                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
               </span>
             </th>
@@ -266,13 +153,10 @@
           <!-- Loading spinner (centered) -->
           <tr x-show="loading">
             <td colspan="4" class="py-12 text-center">
-              <svg class="animate-spin h-8 w-8 text-emerald-600 mx-auto"
-                   xmlns="http://www.w3.org/2000/svg"
-                   fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10"
-                        stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor"
-                      d="M4 12a8 8 0 018-8v8z"></path>
+              <svg class="animate-spin h-8 w-8 text-emerald-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
               </svg>
             </td>
           </tr>
@@ -281,11 +165,12 @@
           <tr x-show="!loading && snapshot.length === 0">
             <td colspan="4" class="py-12 text-center text-gray-500">
               <i data-lucide="folder-search" class="w-12 h-12 mx-auto mb-4 text-emerald-400"></i>
-              <p class="mb-2 font-medium">Your lexicon is empty.</p>
-              <button class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 transition"
-                      @click="">
+              <p class="mb-2 font-medium" x-text="$store.i18n.t('lexicon.empty.title')"></p>
+              <button
+                class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 transition"
+                @click="">
                 <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                Import words
+                <span x-text="$store.i18n.t('lexicon.empty.cta')"></span>
               </button>
             </td>
           </tr>
@@ -299,14 +184,11 @@
 
               <!-- Confidence badge -->
               <td class="px-4 py-2">
-                <span
-                  class="inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white"
-                  :class="{
+                <span class="inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white" :class="{
                     'bg-green-600'  : Number(item.stats?.score) > 0.80,
                     'bg-yellow-500' : Number(item.stats?.score) > 0.50 && Number(item.stats?.score) <= 0.80,
                     'bg-red-600'    : Number(item.stats?.score) <= 0.50
-                  }"
-                  x-text="Number(item.stats?.score).toFixed(2)">
+                  }" x-text="Number(item.stats?.score).toFixed(2)">
                 </span>
               </td>
             </tr>
@@ -316,34 +198,31 @@
     </div>
 
     <!-- ==== PAGINATION BAR ==== -->
-    <div class="flex items-center justify-between py-4 text-sm text-gray-600"
-         x-show="!loading && totalPages > 1">
+    <div class="flex items-center justify-between py-4 text-sm text-gray-600" x-show="!loading && totalPages > 1">
 
       <!-- Range label (e.g. “21‑40 of 123”) -->
       <div x-text="rangeLabel"></div>
 
       <div class="flex items-center gap-2">
         <!-- Prev -->
-        <button @click="prevPage()"
-                :disabled="currentPage === 1"
-                class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition">
-          ‹ Prev
+        <button @click="prevPage()" :disabled="currentPage === 1"
+          class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          x-text="$store.i18n.t('lexicon.pagination.prev')">
         </button>
 
         <!-- Page numbers (highlight current) -->
         <template x-for="page in Array.from({length: totalPages}, (_, i) => i + 1)" :key="page">
           <button @click="goToPage(page)"
-                  :class="page === currentPage ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-800'"
-                  class="px-2 py-1 rounded hover:bg-emerald-500 hover:text-white transition">
+            :class="page === currentPage ? 'bg-emerald-600 text-white' : 'bg-gray-200 text-gray-800'"
+            class="px-2 py-1 rounded hover:bg-emerald-500 hover:text-white transition">
             <span x-text="page"></span>
           </button>
         </template>
 
         <!-- Next -->
-        <button @click="nextPage()"
-                :disabled="currentPage === totalPages"
-                class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition">
-          Next ›
+        <button @click="nextPage()" :disabled="currentPage === totalPages"
+          class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          x-text="$store.i18n.t('lexicon.pagination.next')">
         </button>
       </div>
     </div>

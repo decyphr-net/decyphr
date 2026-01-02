@@ -224,15 +224,33 @@
     "translatePaginationText": "Page {page} of {totalPages}"
   },
   "lexicon": {
-    "title": "Your Word Interactions",
+    "title": "Lexicon",
+    "subtitle": "Your personal word list, with confidence scores to help you track progress.",
+    "jumpToTable": "View words",
+    "searchPlaceholder": "Search your words…",
+    "stats": {
+      "words": "Words",
+      "avgConfidence": "Average confidence",
+      "lastUpdate": "Last updated"
+    },
+    "buckets": {
+      "high": "Confident (≥ 0.80)",
+      "medium": "Getting there (0.51–0.80)",
+      "low": "Needs practice (≤ 0.50)"
+    },
     "table": {
       "word": "Word",
-      "type": "Type",
-      "family": "Family",
-      "familiarity": "Familiarity",
-      "revise": "Needs Revision",
-      "action": "Action"
+      "baseForm": "Base form",
+      "partOfSpeech": "Word type",
+      "confidence": "Confidence"
     },
-    "noWords": "No Word Interactions"
+    "empty": {
+      "title": "Your word list is empty.",
+      "cta": "Import words"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next"
+    }
   }
 }

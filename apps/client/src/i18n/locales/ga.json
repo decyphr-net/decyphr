@@ -210,15 +210,33 @@
     "translatePaginationText": "Leathanach {page} as {totalPages}"
   },
   "lexicon": {
-    "title": "Do Idirghníomhaíochtaí Focal",
+    "title": "Foclóir",
+    "subtitle": "Do liosta focal pearsanta, le scóir muiníne chun do dhul chun cinn a rianú.",
+    "jumpToTable": "Féach ar na focail",
+    "searchPlaceholder": "Cuardaigh do chuid focal…",
+    "stats": {
+      "words": "Focail",
+      "avgConfidence": "Meán-mhuinín",
+      "lastUpdate": "Nuashonrú deireanach"
+    },
+    "buckets": {
+      "high": "Muintearas maith (≥ 0.80)",
+      "medium": "Ag dul i bhfeabhas (0.51–0.80)",
+      "low": "Teastaíonn cleachtadh (≤ 0.50)"
+    },
     "table": {
       "word": "Focal",
-      "type": "Cineál",
-      "family": "Teaghlach",
-      "familiarity": "Eolas",
-      "revise": "Ní mór Athbhreithniú",
-      "action": "Gníomh"
+      "baseForm": "Bunfhoirm",
+      "partOfSpeech": "Cineál focal",
+      "confidence": "Muinín"
     },
-    "noWords": "Níl Aon Idirghníomhaíochtaí Focal"
+    "empty": {
+      "title": "Tá do liosta focal folamh.",
+      "cta": "Iompórtáil focail"
+    },
+    "pagination": {
+      "prev": "Roimhe",
+      "next": "Ar aghaidh"
+    }
   }
 }
