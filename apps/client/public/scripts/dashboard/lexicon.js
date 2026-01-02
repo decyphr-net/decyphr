@@ -86,6 +86,16 @@ document.addEventListener('alpine:init', () => {
       if (this.currentPage > 1) this.currentPage--;
     },
 
+    scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    },
+
     // ---------------- Init ----------------
     async init() {
       try {
