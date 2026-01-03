@@ -48,3 +48,11 @@ class ProcessResponse(BaseModel):
     sentences: list[SentenceTokens] | None = None
     clientId: str | None
     interaction: InteractionMetadata | None = None
+
+
+class LexiconImportRequest(BaseModel):
+    requestId: str
+    clientId: str
+    targetLanguage: str
+    words: list[str]
+    interaction: InteractionMetadata
