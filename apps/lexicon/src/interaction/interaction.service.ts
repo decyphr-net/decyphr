@@ -12,9 +12,11 @@ export class InteractionService {
   private readonly logger = new Logger(InteractionService.name);
 
   private readonly typeWeights: Record<string, number> = {
+    lexicon_import: 0.25,
     translate_text: 0.4,
     chat_message: 0.6,
     chat_message_bot: 0.3,
+    passive_read: 0.1,
     default: 0.3,
   };
 
