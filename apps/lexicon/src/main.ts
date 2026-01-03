@@ -12,7 +12,7 @@ async function bootstrap() {
   app.useLogger(['log', 'debug', 'error', 'warn', 'verbose']);
 
   // Load environment variables
-  const KAFKA_BROKER = configService.get<string>('KAFKA_BROKER', 'kafka:9092');
+  const KAFKA_BROKER = configService.get<string>('KAFKA_BROKERS', 'kafka:9092');
   const KAFKA_GROUP_ID = configService.get<string>(
     'KAFKA_GROUP_ID',
     'lexicon-consumer',
