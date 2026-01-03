@@ -10,6 +10,9 @@ document.addEventListener('alpine:init', () => {
     sortKey: 'lemma',
     sortDir: 'asc',
 
+    showImport: false,
+    importText: '',
+
     // ---------------- Counters ----------------
     get highCount() {
       return this.snapshot.filter(i => Number(i.stats?.score) > 0.8).length;
@@ -94,6 +97,29 @@ document.addEventListener('alpine:init', () => {
         behavior: 'smooth',
         block: 'start'
       });
+    },
+
+    get parsedWords() {
+      return this.importText
+        .split(/[\n,]+/)
+        .map(w => w.trim())
+        .filter(Boolean);
+    },
+
+    async submitImport() {
+      if (!this.parsedWords.length) return;
+
+      await fetch('/lexicon/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          words: this.parsedWords
+        })
+      });
+
+      this.showImport = false;
+      this.importText = '';
+      await this.loadSnapshot(this.clientId);
     },
 
     // ---------------- Init ----------------

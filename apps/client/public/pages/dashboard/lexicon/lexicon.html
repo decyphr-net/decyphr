@@ -97,13 +97,20 @@
       </div>
     </div>
 
-    <div class="mt-6 flex items-center justify-between">
+    <div class="mt-6 flex items-center justify-between gap-4">
       <div class="relative w-full max-w-sm">
         <input type="text" placeholder="Search words…"
           class="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500"
           x-model="searchTerm" @input.debounce="currentPage = 1" />
         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
       </div>
+
+      <button @click="showImport = true" class="inline-flex items-center gap-2 rounded-lg
+                 bg-emerald-600 px-4 py-2 text-sm font-semibold text-white
+                 hover:bg-emerald-700 transition">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span x-text="$store.i18n.t('lexicon.addWords')"></span>
+      </button>
     </div>
     <!-- ==== TABLE CONTAINER ==== -->
     <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
@@ -227,6 +234,33 @@
       </div>
     </div>
 
+  </div>
+  <div x-show="showImport" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
+      <h2 class="text-xl font-semibold mb-2" x-text="$store.i18n.t('lexicon.import.title')">
+        Import words
+      </h2>
+
+      <p class="text-sm text-gray-600 mb-4" x-text="$store.i18n.t('lexicon.import.help')">
+        Paste words separated by commas or new lines.
+      </p>
+
+      <textarea x-model="importText" rows="6" class="w-full rounded-lg border p-3 text-sm focus:ring-emerald-500"
+        placeholder="casa, libro, hablar"></textarea>
+
+      <div class="mt-2 text-xs text-gray-500" x-text="`${parsedWords.length} words detected`">
+      </div>
+
+      <div class="mt-6 flex justify-end gap-2">
+        <button @click="showImport = false" class="px-4 py-2 text-sm rounded bg-gray-200">
+          Cancel
+        </button>
+        <button @click="submitImport" class="px-4 py-2 text-sm rounded bg-emerald-600 text-white">
+          Import
+        </button>
+      </div>
+    </div>
   </div>
 </section>
 

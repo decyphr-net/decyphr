@@ -1,11 +1,15 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import Redis from 'ioredis';
+import { KafkaService } from 'src/utils/kafka/kafka.service';
 
 @Injectable()
 export class LexiconService {
   private readonly logger = new Logger(LexiconService.name);
 
-  constructor(@Inject('REDIS') private readonly redis: Redis) { }
+  constructor(
+    @Inject('REDIS') private readonly redis: Redis,
+    private readonly kafka: KafkaService,
+  ) { }
 
   /**
    * Get a user's lexicon with words and scores
@@ -44,5 +48,30 @@ export class LexiconService {
       this.logger.error(`Failed to fetch lexicon for ${clientId}`, err);
       return [];
     }
+  }
+
+  async importWords(payload: {
+    clientId: string;
+    targetLanguage: string;
+    words: string[];
+    interaction: any;
+  }) {
+    const enrichedPayload = {
+      requestId: crypto.randomUUID(),
+      clientId: payload.clientId,
+      targetLanguage: payload.targetLanguage,
+      words: payload.words,
+      interaction: {
+        type: payload.interaction.type,
+        timestamp: payload.interaction.timestamp
+          ? Date.parse(payload.interaction.timestamp)
+          : Date.now(),
+      },
+    };
+
+    await this.kafka.emit('lexicon.import', {
+      key: payload.clientId,
+      value: enrichedPayload,
+    });
   }
 }

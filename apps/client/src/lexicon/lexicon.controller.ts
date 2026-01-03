@@ -1,9 +1,10 @@
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-import { Controller, Get, Logger, Param, Res } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthenticatedRequest } from 'src/auth/types/request';
 import { LexiconService } from './lexicon.service';
 
 
@@ -57,7 +58,6 @@ export class LexiconController {
       // Call your existing endpoint (assuming same server)
       const response = await fetch(`http://lexicon:3010/snapshot/${clientId}/${user.languageSettings?.[0]?.targetLanguage}`);
       const data = await response.json();
-      console.log(data);
 
       return res.json(data);
     } catch (err) {
@@ -70,5 +70,38 @@ export class LexiconController {
   async getUserLexicon() {
     return this.lexiconService.getUserLexicon('fa902138-7f75-4af4-aff7-a4b3d401ad4d', 'ga');
   }
+
+  @Post('/lexicon/import')
+  async importLexicon(
+    @Body() body: { words: string[] },
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.getUserFromSession(req);
+
+    if (!body.words?.length) {
+      return res.status(400).json({ error: 'No words provided' });
+    }
+
+    const interaction = {
+      type: 'lexicon_import',
+      timestamp: new Date().toISOString(),
+    };
+
+    try {
+      await this.lexiconService.importWords({
+        clientId: user.clientId,
+        targetLanguage: user.languageSettings?.[0]?.targetLanguage,
+        words: body.words,
+        interaction,
+      });
+
+      return res.status(202).json({ ok: true });
+    } catch (err) {
+      this.logger.error('Lexicon import failed', err);
+      return res.status(500).json({ error: 'Import failed' });
+    }
+  }
+
 }
 
