@@ -33,8 +33,8 @@ export type NlpCompleteEvent = {
 export class LexiconIngestService {
   private readonly logger = new Logger(LexiconIngestService.name);
 
-  // fixed: added passive_read
   private readonly INTERACTION_WEIGHTS: Record<string, number> = {
+    lexicon_import: 0.25,
     translate_text: 0.4,
     chat_message: 0.6,
     chat_message_bot: 0.3,
@@ -181,11 +181,15 @@ export class LexiconIngestService {
 
       await this.profile.setWord(word.id, word.word);
 
+      const base = this.getBaseWeight(event.interaction?.type);
+      const posMult = this.getPosMultiplier(word.tag);
+      const weight = base * posMult;
+
       await this.profile.addOrUpdateUserWordScore(
         user.clientId,
         language,
         word.id,
-        1.0,
+        weight,
       );
 
       if (event.interaction?.type) {

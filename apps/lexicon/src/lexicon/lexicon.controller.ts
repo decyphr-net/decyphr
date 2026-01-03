@@ -121,7 +121,6 @@ export class LexiconController {
     });
   }
 
-
   @Get('snapshot/:clientId/:language')
   async getSnapshot(@Param('clientId') clientId: string, @Param('language') language: string) {
     return this.getDistinctWordsWithStats(clientId, language);
