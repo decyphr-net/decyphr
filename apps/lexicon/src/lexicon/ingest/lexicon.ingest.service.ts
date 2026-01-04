@@ -41,6 +41,11 @@ export class LexiconIngestService {
     const map = new Map<string, PreparedToken>();
 
     for (const token of sentences.flatMap(s => s.tokens)) {
+      // skip punctuation, numerals, symbols
+      if (['punctuation', 'numeral', 'symbol'].includes(token.pos)) {
+        continue;
+      }
+
       if (!map.has(token.lemma)) {
         map.set(token.lemma, token);
       }
