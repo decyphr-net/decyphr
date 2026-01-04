@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User, Word } from './bank/bank.entity';
 import { BankModule } from './bank/bank.module';
+import { CefrModule } from './cefr/cefr.module';
 import { CommonModule } from './common/common.module';
 import {
   Interaction,
@@ -37,6 +38,7 @@ import { TranslationModule } from './translation/translation.module';
     BankModule,
     StatementModule,
     InteractionModule,
+    CefrModule
   ],
 })
 export class AppModule { }

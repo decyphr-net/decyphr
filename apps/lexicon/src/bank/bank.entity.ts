@@ -70,6 +70,9 @@ export class Word {
   @Column({ name: 'lemma', nullable: false, length: 50 })
   lemma: string;
 
+  @Column({ length: 2, nullable: true })
+  cefr?: string;
+
   @OneToMany(() => Interaction, (interaction) => interaction.word)
   interactions: Interaction[];
 

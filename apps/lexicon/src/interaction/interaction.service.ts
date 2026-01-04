@@ -1,9 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, Word } from 'src/bank/bank.entity';
 import { Repository } from 'typeorm';
-import { Interaction, UserWordStatistics } from './interaction.entity';
 
+import { User, Word } from 'src/bank/bank.entity';
+import { Interaction, UserWordStatistics } from './interaction.entity';
+import { computeMastery, MasteryCurve } from './mastery.util';
 /**
  * Service responsible for handling user interactions with words and computing weighted scores.
  */
@@ -30,6 +31,11 @@ export class InteractionService {
     @InjectRepository(UserWordStatistics)
     private readonly userWordStatisticsRepository: Repository<UserWordStatistics>,
   ) { }
+
+  private getCurveForWord(word: Word): MasteryCurve {
+    // Later: detect Irish function words, POS tags, etc.
+    return MasteryCurve.DEFAULT;
+  }
 
   /**
    * Creates a new interaction and updates the associated user-word statistics.
@@ -78,7 +84,11 @@ export class InteractionService {
     const total7Days = interactions.filter(i => i.timestamp >= sevenDaysAgo).length || 1;
     const total30Days = interactions.filter(i => i.timestamp >= thirtyDaysAgo).length || 1;
 
-    const score = (weighted7Days + weighted30Days) / (total7Days + total30Days);
+    const curve = this.getCurveForWord(
+      await this.wordRepository.findOneOrFail({ where: { id: wordId } }),
+    );
+
+    const score = computeMastery(weighted30Days, curve);
 
     let record = await this.userWordStatisticsRepository.findOne({
       where: { user: { id: userId }, word: { id: wordId } },
@@ -91,6 +101,21 @@ export class InteractionService {
       });
     }
 
+    this.logger.debug("Current data:")
+    this.logger.debug(`weighted7Days: ${record.weighted7Days}`);
+    this.logger.debug(`weighted30Days: ${record.weighted30Days}`);
+    this.logger.debug(`totalInteractions7Days: ${record.totalInteractions7Days}`);
+    this.logger.debug(`totalInteractions30Days: ${record.totalInteractions30Days}`);
+    this.logger.debug(`score: ${record.score}`);
+    this.logger.debug(`lastUpdated: ${record.lastUpdated}`);
+
+    this.logger.debug("Updating with:")
+    this.logger.debug(`weighted7Days: ${weighted7Days}`);
+    this.logger.debug(`weighted30Days: ${weighted30Days}`);
+    this.logger.debug(`totalInteractions7Days: ${total7Days}`);
+    this.logger.debug(`totalInteractions30Days: ${total30Days}`);
+    this.logger.debug(`score: ${score}`);
+    this.logger.debug(`lastUpdated: ${now}`);
     record.weighted7Days = weighted7Days;
     record.weighted30Days = weighted30Days;
     record.totalInteractions7Days = total7Days;

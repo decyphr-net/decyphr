@@ -1,18 +1,21 @@
 import unicodedata
 
+NORMALIZATION_POLICIES = {
+    "ga": {"strip_diacritics": False},
+    "pt": {"strip_diacritics": False},
+    "en": {"strip_diacritics": True},
+    "default": {"strip_diacritics": False},
+}
 
-def normalize_token(surface: str) -> str:
-    """
-    Returns a normalized version of a token for lexicon tracking.
 
-    :param surface: the token as it appears in the text
-    :param lemma: optional canonical form
-    :return: normalized token string
-    """
-    surface.lower()
-    # Remove accents/diacritics
+def normalize_token(surface: str, language: str) -> str:
+    surface = surface.lower()
+
+    policy = NORMALIZATION_POLICIES.get(language, NORMALIZATION_POLICIES["default"])
+
+    if not policy["strip_diacritics"]:
+        return unicodedata.normalize("NFC", surface)
+
     base = unicodedata.normalize("NFD", surface)
-    base = "".join([c for c in base if not unicodedata.combining(c)])
-    # Optional: remove non-alphanumeric chars
-    # base = re.sub(r"[^\w\s]", "", base)
+    base = "".join(c for c in base if not unicodedata.combining(c))
     return base

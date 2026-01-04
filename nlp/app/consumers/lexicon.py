@@ -17,7 +17,7 @@ async def handle_lexicon_import(req: LexiconImportRequest):
 
     resp = process_text(
         text,
-        lang=req.targetLanguage or "und",
+        lang=req.targetLanguage,
     )
 
     resp.requestId = req.requestId
@@ -26,7 +26,7 @@ async def handle_lexicon_import(req: LexiconImportRequest):
 
     for sentence in resp.sentences or []:
         for token in sentence.tokens:
-            token.normalised = normalize_token(token.surface)
+            token.normalised = normalize_token(token.surface, req.targetLanguage)
 
     await producer.send(
         topic="nlp.complete",

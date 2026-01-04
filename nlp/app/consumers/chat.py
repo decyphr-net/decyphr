@@ -43,7 +43,7 @@ async def handle_chat_delta(req: ChatDeltaPayload):
 
             # Normalize tokens
             for token in tokens:
-                token.normalised = normalize_token(token.surface)
+                token.normalised = normalize_token(token.surface, req.language)
 
             enriched_sentences.append(
                 SentenceTokens(

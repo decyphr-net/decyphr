@@ -1,7 +1,9 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data('lexiconPage', () => ({
+    // ---------------- State ----------------
     snapshot: [],
     loading: true,
+    clientId: null,
 
     pageSize: 20,
     currentPage: 1,
@@ -15,16 +17,16 @@ document.addEventListener('alpine:init', () => {
 
     // ---------------- Counters ----------------
     get highCount() {
-      return this.snapshot.filter(i => Number(i.stats?.score) > 0.8).length;
+      return this.snapshot.filter(i => Number(i.stats?.score ?? 0) > 0.8).length;
     },
     get mediumCount() {
       return this.snapshot.filter(i => {
-        const s = Number(i.stats?.score);
+        const s = Number(i.stats?.score ?? 0);
         return s > 0.5 && s <= 0.8;
       }).length;
     },
     get lowCount() {
-      return this.snapshot.filter(i => Number(i.stats?.score) <= 0.5).length;
+      return this.snapshot.filter(i => Number(i.stats?.score ?? 0) <= 0.5).length;
     },
 
     // ---------------- Filtering + Sorting ----------------
@@ -47,6 +49,13 @@ document.addEventListener('alpine:init', () => {
           return (Number(a.stats?.score ?? 0) - Number(b.stats?.score ?? 0)) * dir;
         }
 
+        if (key === 'cefr') {
+          const levels = ['A1','A2','B1','B2','C1','C2'];
+          const aIdx = levels.indexOf(a.cefr?.level ?? '') ?? -1;
+          const bIdx = levels.indexOf(b.cefr?.level ?? '') ?? -1;
+          return (aIdx - bIdx) * dir;
+        }
+
         const aVal = (a[key] ?? '').toLowerCase();
         const bVal = (b[key] ?? '').toLowerCase();
         return aVal.localeCompare(bVal) * dir;
@@ -54,11 +63,12 @@ document.addEventListener('alpine:init', () => {
     },
 
     setSort(key) {
-      this.sortDir = this.sortKey === key
-        ? (this.sortDir === 'asc' ? 'desc' : 'asc')
-        : 'asc';
-
-      this.sortKey = key;
+      if (this.sortKey === key) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortKey = key;
+        this.sortDir = 'asc';
+      }
       this.currentPage = 1;
     },
 
@@ -66,22 +76,16 @@ document.addEventListener('alpine:init', () => {
     get totalPages() {
       return Math.max(1, Math.ceil(this.filteredData.length / this.pageSize));
     },
-
     get paginatedData() {
       const start = (this.currentPage - 1) * this.pageSize;
       return this.filteredData.slice(start, start + this.pageSize);
     },
-
     get rangeLabel() {
       if (!this.filteredData.length) return '0 entries';
       const start = (this.currentPage - 1) * this.pageSize + 1;
-      const end = Math.min(
-        this.currentPage * this.pageSize,
-        this.filteredData.length
-      );
+      const end = Math.min(this.currentPage * this.pageSize, this.filteredData.length);
       return `${start}-${end} of ${this.filteredData.length}`;
     },
-
     nextPage() {
       if (this.currentPage < this.totalPages) this.currentPage++;
     },
@@ -89,37 +93,41 @@ document.addEventListener('alpine:init', () => {
       if (this.currentPage > 1) this.currentPage--;
     },
 
-    scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-
-      el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    },
-
+    // ---------------- Import ----------------
     get parsedWords() {
       return this.importText
         .split(/[\n,]+/)
         .map(w => w.trim())
         .filter(Boolean);
     },
-
     async submitImport() {
       if (!this.parsedWords.length) return;
 
       await fetch('/lexicon/import', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          words: this.parsedWords
-        })
+        body: JSON.stringify({ words: this.parsedWords })
       });
 
       this.showImport = false;
       this.importText = '';
       await this.loadSnapshot(this.clientId);
+    },
+
+    // ---------------- Load Snapshot ----------------
+    async loadSnapshot(id) {
+      try {
+        const res = await fetch(`/snapshot/${id}`);
+        const data = await res.json();
+
+        this.snapshot = Array.isArray(data.snapshot) ? data.snapshot : [];
+        this.cefr = data.cefr ?? { level: '-', confidence: 0 };
+        this.currentPage = 1;
+      } catch (err) {
+        console.error('Failed to load snapshot:', err);
+        this.snapshot = [];
+        this.cefr = { level: '-', confidence: 0 };
+      }
     },
 
     // ---------------- Init ----------------
@@ -131,24 +139,12 @@ document.addEventListener('alpine:init', () => {
 
         if (!this.clientId) {
           console.warn('clientId missing');
-          this.loading = false;
           return;
         }
 
         await this.loadSnapshot(this.clientId);
       } finally {
         this.loading = false;
-      }
-    },
-
-    async loadSnapshot(id) {
-      try {
-        const res = await fetch(`/snapshot/${id}`);
-        this.snapshot = await res.json();
-        this.currentPage = 1;
-      } catch (err) {
-        console.error('Failed to load snapshot:', err);
-        this.snapshot = [];
       }
     }
   }));

@@ -22,7 +22,7 @@ async def handle_translation(req: ProcessRequest):
         # Normalize tokens
         for sentence in processed_text.sentences:
             for token in sentence.tokens:
-                token.normalised = normalize_token(token.surface)
+                token.normalised = normalize_token(token.surface, req.sourceLanguage)
 
         # Build enriched sentences payload
         enriched_sentences = [
