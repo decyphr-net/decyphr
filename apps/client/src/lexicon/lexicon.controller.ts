@@ -2,7 +2,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { Body, Controller, Get, Logger, Param, Post, Req, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedRequest } from 'src/auth/types/request';
 import { LexiconService } from './lexicon.service';
@@ -67,8 +67,12 @@ export class LexiconController {
   }
 
   @Get('/lexicon/user')
-  async getUserLexicon() {
-    return this.lexiconService.getUserLexicon('fa902138-7f75-4af4-aff7-a4b3d401ad4d', 'ga');
+  async getUserLexicon(@Req() req: Request) {
+    const user = await this.authService.getUserFromSession(req);
+    return this.lexiconService.getUserLexicon(
+      user.clientId,
+      user.languageSettings?.[0]?.targetLanguage
+    );
   }
 
   @Post('/lexicon/import')
