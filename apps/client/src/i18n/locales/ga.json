@@ -237,6 +237,36 @@
     "pagination": {
       "prev": "Roimhe",
       "next": "Ar aghaidh"
+    },
+    "tour": {
+      "hero": {
+        "title": "Do fhoclóir pearsanta",
+        "body": "Taispeánann an leathanach seo na focail ar bhuail tú leo agus cé chomh maith is atá tú eolach orthu le himeacht ama."
+      },
+      "stats": {
+        "title": "Forbhreathnú ar do chuid foghlama",
+        "body": "Déanann na staitisticí seo achoimre ar do stór focal: líon iomlán focal, meán-mhuinín, agus gníomhaíocht le déanaí."
+      },
+      "cefr": {
+        "title": "Leibhéal CEFR measta",
+        "body": "Is meastachán é seo bunaithe ar do chlúdach foclóra — ní toradh tástála é."
+      },
+      "controls": {
+        "title": "Cuardaigh agus cuir focail leis",
+        "body": "Cuardaigh do fhoclóir nó cuir focail leis de láimh ar mhaith leat díriú orthu."
+      },
+      "table": {
+        "title": "Liosta do chuid focal",
+        "body": "Is focal é gach ró ar bhuail tú leis. Cliceáil ceanntásca na gcolún chun sórtáil de réir focal, cineál, nó muiníne."
+      },
+      "pagination": {
+        "title": "Leathanaigh",
+        "body": "Úsáid na rialuithe seo chun bogadh trí do fhoclóir iomlán."
+      },
+      "import": {
+        "title": "Iompórtáil focail",
+        "body": "Cuir focail leis de láimh ar mhaith leat díriú ar a bhfoghlaim."
+      }
     }
   }
 }

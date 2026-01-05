@@ -4,7 +4,8 @@
 
     <!-- ==== HERO ==== -->
     <div
-      class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in">
+      class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in"
+      data-tour="lexicon-hero">
       <h1 class="text-4xl font-extrabold tracking-tight" x-text="$store.i18n.t('lexicon.title')">
       </h1>
       <p class="mt-3 text-lg opacity-90" x-text="$store.i18n.t('lexicon.subtitle')">
@@ -18,7 +19,7 @@
     </div>
 
     <!-- ==== QUICK‑STATS CARDS ==== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" data-tour="lexicon-stats">
       <!-- Total words -->
       <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
         <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
@@ -62,7 +63,8 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6">
+    <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6"
+      data-tour="lexicon-cefr">
       <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
         <i data-lucide="award" class="w-6 h-6"></i>
       </div>
@@ -117,7 +119,7 @@
       </div>
     </div>
 
-    <div class="mt-6 flex items-center justify-between gap-4">
+    <div class="mt-6 flex items-center justify-between gap-4" data-tour="lexicon-controls">
       <div class="relative w-full max-w-sm">
         <input type="text" placeholder="Search words…"
           class="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500"
@@ -127,13 +129,14 @@
 
       <button @click="showImport = true" class="inline-flex items-center gap-2 rounded-lg
                  bg-emerald-600 px-4 py-2 text-sm font-semibold text-white
-                 hover:bg-emerald-700 transition">
+                 hover:bg-emerald-700 transition" data-tour="lexicon-import">
         <i data-lucide="plus" class="w-4 h-4"></i>
         <span x-text="$store.i18n.t('lexicon.addWords')"></span>
       </button>
     </div>
     <!-- ==== TABLE CONTAINER ==== -->
-    <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
+    <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200"
+      data-tour="lexicon-table">
 
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-emerald-100">
@@ -225,7 +228,8 @@
     </div>
 
     <!-- ==== PAGINATION BAR ==== -->
-    <div class="flex items-center justify-between py-4 text-sm text-gray-600" x-show="!loading && totalPages > 1">
+    <div class="flex items-center justify-between py-4 text-sm text-gray-600" x-show="!loading && totalPages > 1"
+      data-tour="lexicon-pagination">
 
       <!-- Range label (e.g. “21‑40 of 123”) -->
       <div x-text="rangeLabel"></div>

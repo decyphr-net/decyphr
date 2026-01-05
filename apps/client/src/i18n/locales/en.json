@@ -251,6 +251,36 @@
     "pagination": {
       "prev": "Previous",
       "next": "Next"
+    },
+    "tour": {
+      "hero": {
+        "title": "Your personal lexicon",
+        "body": "This page shows the words you've encountered and how familiar you are with them over time."
+      },
+      "stats": {
+        "title": "Your learning snapshot",
+        "body": "These stats summarise your vocabulary: total words, average familiarity, and recent activity."
+      },
+      "cefr": {
+        "title": "Estimated CEFR level",
+        "body": "This is an approximation based on your vocabulary coverage — not a test result."
+      },
+      "controls": {
+        "title": "Find and add words",
+        "body": "Search your lexicon or manually add words you want to track."
+      },
+      "table": {
+        "title": "Your word list",
+        "body": "Each row is a word you've encountered. Click column headers to sort by word, type, or familiarity."
+      },
+      "pagination": {
+        "title": "Pagination",
+        "body": "Use these controls to move through your full lexicon."
+      },
+      "import": {
+        "title": "Import words",
+        "body": "Manually add words you want to focus on learning."
+      }
     }
   }
 }

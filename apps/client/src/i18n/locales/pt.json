@@ -226,6 +226,36 @@
     "pagination": {
       "prev": "Anterior",
       "next": "Seguinte"
+    },
+    "tour": {
+      "hero": {
+        "title": "O seu léxico pessoal",
+        "body": "Esta página mostra as palavras que encontrou e o seu nível de familiaridade com elas ao longo do tempo."
+      },
+      "stats": {
+        "title": "Resumo da sua aprendizagem",
+        "body": "Estas estatísticas resumem o seu vocabulário: total de palavras, familiaridade média e atividade recente."
+      },
+      "cefr": {
+        "title": "Nível CEFR estimado",
+        "body": "Este é um valor aproximado baseado na cobertura do seu vocabulário — não é um resultado de teste."
+      },
+      "controls": {
+        "title": "Pesquisar e adicionar palavras",
+        "body": "Pesquise no seu léxico ou adicione manualmente palavras que deseja acompanhar."
+      },
+      "table": {
+        "title": "Lista de palavras",
+        "body": "Cada linha representa uma palavra que encontrou. Clique nos cabeçalhos para ordenar por palavra, tipo ou familiaridade."
+      },
+      "pagination": {
+        "title": "Paginação",
+        "body": "Use estes controlos para navegar por todo o seu léxico."
+      },
+      "import": {
+        "title": "Importar palavras",
+        "body": "Adicione manualmente palavras nas quais pretende focar a aprendizagem."
+      }
     }
   }
 }

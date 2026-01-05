@@ -146,6 +146,66 @@ document.addEventListener('alpine:init', () => {
       } finally {
         this.loading = false;
       }
+      maybeStartLexiconTour();
     }
   }));
 });
+
+function t(key) {
+  return window.Alpine?.store("i18n")?.t(key) ?? key;
+}
+
+function startLexiconTour() {
+  const tour = new tourguide.TourGuideClient({
+    showProgress: true,
+    showCloseButton: true,
+    keyboardControls: true,
+    overlayOpacity: 0.6,
+    steps: [
+      {
+        target: "[data-tour='lexicon-hero']",
+        title: t("lexicon.tour.hero.title"),
+        content: t("lexicon.tour.hero.body"),
+      },
+      {
+        target: "[data-tour='lexicon-stats']",
+        title: t("lexicon.tour.stats.title"),
+        content: t("lexicon.tour.stats.body"),
+      },
+      {
+        target: "[data-tour='lexicon-cefr']",
+        title: t("lexicon.tour.cefr.title"),
+        content: t("lexicon.tour.cefr.body"),
+      },
+      {
+        target: "[data-tour='lexicon-controls']",
+        title: t("lexicon.tour.controls.title"),
+        content: t("lexicon.tour.controls.body"),
+      },
+      {
+        target: "[data-tour='lexicon-table']",
+        title: t("lexicon.tour.table.title"),
+        content: t("lexicon.tour.table.body"),
+      },
+      {
+        target: "[data-tour='lexicon-pagination']",
+        title: t("lexicon.tour.pagination.title"),
+        content: t("lexicon.tour.pagination.body"),
+      },
+      {
+        target: "[data-tour='lexicon-controls'] button",
+        title: t("lexicon.tour.import.title"),
+        content: t("lexicon.tour.import.body"),
+      },
+    ],
+  });
+
+  tour.start();
+}
+
+function maybeStartLexiconTour() {
+  if (localStorage.getItem("lexiconTourSeen")) return;
+
+  startLexiconTour();
+  localStorage.setItem("lexiconTourSeen", "true");
+}
