@@ -379,7 +379,14 @@
         translations: {},
         languageNames: { en: "English", ga: "Gaeilge", pt: "Português" },
         languageFlags: { en: "🇬🇧", ga: "🇮🇪", pt: "🇵🇹" },
-        t(key) { return key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key; },
+        t(key, vars = {}) {
+          let str = key.split('.').reduce((obj, part) => obj?.[part], this.translations) || key;
+          // Simple {var} replacement
+          Object.keys(vars).forEach(k => {
+            str = str.replace(new RegExp(`{${k}}`, 'g'), vars[k]);
+          });
+          return str;
+        },
         saveLanguage(lang) { localStorage.setItem('language', lang); this.loadTranslations(lang); location.reload(); },
         loadTranslations(lang = localStorage.getItem('language') || 'en') {
           fetch(`/i18n?lang=${lang}`).then(res => res.json()).then(data => { this.translations = data; });

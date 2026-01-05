@@ -267,6 +267,27 @@
         "title": "Iompórtáil focail",
         "body": "Cuir focail leis de láimh ar mhaith leat díriú ar a bhfoghlaim."
       }
+    },
+    "search": {
+      "placeholder": "Cuardaigh focail…"
+    },
+    "import": {
+      "title": "Iompórtáil focail",
+      "help": "Greamaigh focail scartha le camóga nó línte nua.",
+      "placeholder": "casa, libro, hablar",
+      "cancel": "Cealaigh",
+      "confirm": "Iompórtáil",
+      "detected": "{count} focal aimsithe"
     }
+  },
+  "confidence": {
+    "title": "Muintearas",
+    "short": "Léiríonn sé cé chomh cleachta is atá tú le focal bunaithe ar úsáid agus ar le déanaí.",
+    "long": "Léiríonn muintearas cé chomh minic agus cé chomh déanaí is a chonaic tú focal i do léamh nó i d’ionchur. Ríomhtar go huathoibríoch é agus ní scór tástála ná tomhas cruinnis é."
+  },
+  "cefr": {
+    "title": "Leibhéal CEFR",
+    "short": "Meastachán bunaithe ar do nochtadh foclóra.",
+    "long": "Déantar do leibhéal CEFR a mheas bunaithe ar dheacracht na bhfocal i do lexicon agus ar do mhuintearas leo. Ní toradh scrúdaithe é agus ní thomhaiseann sé gramadach, labhairt ná scríobh. Bain úsáid as mar tháscaire dul chun cinn."
   }
 }

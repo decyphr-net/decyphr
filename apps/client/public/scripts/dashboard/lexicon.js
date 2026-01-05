@@ -4,6 +4,7 @@ document.addEventListener('alpine:init', () => {
     snapshot: [],
     loading: true,
     clientId: null,
+    cefr: { level: '-', confidence: 0 },
 
     pageSize: 20,
     currentPage: 1,
@@ -100,6 +101,16 @@ document.addEventListener('alpine:init', () => {
         .map(w => w.trim())
         .filter(Boolean);
     },
+
+    goToPage(page) {
+      const p = Number(page);
+      if (!Number.isInteger(p)) return;
+
+      if (p >= 1 && p <= this.totalPages) {
+        this.currentPage = p;
+      }
+    },
+
     async submitImport() {
       if (!this.parsedWords.length) return;
 
@@ -150,10 +161,6 @@ document.addEventListener('alpine:init', () => {
     }
   }));
 });
-
-function t(key) {
-  return window.Alpine?.store("i18n")?.t(key) ?? key;
-}
 
 function startLexiconTour() {
   const tour = new tourguide.TourGuideClient({
@@ -208,4 +215,16 @@ function maybeStartLexiconTour() {
 
   startLexiconTour();
   localStorage.setItem("lexiconTourSeen", "true");
+}
+
+function tooltip() {
+  return {
+    open: false,
+    toggle() {
+      this.open = !this.open;
+    },
+    close() {
+      this.open = false;
+    }
+  };
 }

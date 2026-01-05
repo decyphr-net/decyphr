@@ -261,10 +261,6 @@
         "title": "Your learning snapshot",
         "body": "These stats summarise your vocabulary: total words, average familiarity, and recent activity."
       },
-      "cefr": {
-        "title": "Estimated CEFR level",
-        "body": "This is an approximation based on your vocabulary coverage — not a test result."
-      },
       "controls": {
         "title": "Find and add words",
         "body": "Search your lexicon or manually add words you want to track."
@@ -276,11 +272,28 @@
       "pagination": {
         "title": "Pagination",
         "body": "Use these controls to move through your full lexicon."
-      },
-      "import": {
-        "title": "Import words",
-        "body": "Manually add words you want to focus on learning."
       }
+    },
+    "search": {
+      "placeholder": "Search words…"
+    },
+    "import": {
+      "title": "Import words",
+      "help": "Paste words separated by commas or new lines.",
+      "placeholder": "casa, libro, hablar",
+      "cancel": "Cancel",
+      "confirm": "Import",
+      "detected": "{count} words detected"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "short": "Shows how familiar you are with a word based on usage and recency.",
+      "long": "Confidence reflects how often and how recently you have encountered a word in your reading or input. It is calculated automatically and is not a test score or a measure of correctness."
+    },
+    "cefr": {
+      "title": "CEFR level",
+      "short": "An estimate based on your vocabulary exposure.",
+      "long": "Your CEFR level is estimated from the difficulty of the words in your lexicon and your confidence with them. It is not an exam result and does not measure grammar, speaking, or writing ability. Use it as a progress indicator."
     }
   }
 }

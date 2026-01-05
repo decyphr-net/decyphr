@@ -256,6 +256,27 @@
         "title": "Importar palavras",
         "body": "Adicione manualmente palavras nas quais pretende focar a aprendizagem."
       }
+    },
+    "search": {
+      "placeholder": "Pesquisar palavras…"
+    },
+    "import": {
+      "title": "Importar palavras",
+      "help": "Cole palavras separadas por vírgulas ou novas linhas.",
+      "placeholder": "casa, libro, hablar",
+      "cancel": "Cancelar",
+      "confirm": "Importar",
+      "detected": "{count} palavras detetadas"
     }
+  },
+  "confidence": {
+    "title": "Confiança",
+    "short": "Mostra o quão familiar você está com uma palavra com base no uso e na recência.",
+    "long": "A confiança reflete com que frequência e quão recentemente você encontrou uma palavra na sua leitura ou entrada. É calculada automaticamente e não é uma pontuação de teste nem uma medida de correção."
+  },
+  "cefr": {
+    "title": "Nível CEFR",
+    "short": "Uma estimativa baseada na sua exposição ao vocabulário.",
+    "long": "O seu nível CEFR é estimado a partir da dificuldade das palavras no seu léxico e da sua confiança nelas. Não é um resultado de exame e não mede gramática, fala ou escrita. Use-o como um indicador de progresso."
   }
 }

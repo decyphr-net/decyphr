@@ -1,9 +1,46 @@
 <div class="container mx-auto px-4 space-y-16 bg-gray-50/60">
 
-  <!-- =============================== -->
-  <!-- GUIDED PRACTICE HERO -->
-  <!-- =============================== -->
-  <!-- Hero section commented out, no changes needed -->
+  <section class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8" x-data="dashboardState()">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+
+      <!-- Status -->
+      <div class="space-y-2">
+        <h1 class="text-2xl font-semibold text-gray-900">
+          <span x-text="$store.i18n.t('dashboard.learningState.title')"></span>
+        </h1>
+
+        <ul class="space-y-1 text-sm text-gray-700">
+          <li class="flex items-center gap-2">
+            <span>🟢</span>
+            <span x-text="learningState.vocab"></span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span>🟡</span>
+            <span x-text="learningState.comprehension"></span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span>🔴</span>
+            <span x-text="learningState.production"></span>
+          </li>
+        </ul>
+
+        <p class="text-xs text-gray-500">
+          <span x-text="$store.i18n.t('dashboard.learningState.lastActive')"></span>:
+          <span x-text="learningState.lastActive"></span>
+        </p>
+      </div>
+
+      <!-- Continue CTA -->
+      <div class="flex-shrink-0">
+        <button @click="continuePractice()" class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold
+                 bg-emerald-500 hover:bg-emerald-600 shadow-sm hover:shadow-md transition-all">
+          <i data-lucide="play" class="w-5 h-5 mr-2"></i>
+          <span x-text="$store.i18n.t('dashboard.continue.cta')"></span>
+        </button>
+      </div>
+
+    </div>
+  </section>
 
   <!-- =============================== -->
   <!-- SPEAKING & WRITING -->

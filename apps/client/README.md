@@ -97,3 +97,214 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+# Navigation & Sidebar Structure Plan
+
+This document defines the **global navigation model** for the app. Its purpose is to prevent feature sprawl, keep UX consistent as features grow, and give you a stable mental model to return to.
+
+---
+
+## 1. Global Navigation Philosophy
+
+Navigation is organized by **learning role**, not by individual features.
+
+Top-level navigation answers:
+
+> *“What kind of learning do I want to do right now?”*
+
+Not:
+
+> *“What tool do I want to click?”*
+
+---
+
+## 2. Top-Level Navigation (Primary Nav)
+
+This should live in the **main sidebar / header**.
+
+```
+Dashboard
+
+Interaction
+Knowledge
+Practice
+Reflection
+```
+
+Each item opens either:
+
+* A landing page **or**
+* A default workspace
+
+---
+
+## 3. Dashboard (Orientation Layer)
+
+**Purpose:** quick entry + high-level progress
+
+### Dashboard contains
+
+* Mode tiles (not deep links)
+* Light progress signals (counts, streaks, CEFR)
+
+### Dashboard does NOT contain
+
+* Tables
+* Deep configuration
+* Practice flows
+
+Dashboard cards link to **mode landing pages**, not specific sub-features.
+
+---
+
+## 4. Interaction (Sidebar Group)
+
+**Role:** Active language use (speaking & writing)
+
+### Sidebar structure
+
+```
+Interaction
+├── Chat
+├── Scenarios
+└── Writing Feedback
+```
+
+### Notes
+
+* These pages share a conversational layout
+* Minimal stats
+* Feedback-focused UI
+
+---
+
+## 5. Knowledge (Sidebar Group)
+
+**Role:** Language memory & reference
+
+### Sidebar structure
+
+```
+Knowledge
+├── Lexicon
+│   ├── Overview
+│   ├── Words
+│   ├── Statements
+│   ├── Meanings & Notes
+│   └── Import / History
+│
+└── Vault
+    ├── Saved Sentences
+    ├── Saved Translations
+    └── Personal Notes
+```
+
+### Lexicon rules
+
+* Acts as **source of truth**
+* Stats live only in Overview
+* Other tabs are operational
+
+---
+
+## 6. Practice (Sidebar Group)
+
+**Role:** Skill training & reinforcement
+
+### Sidebar structure
+
+```
+Practice
+├── Translation
+│   ├── Translate
+│   ├── Vault
+│   ├── Review
+│   └── Stats
+│
+├── Flashcards
+├── Guess the Meaning
+├── Verb Practice
+└── Mistake Correction
+```
+
+### Notes
+
+* Practice pages consume Lexicon data
+* Review pages are repetitive & focused
+* Stats mirror Lexicon Stats visually
+
+---
+
+## 7. Reflection (Sidebar Group)
+
+**Role:** Progress & insight
+
+### Sidebar structure
+
+```
+Reflection
+├── Overall Progress
+├── Lexicon Stats
+├── Translation Stats
+└── Interaction Stats
+```
+
+### Rules
+
+* Charts allowed here
+* CEFR trends belong here
+* No direct practice actions
+
+---
+
+## 8. Visual Consistency Rules
+
+### Workspace pages
+
+* One main task
+* Minimal distractions
+* Strong focus hierarchy
+
+### Stats pages
+
+* Cards → charts → tables
+* Consistent color language
+* Comparable layouts across domains
+
+### Interaction pages
+
+* Chat-first
+* Feedback inline
+* Metrics secondary or hidden
+
+---
+
+## 9. Feature Placement Cheat Sheet
+
+| Feature           | Mode        | Location              |
+| ----------------- | ----------- | --------------------- |
+| Chat              | Interaction | Interaction → Chat    |
+| Lexicon Table     | Knowledge   | Lexicon → Words       |
+| Flashcards        | Practice    | Practice → Flashcards |
+| Translation Vault | Practice    | Translation → Vault   |
+| CEFR Summary      | Reflection  | Overall Progress      |
+| Confidence Score  | Reflection  | Stats pages only      |
+
+---
+
+## 10. Decision Test (Use This)
+
+Before adding a feature, answer:
+
+1. Which mode does this belong to?
+2. Is it reference, action, training, or insight?
+3. Does it need stats or flow?
+
+If the answer isn’t obvious, the feature is underspecified.
+
+---
+
+## 11. One-Line Summary (for future you)
+
+> *Dashboard chooses the mode. Sidebar chooses the task. Pages do one job well.*

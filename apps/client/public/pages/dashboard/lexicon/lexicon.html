@@ -1,4 +1,3 @@
-<!-- ====================== LEXICON PAGE ====================== -->
 <section class="py-12 flex flex-col gap-12" x-data="lexiconPage()" x-init="init()">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -11,7 +10,7 @@
       <p class="mt-3 text-lg opacity-90" x-text="$store.i18n.t('lexicon.subtitle')">
       </p>
       <button
-        class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition"
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition w-full sm:w-auto"
         @click="scrollToSection('lexicon-table')">
         <i data-lucide="arrow-down" class="w-5 h-5"></i>
         <span x-text="$store.i18n.t('lexicon.jumpToTable')"></span>
@@ -19,28 +18,31 @@
     </div>
 
     <!-- ==== QUICK‑STATS CARDS ==== -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6" data-tour="lexicon-stats">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mt-6" data-tour="lexicon-stats">
       <!-- Total words -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
           <i data-lucide="list" class="w-6 h-6"></i>
         </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.words')"></p>
-          <p class="text-xl font-semibold text-gray-800" x-text="snapshot.length">
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate" x-text="$store.i18n.t('lexicon.stats.words')"></p>
+          <p class="text-xl font-semibold text-gray-800 truncate" x-text="snapshot.length">
             0
           </p>
         </div>
       </div>
 
       <!-- Avg confidence -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
           <i data-lucide="star" class="w-6 h-6"></i>
         </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.avgConfidence')"></p>
-          <p class="text-xl font-semibold text-gray-800"
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate" x-text="$store.i18n.t('lexicon.stats.avgConfidence')">
+          </p>
+          <p class="text-xl font-semibold text-gray-800 truncate"
             x-text="snapshot.length ? (snapshot.reduce((s,i)=>s+Number(i.stats?.score||0),0)/snapshot.length).toFixed(2) : '--'">
             --
           </p>
@@ -48,14 +50,16 @@
       </div>
 
       <!-- Last update -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
           <i data-lucide="clock" class="w-6 h-6"></i>
         </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.stats.lastUpdate')">Last update
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate" x-text="$store.i18n.t('lexicon.stats.lastUpdate')">Last
+            update
           </p>
-          <p class="text-xl font-semibold text-gray-800"
+          <p class="text-xl font-semibold text-gray-800 truncate"
             x-text="snapshot.length ? new Date(snapshot[0].stats?.updatedAt || Date.now()).toLocaleDateString() : '--'">
             --
           </p>
@@ -63,14 +67,31 @@
       </div>
     </div>
 
-    <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6"
+    <!-- CEFR card -->
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6"
       data-tour="lexicon-cefr">
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 flex-shrink-0">
         <i data-lucide="award" class="w-6 h-6"></i>
       </div>
-      <div>
-        <p class="text-sm font-medium text-gray-500">Your CEFR level</p>
-        <p class="text-xl font-semibold text-gray-800">
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-medium text-gray-500 truncate" x-text="$store.i18n.t('lexicon.cefr.title')"></p>
+
+        <!-- Info icon -->
+        <div x-data="tooltip()" class="relative inline-block mt-1 sm:mt-0">
+          <button @click="toggle()" class="text-gray-400 hover:text-gray-600">
+            <i data-lucide="info" class="w-4 h-4"></i>
+          </button>
+
+          <!-- Tooltip -->
+          <div x-show="open" @click.outside="close()" x-transition
+            class="absolute z-50 mt-2 w-64 sm:w-72 rounded-lg bg-white p-4 text-sm text-gray-700 shadow-lg border">
+            <p class="font-medium mb-1" x-text="$store.i18n.t('lexicon.cefr.short')"></p>
+            <p class="text-gray-600" x-text="$store.i18n.t('lexicon.cefr.long')"></p>
+          </div>
+        </div>
+
+        <p class="text-xl font-semibold text-gray-800 mt-2 sm:mt-1 truncate">
           <span :class="{
               'bg-green-600 text-white px-2 py-0.5 rounded-full': cefr.level === 'C2' || cefr.level === 'C1',
               'bg-yellow-500 text-white px-2 py-0.5 rounded-full': cefr.level === 'B2' || cefr.level === 'B1',
@@ -78,107 +99,92 @@
               'bg-red-600 text-white px-2 py-0.5 rounded-full': cefr.level === 'A1'
             }" x-text="cefr.level || '-'">
           </span>
-          <span class="ml-2 text-gray-600 text-sm"
+          <span class="ml-2 text-gray-600 text-sm truncate"
             x-text="cefr.confidence ? '(' + cefr.confidence.toFixed(2) + ')' : ''"></span>
         </p>
       </div>
     </div>
 
+    <!-- Buckets -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-      <!-- HIGH (green) -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
-          <i data-lucide="thumbs-up" class="w-6 h-6"></i>
+      <template x-for="bucket in [{count: highCount, color:'green', icon:'thumbs-up', label:'high'},
+                                  {count: mediumCount, color:'yellow', icon:'meh', label:'medium'},
+                                  {count: lowCount, color:'red', icon:'thumbs-down', label:'low'}]"
+        :key="bucket.label">
+        <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div
+            :class="`flex h-12 w-12 items-center justify-center rounded-full bg-${bucket.color}-100 text-${bucket.color}-600 flex-shrink-0`">
+            <i :data-lucide="bucket.icon" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate"
+              x-text="$store.i18n.t('lexicon.buckets.' + bucket.label)"></p>
+            <p class="text-2xl font-bold" :class="`text-${bucket.color}-600 truncate`" x-text="bucket.count">0</p>
+          </div>
         </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.high')"></p>
-          <p class="text-2xl font-bold text-green-600" x-text="highCount">0</p>
-        </div>
-      </div>
-
-      <!-- MEDIUM (yellow) -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
-          <i data-lucide="meh" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.medium')"></p>
-          <p class="text-2xl font-bold text-yellow-600" x-text="mediumCount">0</p>
-        </div>
-      </div>
-
-      <!-- LOW (red) -->
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
-          <i data-lucide="thumbs-down" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-gray-500" x-text="$store.i18n.t('lexicon.buckets.low')"></p>
-          <p class="text-2xl font-bold text-red-600" x-text="lowCount">0</p>
-        </div>
-      </div>
+      </template>
     </div>
 
-    <div class="mt-6 flex items-center justify-between gap-4" data-tour="lexicon-controls">
-      <div class="relative w-full max-w-sm">
-        <input type="text" placeholder="Search words…"
+    <div class="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      data-tour="lexicon-controls">
+      <div class="relative w-full sm:max-w-sm">
+        <input type="text" :placeholder="$store.i18n.t('lexicon.search.placeholder')"
           class="w-full rounded-lg border border-gray-300 pl-10 pr-4 py-2 text-sm focus:border-emerald-500 focus:ring-emerald-500"
           x-model="searchTerm" @input.debounce="currentPage = 1" />
         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
       </div>
 
       <button @click="showImport = true" class="inline-flex items-center gap-2 rounded-lg
-                 bg-emerald-600 px-4 py-2 text-sm font-semibold text-white
-                 hover:bg-emerald-700 transition" data-tour="lexicon-import">
+                     bg-emerald-600 px-4 py-2 text-sm font-semibold text-white
+                     hover:bg-emerald-700 transition w-full sm:w-auto" data-tour="lexicon-import">
         <i data-lucide="plus" class="w-4 h-4"></i>
-        <span x-text="$store.i18n.t('lexicon.addWords')"></span>
+        <span x-text="$store.i18n.t('lexicon.empty.cta')"></span>
       </button>
     </div>
     <!-- ==== TABLE CONTAINER ==== -->
     <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200"
       data-tour="lexicon-table">
-
-      <table class="min-w-full divide-y divide-gray-200">
+      <table class="min-w-full divide-y divide-gray-200 table-auto sm:table-fixed">
         <thead class="bg-emerald-100">
           <tr>
-            <!-- Word (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
               @click="setSort('lemma')" x-text="$store.i18n.t('lexicon.table.word')">
-              <span x-show="sortKey === 'lemma'" class="ml-1">
-                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
-                <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
+              <span x-show="$data.sortKey === 'lemma'" class="ml-1">
+                <i data-lucide="chevron-up" x-show="$data.sortDir === 'asc'"></i>
+                <i data-lucide="chevron-down" x-show="$data.sortDir === 'desc'"></i>
               </span>
             </th>
-
-            <!-- Base Form (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
               @click="setSort('normalised')" x-text="$store.i18n.t('lexicon.table.baseForm')">
-              <span x-show="sortKey === 'normalised'" class="ml-1">
-                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
-                <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
+              <span x-show="$data.sortKey === 'normalised'" class="ml-1">
+                <i data-lucide="chevron-up" x-show="$data.sortDir === 'asc'"></i>
+                <i data-lucide="chevron-down" x-show="$data.sortDir === 'desc'"></i>
               </span>
             </th>
-
-            <!-- Part of Speech (alphabetical) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
               @click="setSort('tag')" x-text="$store.i18n.t('lexicon.table.partOfSpeech')">
-              <span x-show="sortKey === 'tag'" class="ml-1">
-                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
-                <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
+              <span x-show="$data.sortKey === 'tag'" class="ml-1">
+                <i data-lucide="chevron-up" x-show="$data.sortDir === 'asc'"></i>
+                <i data-lucide="chevron-down" x-show="$data.sortDir === 'desc'"></i>
               </span>
             </th>
-
-            <!-- Confidence (numeric) -->
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-              @click="setSort('score')" x-text="$store.i18n.t('lexicon.table.confidence')">
-              <span x-show="sortKey === 'score'" class="ml-1">
-                <i data-lucide="chevron-up" x-show="sortDir === 'asc'"></i>
-                <i data-lucide="chevron-down" x-show="sortDir === 'desc'"></i>
-              </span>
+              @click="setSort('score')">
+              <div class="flex items-center gap-1" x-data="tooltip()">
+                <span x-text="$store.i18n.t('lexicon.confidence.title')"></span>
+                <button @click.stop="toggle()" class="text-emerald-700">
+                  <i data-lucide="info" class="w-4 h-4"></i>
+                </button>
+
+                <div x-show="open" @click.outside="close()" x-transition
+                  class="absolute z-50 mt-2 w-64 sm:w-72 rounded-lg bg-white p-4 text-sm text-gray-700 shadow-lg border">
+                  <p class="font-medium mb-1" x-text="$store.i18n.t('lexicon.confidence.short')"></p>
+                  <p class="text-gray-600" x-text="$store.i18n.t('lexicon.confidence.long')"></p>
+                </div>
+              </div>
             </th>
           </tr>
         </thead>
-
         <tbody class="bg-white divide-y divide-gray-200">
           <!-- Loading spinner (centered) -->
           <tr x-show="loading">
@@ -192,16 +198,16 @@
           </tr>
 
           <!-- Empty state (nice icon + CTA) -->
-          <tr x-show="!loading && snapshot.length === 0">
-            <td colspan="4" class="py-12 text-center text-gray-500">
-              <i data-lucide="folder-search" class="w-12 h-12 mx-auto mb-4 text-emerald-400"></i>
-              <p class="mb-2 font-medium" x-text="$store.i18n.t('lexicon.empty.title')"></p>
-              <button
-                class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 transition"
-                @click="">
-                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-                <span x-text="$store.i18n.t('lexicon.empty.cta')"></span>
-              </button>
+          <tr x-show="!loading && filteredData.length === 0"">
+            <td colspan=" 4" class="py-12 text-center text-gray-500">
+            <i data-lucide="folder-search" class="w-12 h-12 mx-auto mb-4 text-emerald-400"></i>
+            <p class="mb-2 font-medium" x-text="$store.i18n.t('lexicon.empty.title')"></p>
+            <button
+              class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700 transition"
+              @click="">
+              <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+              <span x-text="$store.i18n.t('lexicon.empty.cta')"></span>
+            </button>
             </td>
           </tr>
 
@@ -228,13 +234,14 @@
     </div>
 
     <!-- ==== PAGINATION BAR ==== -->
-    <div class="flex items-center justify-between py-4 text-sm text-gray-600" x-show="!loading && totalPages > 1"
-      data-tour="lexicon-pagination">
+    <div
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 text-sm text-gray-600 gap-2 sm:gap-0"
+      x-show="!loading && totalPages > 1" data-tour="lexicon-pagination">
 
       <!-- Range label (e.g. “21‑40 of 123”) -->
       <div x-text="rangeLabel"></div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
         <!-- Prev -->
         <button @click="prevPage()" :disabled="currentPage === 1"
           class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
@@ -263,25 +270,24 @@
 
     <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
       <h2 class="text-xl font-semibold mb-2" x-text="$store.i18n.t('lexicon.import.title')">
-        Import words
       </h2>
 
       <p class="text-sm text-gray-600 mb-4" x-text="$store.i18n.t('lexicon.import.help')">
-        Paste words separated by commas or new lines.
       </p>
 
       <textarea x-model="importText" rows="6" class="w-full rounded-lg border p-3 text-sm focus:ring-emerald-500"
-        placeholder="casa, libro, hablar"></textarea>
+        :placeholder="$store.i18n.t('lexicon.import.placeholder')"></textarea>
 
-      <div class="mt-2 text-xs text-gray-500" x-text="`${parsedWords.length} words detected`">
+      <div class="mt-2 text-xs text-gray-500"
+        x-text="$store.i18n.t('lexicon.import.detected', { count: parsedWords.length })">
       </div>
 
       <div class="mt-6 flex justify-end gap-2">
-        <button @click="showImport = false" class="px-4 py-2 text-sm rounded bg-gray-200">
-          Cancel
+        <button @click="showImport = false" class="px-4 py-2 text-sm rounded bg-gray-200"
+          x-text="$store.i18n.t('lexicon.import.cancel')">
         </button>
-        <button @click="submitImport" class="px-4 py-2 text-sm rounded bg-emerald-600 text-white">
-          Import
+        <button @click="submitImport" class="px-4 py-2 text-sm rounded bg-emerald-600 text-white"
+          x-text="$store.i18n.t('lexicon.import.confirm')">
         </button>
       </div>
     </div>

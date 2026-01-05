@@ -51,3 +51,22 @@ document.addEventListener('alpine:init', () => {
     }
   }));
 });
+
+function dashboardState() {
+  return {
+    learningState: {
+      vocab: 'Strong in A1–A2 vocabulary',
+      comprehension: 'Developing B1 comprehension',
+      production: 'Needs work on sentence production',
+      lastActive: '2 hours ago',
+    },
+
+    continueHint: 'Review 7 weak words and practice 2 sentences',
+
+    continuePractice() {
+      // Temporary routing logic
+      // Later this can be server-driven
+      window.location.href = '/lexicon?mode=review';
+    },
+  }
+}
