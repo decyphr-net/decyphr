@@ -8,12 +8,17 @@ export type WordStats = {
   score: number;
 };
 
-export type WordSnapshot = {
-  id: string;
+export interface WordSnapshot {
+  id: number;
   word: string;
-  normalised: string;
-  tag: string;
-  language: string;
   lemma: string;
-  stats: WordStats;
-};
+  normalised?: string;
+  tag?: string;
+
+  stats: {
+    score: number;
+    rawScore: number;
+    lastSeenAt?: string;
+    updatedAt?: string;
+  };
+}

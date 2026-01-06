@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
-import { Connection, In, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 
-import { User, Word } from 'src/bank/bank.entity';
+import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
 import { RedisProfileService } from '../profile.service';
 import { INTERACTION_WEIGHTS, POS_MULTIPLIERS } from './lexicon.ingest.contants';
@@ -16,6 +16,7 @@ export class LexiconIngestService {
     @InjectConnection() private readonly connection: Connection,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Word) private readonly wordRepository: Repository<Word>,
+    @InjectRepository(WordForm) private readonly wordFormRepository: Repository<WordForm>,
     private readonly profile: RedisProfileService,
     private readonly interactionService: InteractionService,
   ) { }
@@ -25,104 +26,113 @@ export class LexiconIngestService {
 
     const tokens = this.prepareTokens(event.sentences);
     const words = await this.syncWords(tokens, event.language);
+    const wordForms = await this.syncWordForms(tokens, words);
 
     await this.applyIngestionEffects(
       user.clientId,
-      words,
+      wordForms,
       event.language,
       event.interaction,
     );
 
-    this.logger.debug(`Ingested ${words.size} words for ${user.clientId}`);
+    this.logger.debug(`Ingested ${wordForms.length} word forms for ${user.clientId}`);
   }
 
   // ---------- token prep ----------
   private prepareTokens(sentences: NlpCompleteEvent['sentences']) {
-    const map = new Map<string, PreparedToken>();
-
-    for (const token of sentences.flatMap(s => s.tokens)) {
-      // skip punctuation, numerals, symbols
-      if (['punctuation', 'numeral', 'symbol'].includes(token.pos)) {
-        continue;
-      }
-
-      if (!map.has(token.lemma)) {
-        map.set(token.lemma, token);
-      }
-    }
-
-    return [...map.values()];
+    return sentences
+      .flatMap(s => s.tokens)
+      .filter(t => !['punctuation', 'numeral', 'symbol'].includes(t.pos));
   }
 
-  // ---------- persistence ----------
+  // ---------- lexeme persistence ----------
   private async syncWords(tokens: PreparedToken[], language: string) {
-    const lemmas = tokens.map(t => t.lemma.slice(0, 50));
+    const keys = tokens.map(t => ({
+      word: t.surface,
+      lemma: t.lemma.slice(0, 50),
+      pos: t.pos,
+      language,
+    }));
 
-    const existing = await this.wordRepository.find({
-      where: { lemma: In(lemmas), language },
+    const existing = await this.wordRepository.find({ where: keys });
+
+    const resolved = new Map<string, Word>();
+    existing.forEach(w => {
+      resolved.set(`${w.lemma}:${w.pos}`, w);
     });
 
-    const resolved = new Map<string, Word>(
-      existing.map(w => [w.lemma, w]),
+    const missing = keys.filter(
+      k => !resolved.has(`${k.lemma}:${k.pos}`),
     );
 
-    const missing = tokens.filter(t => !resolved.has(t.lemma.slice(0, 50)));
-
     if (missing.length) {
-      await this.insertMissingWords(missing, language);
-      const reloaded = await this.wordRepository.find({
-        where: { lemma: In(missing.map(m => m.lemma.slice(0, 50))), language },
+      await this.connection
+        .createQueryBuilder()
+        .insert()
+        .into(Word)
+        .values(missing)
+        .orIgnore()
+        .execute();
+
+      const reloaded = await this.wordRepository.find({ where: missing });
+      reloaded.forEach(w => {
+        resolved.set(`${w.lemma}:${w.pos}`, w);
       });
-      reloaded.forEach(w => resolved.set(w.lemma, w));
     }
 
     return resolved;
   }
 
-  private async insertMissingWords(tokens: PreparedToken[], language: string) {
-    const seen = new Set<string>();
-
+  // ---------- form persistence ----------
+  private async syncWordForms(
+    tokens: PreparedToken[],
+    words: Map<string, Word>,
+  ) {
+    // Build insertable values, skipping tokens that don't have a corresponding Word
     const values = tokens
-      .map(t => ({
-        word: t.surface,
-        lemma: t.lemma.slice(0, 50),
-        normalised: t.normalised,
-        tag: t.pos,
-        language,
-      }))
-      .filter(v => {
-        const key = `${v.normalised}-${language}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
+      .map(t => {
+        const word = words.get(`${t.lemma}:${t.pos}`);
+        if (!word) return null; // skip if Word not found
+        return { wordId: word.id, form: t.surface };
+      })
+      .filter(Boolean) as { wordId: number; form: string }[];
 
-    if (!values.length) return;
+    if (!values.length) return [];
 
+    // Insert WordForm rows using the foreign key (wordId)
     await this.connection
       .createQueryBuilder()
       .insert()
-      .into(Word)
+      .into(WordForm)
       .values(values)
-      .orIgnore()
+      .orIgnore() // ignore duplicates
       .execute();
+
+    // Fetch the inserted/found WordForms with their relations
+    return this.wordFormRepository.find({
+      relations: ['word'],
+      where: values.map(v => ({
+        word: { id: v.wordId },
+        form: v.form,
+      })),
+    });
   }
 
   // ---------- side effects ----------
   private async applyIngestionEffects(
     clientId: string,
-    words: Map<string, Word>,
+    wordForms: WordForm[],
     language: string,
     interaction?: InteractionMetadata,
   ) {
     await Promise.all(
-      [...words.values()].map(async word => {
-        await this.profile.setWord(word.id, word.word);
+      wordForms.map(async wf => {
+        const word = wf.word;
 
-        this.logger.debug(`Calculating score for ${word.word}`)
+        await this.profile.setWord(word.id, word.lemma);
 
-        const weight = this.computeWeight(word.tag, interaction?.type);
-        this.logger.debug(`Weight: ${weight}`)
+        const weight = this.computeWeight(word.pos, interaction?.type);
+
         await this.profile.addOrUpdateUserWordScore(
           clientId,
           language,
@@ -130,10 +140,16 @@ export class LexiconIngestService {
           weight,
         );
 
+        await this.profile.markWordSeen(
+          clientId,
+          language,
+          word.id,
+        );
+
         if (interaction?.type) {
           await this.interactionService.createInteraction(
             clientId,
-            word.id,
+            wf.word.id,
             interaction.type,
           );
         }
@@ -150,8 +166,8 @@ export class LexiconIngestService {
     return INTERACTION_WEIGHTS[type ?? 'default'];
   }
 
-  private posMultiplier(tag: string) {
-    return POS_MULTIPLIERS[tag] ?? POS_MULTIPLIERS.DEFAULT;
+  private posMultiplier(pos: string) {
+    return POS_MULTIPLIERS[pos] ?? POS_MULTIPLIERS.DEFAULT;
   }
 
   // ---------- user ----------

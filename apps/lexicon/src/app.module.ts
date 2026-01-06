@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User, Word } from './bank/bank.entity';
+import { User, Word, WordForm } from './bank/bank.entity';
 import { BankModule } from './bank/bank.module';
 import { CefrModule } from './cefr/cefr.module';
 import { CommonModule } from './common/common.module';
@@ -29,7 +29,7 @@ import { TranslationModule } from './translation/translation.module';
         password: configService.get('MARIA_DB_PASSWORD'),
         database: configService.get('MARIA_DB_DATABASE'),
         synchronize: true,
-        entities: [Interaction, Statement, Word, User, UserWordStatistics],
+        entities: [Interaction, Statement, Word, User, UserWordStatistics, WordForm],
       }),
     }),
     CommonModule,

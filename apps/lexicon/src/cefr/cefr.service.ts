@@ -47,14 +47,25 @@ export class CefrAssessmentService {
     private readonly statsRepository: Repository<UserWordStatistics>,
   ) { }
 
+  private async getOrCreateUser(clientId: string) {
+    await this.userRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values({ clientId })
+      .orIgnore()
+      .execute();
+
+    return this.userRepository.findOneOrFail({
+      where: { clientId },
+    });
+  }
+
   // -------------------------------
   // Public API
   // -------------------------------
   async assess(clientId: string, language: string) {
-    const user = await this.userRepository.findOne({
-      where: { clientId },
-    });
-    if (!user) throw new Error(`User not found: ${clientId}`);
+    const user = await this.getOrCreateUser(clientId);
 
     const stats = await this.statsRepository
       .createQueryBuilder('uws')
@@ -91,7 +102,7 @@ export class CefrAssessmentService {
       let total = 0;
 
       for (const s of words) {
-        const weight = this.posWeight(s.word.tag);
+        const weight = this.posWeight(s.word.pos);
         total += weight;
 
         if ((s.score ?? 0) >= this.MASTERY_THRESHOLD) {
@@ -132,9 +143,9 @@ export class CefrAssessmentService {
   private explainSignals(stats: UserWordStatistics[]): string[] {
     const signals: string[] = [];
 
-    const verbs = stats.filter(s => s.word.tag === 'VERB');
+    const verbs = stats.filter(s => s.word.pos === 'VERB');
     const functionWords = stats.filter(s =>
-      ['PART', 'PRON', 'AUX'].includes(s.word.tag),
+      ['PART', 'PRON', 'AUX'].includes(s.word.pos),
     );
 
     const verbMastery =

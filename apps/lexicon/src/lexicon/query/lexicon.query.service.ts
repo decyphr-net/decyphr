@@ -1,66 +1,103 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { User, Word } from "src/bank/bank.entity";
-import { UserWordStatistics } from "src/interaction/interaction.entity";
+import { User, Word } from 'src/bank/bank.entity';
+import { In, Repository } from 'typeorm';
+import { RedisProfileService } from '../profile.service';
+import { WordSnapshot } from './lexicon.query.types';
 
 @Injectable()
 export class LexiconQueryService {
   constructor(
-    @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(Word) private readonly wordRepo: Repository<Word>,
+    private readonly profile: RedisProfileService,
+    @InjectRepository(Word)
+    private readonly wordRepository: Repository<Word>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) { }
 
-  async getUserWordSnapshot(clientId: string, language: string) {
-    const user =
-      (await this.userRepo.findOne({ where: { clientId } })) ??
-      (await this.userRepo.save(this.userRepo.create({ clientId })));
+  async getUserWordSnapshot(
+    clientId: string,
+    language: string,
+  ): Promise<WordSnapshot[]> {
 
-    const rows = await this.wordRepo
-      .createQueryBuilder('w')
-      .innerJoin(
-        UserWordStatistics,
-        'uws',
-        'uws.wordId = w.id AND uws.userId = :uid',
-        { uid: user.id },
-      )
-      .where('w.language = :lang', { lang: language })
-      .select([
-        'w.id AS id',
-        'w.word AS word',
-        'w.normalised AS normalised',
-        'w.tag AS tag',
-        'w.language AS language',
-        'w.lemma AS lemma',
-        'uws.weighted7Days AS weighted7d',
-        'uws.weighted30Days AS weighted30d',
-        'uws.totalInteractions7Days AS total7d',
-        'uws.totalInteractions30Days AS total30d',
-        'uws.score AS score',
-      ])
-      .getRawMany();
+    const user = await this.getOrCreateUser(clientId);
 
-    return rows.map(this.mapSnapshotRow);
+    const raw = await this.profile.getUserTopWords(
+      user.clientId,
+      language,
+      1000,
+    );
+
+    if (!raw.length) return [];
+
+    const wordEntities = await this.wordRepository.find({
+      where: { id: In(raw.map(r => r.wordId)) },
+    });
+
+    const wordMap = new Map(wordEntities.map(w => [w.id, w]));
+
+    const seenMap = await this.profile.getUserWordSeen(
+      user.clientId,
+      language,
+      raw.map(r => r.wordId),
+    );
+
+    return raw
+      .map(r => {
+        const word = wordMap.get(r.wordId);
+        if (!word) return null;
+
+        const seenAt = seenMap.get(r.wordId);
+
+        const daysSinceSeen = seenAt
+          ? (Date.now() - seenAt) / (1000 * 60 * 60 * 24)
+          : 365; // IMPORTANT: missing = OLD
+
+        const score = this.computeDecayedScore(
+          r.score,
+          daysSinceSeen,
+        );
+
+        return {
+          id: word.id,
+          word: word.word,
+          lemma: word.lemma,
+          pos: word.pos,
+          language: word.language,
+          stats: {
+            score: Number(score.toFixed(2)),
+            rawScore: r.score,
+            lastSeen: seenAt ?? null,
+          },
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b!.stats.score - a!.stats.score) as WordSnapshot[];
   }
 
-  private mapSnapshotRow(r: any) {
-    return {
-      id: r.id,
-      word: r.word,
-      normalised: r.normalised,
-      tag: r.tag,
-      language: r.language,
-      lemma: r.lemma,
-      stats: {
-        total: Number(r.total7d) + Number(r.total30d),
-        weighted: Number(r.weighted7d) + Number(r.weighted30d),
-        total7d: Number(r.total7d),
-        total30d: Number(r.total30d),
-        weighted7d: Number(r.weighted7d),
-        weighted30d: Number(r.weighted30d),
-        score: Number(r.score),
-      },
-    };
+  private computeDecayedScore(
+    rawScore: number,
+    daysSinceSeen: number,
+  ): number {
+    const strength = Math.log1p(rawScore);
+    const lambda = 0.15;
+
+    return rawScore * Math.exp(
+      -lambda * daysSinceSeen / strength,
+    );
+  }
+
+  private async getOrCreateUser(clientId: string) {
+    await this.userRepository
+      .createQueryBuilder()
+      .insert()
+      .into(User)
+      .values({ clientId })
+      .orIgnore()
+      .execute();
+
+    return this.userRepository.findOneOrFail({
+      where: { clientId },
+    });
   }
 }
+

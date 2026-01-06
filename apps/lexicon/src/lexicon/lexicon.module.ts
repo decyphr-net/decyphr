@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { User, Word } from 'src/bank/bank.entity';
+import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { CefrAssessmentService } from 'src/cefr/cefr.service';
 import { CommonModule } from 'src/common/common.module';
 import { Interaction, UserWordStatistics } from 'src/interaction/interaction.entity';
@@ -15,7 +15,7 @@ import { LexiconQueryService } from './query/lexicon.query.service';
   imports: [
     CommonModule,
     // Provide repositories for the entities used by the ingest flow.
-    TypeOrmModule.forFeature([Word, User, Interaction, UserWordStatistics]),
+    TypeOrmModule.forFeature([Word, User, Interaction, UserWordStatistics, WordForm]),
   ],
   controllers: [LexiconController],
   providers: [

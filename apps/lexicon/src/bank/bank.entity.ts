@@ -3,13 +3,13 @@ import {
   UserWordStatistics,
 } from 'src/interaction/interaction.entity';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique
 } from 'typeorm';
 
 /**
@@ -49,7 +49,8 @@ function computeNormalised(value?: string): string {
  * Unique index is on normalised only (no language) per earlier discussion.
  */
 @Entity('words')
-@Index(['normalised', 'language'], { unique: true })
+@Unique(['lemma', 'pos', 'language'])
+@Index(['lemma', 'language'], { unique: true })
 export class Word {
   @PrimaryGeneratedColumn()
   id: number;
@@ -57,12 +58,8 @@ export class Word {
   @Column({ name: 'token', nullable: false, length: 100 })
   word: string;
 
-  // Keep nullable for safe deployment/backfill; will set to NOT NULL after backfill.
-  @Column({ name: 'normalised', nullable: true, length: 100 })
-  normalised: string | null;
-
-  @Column({ name: 'tag', nullable: false })
-  tag: string;
+  @Column({ name: 'pos', nullable: false })
+  pos: string;
 
   @Column({ name: 'language', nullable: false })
   language: string;
@@ -76,15 +73,24 @@ export class Word {
   @OneToMany(() => Interaction, (interaction) => interaction.word)
   interactions: Interaction[];
 
-  @BeforeInsert()
-  @BeforeUpdate()
-  ensureNormalised() {
-    // Compute canonical normalised form from surface 'word' if normalised absent/empty;
-    // if computeNormalised returns empty string, set normalised to null to avoid empty-string
-    // unique-index collisions.
-    const computed = computeNormalised(this.normalised || this.word || '');
-    this.normalised = computed === '' ? null : computed;
-  }
+  @OneToMany(() => WordForm, (form) => form.word)
+  forms: WordForm[];
+}
+
+@Entity('word_forms')
+@Unique(['word', 'form'])
+export class WordForm {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Word, (word) => word.forms)
+  word: Word;
+
+  @Column({ length: 100 })
+  form: string;
+
+  @OneToMany(() => Interaction, (interaction) => interaction.wordForm)
+  interactions: Interaction[];
 }
 
 @Entity('users')

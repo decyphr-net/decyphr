@@ -155,15 +155,15 @@
               </span>
             </th>
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-              @click="setSort('normalised')" x-text="$store.i18n.t('lexicon.table.baseForm')">
-              <span x-show="$data.sortKey === 'normalised'" class="ml-1">
+              @click="setSort('word')" x-text="$store.i18n.t('lexicon.table.baseForm')">
+              <span x-show="$data.sortKey === 'word'" class="ml-1">
                 <i data-lucide="chevron-up" x-show="$data.sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="$data.sortDir === 'desc'"></i>
               </span>
             </th>
             <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800 cursor-pointer select-none"
-              @click="setSort('tag')" x-text="$store.i18n.t('lexicon.table.partOfSpeech')">
-              <span x-show="$data.sortKey === 'tag'" class="ml-1">
+              @click="setSort('pos')" x-text="$store.i18n.t('lexicon.table.partOfSpeech')">
+              <span x-show="$data.sortKey === 'pos'" class="ml-1">
                 <i data-lucide="chevron-up" x-show="$data.sortDir === 'asc'"></i>
                 <i data-lucide="chevron-down" x-show="$data.sortDir === 'desc'"></i>
               </span>
@@ -214,9 +214,9 @@
           <!-- Data rows -->
           <template x-for="item in paginatedData" :key="item.id">
             <tr class="hover:bg-emerald-50 transition-colors">
+              <td class="px-4 py-2" x-text="item.word"></td>
               <td class="px-4 py-2" x-text="item.lemma"></td>
-              <td class="px-4 py-2" x-text="item.normalised || item.lemma"></td>
-              <td class="px-4 py-2" x-text="item.tag || '-'"></td>
+              <td class="px-4 py-2" x-text="item.pos || '-'"></td>
 
               <!-- Confidence badge -->
               <td class="px-4 py-2">

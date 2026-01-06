@@ -1,4 +1,4 @@
-import { User, Word } from 'src/bank/bank.entity';
+import { User, Word, WordForm } from 'src/bank/bank.entity';
 import {
   Column,
   Entity,
@@ -58,6 +58,9 @@ export class Interaction {
 
   @Column({ type: 'float', nullable: false, default: 0 })
   weight: number;
+
+  @ManyToOne(() => WordForm, (wordForm) => wordForm.interactions)
+  wordForm: WordForm;
 }
 
 /**

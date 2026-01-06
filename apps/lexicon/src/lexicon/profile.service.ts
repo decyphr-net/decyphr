@@ -10,20 +10,18 @@ export class RedisProfileService {
     @Inject(REDIS) private readonly redis: Redis,
   ) { }
 
-  /**
-   * Store a word in the global lexicon hash
-   */
+  // ---------------- Words ----------------
+
   async setWord(wordId: number, word: string) {
-    try {
-      await this.redis.hset('lexicon:words', wordId.toString(), word);
-    } catch (err) {
-      this.logger.error(`Failed to set word ${wordId}`, err);
-    }
+    await this.redis.hset(
+      'lexicon:words',
+      wordId.toString(),
+      word,
+    );
   }
 
-  /**
-   * Increment or set a user's word score in the ZSET
-   */
+  // ---------------- Scores ----------------
+
   async addOrUpdateUserWordScore(
     userId: string,
     language: string,
@@ -31,50 +29,73 @@ export class RedisProfileService {
     scoreDelta: number,
   ) {
     const key = `user:${userId}:priority:${language}`;
-    try {
-      await this.redis.zincrby(key, scoreDelta, wordId.toString());
-    } catch (err) {
-      this.logger.error(
-        `Failed to update priority score for user=${userId} word=${wordId}`,
-        err,
-      );
-    }
+    await this.redis.zincrby(
+      key,
+      scoreDelta,
+      wordId.toString(),
+    );
   }
 
-  /**
-   * Get a user's top-N words by score
-   */
   async getUserTopWords(
     userId: string,
     language: string,
-    topN = 50,
-  ): Promise<{ wordId: number; word: string; score: number }[]> {
-    const zsetKey = `user:${userId}:priority:${language}`;
-    try {
-      // get wordIds and scores
-      const zrange = await this.redis.zrevrange(zsetKey, 0, topN - 1, 'WITHSCORES');
+    limit = 1000,
+  ): Promise<{ wordId: number; score: number }[]> {
+    const key = `user:${userId}:priority:${language}`;
 
-      const result: { wordId: number; word: string; score: number }[] = [];
-      for (let i = 0; i < zrange.length; i += 2) {
-        const wordId = parseInt(zrange[i], 10);
-        const score = parseFloat(zrange[i + 1]);
-        result.push({ wordId, word: '', score }); // word will be fetched below
-      }
+    const zrange = await this.redis.zrevrange(
+      key,
+      0,
+      limit - 1,
+      'WITHSCORES',
+    );
 
-      if (result.length === 0) return [];
+    const result: { wordId: number; score: number }[] = [];
 
-      // fetch actual words from hash
-      const wordIds = result.map(r => r.wordId.toString());
-      const words = await this.redis.hmget('lexicon:words', ...wordIds);
-
-      result.forEach((r, idx) => {
-        r.word = words[idx] ?? '';
+    for (let i = 0; i < zrange.length; i += 2) {
+      result.push({
+        wordId: Number(zrange[i]),
+        score: Number(zrange[i + 1]),
       });
-
-      return result;
-    } catch (err) {
-      this.logger.error(`Failed to fetch top words for user=${userId}`, err);
-      return [];
     }
+
+    return result;
+  }
+
+  // ---------------- Seen timestamps ----------------
+
+  async markWordSeen(
+    userId: string,
+    language: string,
+    wordId: number,
+  ) {
+    const key = `user:${userId}:seen:${language}`;
+    await this.redis.hset(
+      key,
+      wordId.toString(),
+      Date.now().toString(),
+    );
+  }
+
+  async getUserWordSeen(
+    userId: string,
+    language: string,
+    wordIds: number[],
+  ): Promise<Map<number, number>> {
+    const key = `user:${userId}:seen:${language}`;
+
+    const values = await this.redis.hmget(
+      key,
+      ...wordIds.map(id => id.toString()),
+    );
+
+    const map = new Map<number, number>();
+
+    wordIds.forEach((id, idx) => {
+      const v = values[idx];
+      if (v) map.set(id, Number(v));
+    });
+
+    return map;
   }
 }
