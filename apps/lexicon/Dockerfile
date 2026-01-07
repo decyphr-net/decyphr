@@ -1,19 +1,23 @@
-# Start with a Node.js base image that uses Node v13
 FROM node:23.5.0
 WORKDIR /usr/src/app
 
-# Copy the package.json file to the container and install fresh node_modules
+# Copy package.json and tsconfig files
 COPY package*.json tsconfig*.json ./
-RUN npm install
 
-# Copy the rest of the application source code to the container
+# Copy source code
 COPY . .
 
-# Transpile typescript and bundle the project
+# Install all dependencies including dev (for build)
+RUN npm install
+
+# Build TypeScript
 RUN npm run build
 
-# Remove the original src directory (our new compiled source is in the `dist` folder)
-RUN rm -r src
+# Remove src if you want (optional)
+# RUN rm -r src
 
-# Assign `npm run start:prod` as the default command to run when booting the container
-CMD ["npm", "run", "start:prod"]
+# Entrypoint
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+CMD ["./entrypoint.sh"]

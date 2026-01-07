@@ -112,6 +112,8 @@ services:
     depends_on:
       - kafka
       - mariadb
+    env_file:
+      - ./apps/lexicon/.env
 
   client:
     build:
