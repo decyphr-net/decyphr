@@ -5,9 +5,26 @@ import { Connection, Repository } from 'typeorm';
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
 import { RedisProfileService } from '../profile.service';
-import { INTERACTION_WEIGHTS, POS_MULTIPLIERS } from './lexicon.ingest.contants';
-import { InteractionMetadata, NlpCompleteEvent, PreparedToken } from './lexicon.ingest.types';
+import {
+  INTERACTION_WEIGHTS,
+  POS_MULTIPLIERS,
+} from './lexicon.ingest.contants';
+import {
+  InteractionMetadata,
+  NlpCompleteEvent,
+  PreparedToken,
+} from './lexicon.ingest.types';
 
+/**
+ * Service responsible for ingesting NLP-completed text into the lexicon.
+ *
+ * Responsibilities:
+ * - Normalize and filter NLP tokens
+ * - Ensure Word and WordForm records exist
+ * - Apply side effects (profile updates, scoring, interactions)
+ *
+ * This service is deliberately stateless and driven entirely by events.
+ */
 @Injectable()
 export class LexiconIngestService {
   private readonly logger = new Logger(LexiconIngestService.name);
@@ -16,17 +33,42 @@ export class LexiconIngestService {
     @InjectConnection() private readonly connection: Connection,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Word) private readonly wordRepository: Repository<Word>,
-    @InjectRepository(WordForm) private readonly wordFormRepository: Repository<WordForm>,
+    @InjectRepository(WordForm)
+    private readonly wordFormRepository: Repository<WordForm>,
     private readonly profile: RedisProfileService,
     private readonly interactionService: InteractionService,
   ) { }
 
-  async ingestFromEvent(event: NlpCompleteEvent) {
+  /**
+   * Entry point for lexicon ingestion.
+   *
+   * Given an NLP completion event, this method:
+   * - resolves the user
+   * - extracts and normalizes tokens
+   * - syncs words and word forms
+   * - applies all downstream side effects
+   *
+   * @param {NlpCompleteEvent} event
+   *  NLP completion event containing tokenized sentences
+   *  and optional interaction metadata.
+   *
+   * @returns {Promise<void>}
+   *  Resolves when ingestion and all side effects complete.
+   */
+  async ingestFromEvent(event: NlpCompleteEvent): Promise<void> {
+    this.logger.debug(
+      `Starting lexicon ingestion for clientId=${event.clientId}`,
+    );
     const user = await this.getOrCreateUser(event.clientId);
 
     const tokens = this.prepareTokens(event.sentences);
+    this.logger.debug(`Prepared ${tokens.length} candidate tokens`);
+
     const words = await this.syncWords(tokens, event.language);
+    this.logger.debug(`Resolved ${words.size} unique words`);
+
     const wordForms = await this.syncWordForms(tokens, words);
+    this.logger.debug(`Resolved ${wordForms.length} word forms`);
 
     await this.applyIngestionEffects(
       user.clientId,
@@ -35,19 +77,56 @@ export class LexiconIngestService {
       event.interaction,
     );
 
-    this.logger.debug(`Ingested ${wordForms.length} word forms for ${user.clientId}`);
+    this.logger.debug(
+      `Lexicon ingestion complete for clientId=${user.clientId}`,
+    );
   }
 
-  // ---------- token prep ----------
-  private prepareTokens(sentences: NlpCompleteEvent['sentences']) {
+  // ---------------------------------------------------------------------------
+  // Token preparation
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Flattens sentences into tokens and removes tokens
+   * that should never be ingested (punctuation, numerals, symbols).
+   * @param {NlpCompleteEvent['sentences']} sentences
+   *  Sentences produced by the NLP pipeline.
+   *
+   * @returns {PreparedToken[]}
+   *  Normalized tokens eligible for lexicon ingestion.
+   */
+  private prepareTokens(
+    sentences: NlpCompleteEvent['sentences'],
+  ): PreparedToken[] {
     return sentences
-      .flatMap(s => s.tokens)
-      .filter(t => !['punctuation', 'numeral', 'symbol'].includes(t.pos));
+      .flatMap((s) => s.tokens)
+      .filter((t) => !['punctuation', 'numeral', 'symbol'].includes(t.pos));
   }
 
-  // ---------- lexeme persistence ----------
-  private async syncWords(tokens: PreparedToken[], language: string) {
-    const keys = tokens.map(t => ({
+  // ---------------------------------------------------------------------------
+  // Word persistence
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Ensures all lexical words referenced by the token stream exist.
+   *
+   * Words are uniquely identified by (lemma, pos, language).
+   * Missing entries are inserted using bulk operations.
+   *
+   * @param {PreparedToken[]} tokens
+   *  Normalized tokens extracted from NLP output.
+   *
+   * @param {string} language
+   *  ISO language code associated with the tokens.
+   *
+   * @returns {Promise<Map<string, Word>>}
+   *  Map of resolved Word entities keyed by `${lemma}:${pos}`.
+   */
+  private async syncWords(
+    tokens: PreparedToken[],
+    language: string,
+  ): Promise<Map<string, Word>> {
+    const keys = tokens.map((t) => ({
       word: t.surface,
       lemma: t.lemma.slice(0, 50),
       pos: t.pos,
@@ -57,13 +136,11 @@ export class LexiconIngestService {
     const existing = await this.wordRepository.find({ where: keys });
 
     const resolved = new Map<string, Word>();
-    existing.forEach(w => {
+    existing.forEach((w) => {
       resolved.set(`${w.lemma}:${w.pos}`, w);
     });
 
-    const missing = keys.filter(
-      k => !resolved.has(`${k.lemma}:${k.pos}`),
-    );
+    const missing = keys.filter((k) => !resolved.has(`${k.lemma}:${k.pos}`));
 
     if (missing.length) {
       await this.connection
@@ -75,7 +152,7 @@ export class LexiconIngestService {
         .execute();
 
       const reloaded = await this.wordRepository.find({ where: missing });
-      reloaded.forEach(w => {
+      reloaded.forEach((w) => {
         resolved.set(`${w.lemma}:${w.pos}`, w);
       });
     }
@@ -83,14 +160,31 @@ export class LexiconIngestService {
     return resolved;
   }
 
-  // ---------- form persistence ----------
+  // ---------------------------------------------------------------------------
+  // WordForm persistence
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Ensures WordForm entries exist for each observed surface form.
+   *
+   * Tokens that cannot be associated with a Word entity
+   * are skipped defensively.
+   *
+   * @param {PreparedToken[]} tokens
+   *  Normalized NLP tokens.
+   *
+   * @param {Map<string, Word>} words
+   *  Resolved Word entities keyed by `${lemma}:${pos}`.
+   *
+   * @returns {Promise<WordForm[]>}
+   *  Array of WordForm entities with Word relations loaded.
+   */
   private async syncWordForms(
     tokens: PreparedToken[],
     words: Map<string, Word>,
-  ) {
-    // Build insertable values, skipping tokens that don't have a corresponding Word
+  ): Promise<WordForm[]> {
     const values = tokens
-      .map(t => {
+      .map((t) => {
         const word = words.get(`${t.lemma}:${t.pos}`);
         if (!word) return null; // skip if Word not found
         return { wordId: word.id, form: t.surface };
@@ -99,7 +193,6 @@ export class LexiconIngestService {
 
     if (!values.length) return [];
 
-    // Insert WordForm rows using the foreign key (wordId)
     await this.connection
       .createQueryBuilder()
       .insert()
@@ -108,25 +201,50 @@ export class LexiconIngestService {
       .orIgnore() // ignore duplicates
       .execute();
 
-    // Fetch the inserted/found WordForms with their relations
     return this.wordFormRepository.find({
       relations: ['word'],
-      where: values.map(v => ({
+      where: values.map((v) => ({
         word: { id: v.wordId },
         form: v.form,
       })),
     });
   }
 
-  // ---------- side effects ----------
+  // ---------------------------------------------------------------------------
+  // Side effects
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Applies all non-persistence side effects for ingested words.
+   *
+   * Side effects include:
+   * - updating Redis lexicon data
+   * - updating per-user word scores
+   * - marking words as seen
+   * - recording interaction events
+   *
+   * @param {string} clientId
+   *  Unique identifier for the user.
+   *
+   * @param {WordForm[]} wordForms
+   *  WordForm entities to apply effects for.
+   *
+   * @param {string} language
+   *  Language code associated with the ingestion.
+   *
+   * @param {InteractionMetadata | undefined} interaction
+   *  Optional interaction metadata driving scoring and logging.
+   *
+   * @returns {Promise<void>}
+   */
   private async applyIngestionEffects(
     clientId: string,
     wordForms: WordForm[],
     language: string,
     interaction?: InteractionMetadata,
-  ) {
+  ): Promise<void> {
     await Promise.all(
-      wordForms.map(async wf => {
+      wordForms.map(async (wf) => {
         const word = wf.word;
 
         await this.profile.setWord(word.id, word.lemma);
@@ -140,11 +258,7 @@ export class LexiconIngestService {
           weight,
         );
 
-        await this.profile.markWordSeen(
-          clientId,
-          language,
-          word.id,
-        );
+        await this.profile.markWordSeen(clientId, language, word.id);
 
         if (interaction?.type) {
           await this.interactionService.createInteraction(
@@ -157,21 +271,71 @@ export class LexiconIngestService {
     );
   }
 
-  // ---------- scoring ----------
-  private computeWeight(pos: string, interaction?: string) {
+  // ---------------------------------------------------------------------------
+  // Scoring
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Computes the final score weight for a word occurrence.
+   *
+   * @param {string} pos
+   *  Part-of-speech tag of the word.
+   *
+   * @param {string | undefined} interaction
+   *  Optional interaction type driving base weight.
+   *
+   * @returns {number}
+   *  Final computed weight.
+   */
+  private computeWeight(pos: string, interaction?: string): number {
     return this.baseWeight(interaction) * this.posMultiplier(pos);
   }
 
-  private baseWeight(type?: string) {
+  /**
+   * Resolves the base weight for a given interaction type.
+   *
+   * @param {string | undefined} type
+   *  Interaction type or undefined.
+   *
+   * @returns {number}
+   *  Base interaction weight.
+   */
+  private baseWeight(type?: string): number {
     return INTERACTION_WEIGHTS[type ?? 'default'];
   }
 
-  private posMultiplier(pos: string) {
+  /**
+   * Resolves the multiplier for a given part-of-speech.
+   *
+   * @param {string} pos
+   *  Part-of-speech tag.
+   *
+   * @returns {number}
+   *  POS multiplier.
+   */
+  private posMultiplier(pos: string): number {
     return POS_MULTIPLIERS[pos] ?? POS_MULTIPLIERS.DEFAULT;
   }
 
-  // ---------- user ----------
-  private async getOrCreateUser(clientId: string) {
+  // ---------------------------------------------------------------------------
+  // User resolution
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Fetches an existing user by clientId or creates one if missing.
+   *
+   * This method is intentionally idempotent and safe
+   * to call repeatedly for the same clientId.
+   *
+   * @param {string} clientId
+   *  External client identifier.
+   *
+   * @returns {Promise<User>}
+   *  Resolved or newly created User entity.
+   *
+   * TODO: Move this to a UserService
+   */
+  private async getOrCreateUser(clientId: string): Promise<User> {
     return (
       (await this.userRepository.findOne({ where: { clientId } })) ??
       this.userRepository.save(this.userRepository.create({ clientId }))

@@ -30,21 +30,44 @@ export class InteractionService {
     private readonly userWordStatisticsRepository: Repository<UserWordStatistics>,
   ) { }
 
+  /**
+   * Returns the mastery curve to be used for all words.
+   * @returns {MasteryCurve} The default mastery curve
+   */
   private getCurveForWord(): MasteryCurve {
     return MasteryCurve.DEFAULT;
   }
 
-  // REQUIRED by gateway – unchanged behaviour
+  /**
+   * Retrieves all word statistics for a given user.
+   * @param {string} clientId - The client identifier for the user
+   * @returns {Promise<UserWordStatistics[]>} Array of user word statistics including the related word entity
+   */
   async getUserWordStatistics(clientId: string) {
+    this.logger.debug(`Fetching word statistics for clientId=${clientId}`);
     const user = await this.userRepository.findOne({ where: { clientId } });
-    if (!user) return [];
+    if (!user) {
+      this.logger.warn(`User not found for clientId=${clientId}`);
+      return [];
+    }
 
-    return this.userWordStatisticsRepository.find({
+    const stats = await this.userWordStatisticsRepository.find({
       where: { user: { id: user.id } },
       relations: ['word'],
     });
+
+    this.logger.debug(`Found ${stats.length} word statistics for clientId=${clientId}`);
+    return stats;
   }
 
+  /**
+   * Creates a new interaction record for a user and updates their word statistics.
+   * @param {string} clientId - The client identifier for the user
+   * @param {number} wordFormId - The ID of the word form being interacted with
+   * @param {string} type - The type of interaction (e.g., "chat_message", "lexicon_import")
+   * @returns {Promise<Interaction>} The saved interaction entity
+   * @throws {Error} If user or word form cannot be found
+   */
   async createInteraction(
     clientId: string,
     wordFormId: number,
@@ -55,13 +78,19 @@ export class InteractionService {
     );
 
     const user = await this.userRepository.findOne({ where: { clientId } });
-    if (!user) throw new Error(`User not found: ${clientId}`);
+    if (!user) {
+      this.logger.error(`User not found for clientId=${clientId}`);
+      throw new Error(`User not found: ${clientId}`);
+    }
 
     const wordForm = await this.wordFormRepository.findOne({
       where: { id: wordFormId },
       relations: ['word'],
     });
-    if (!wordForm) throw new Error(`WordForm not found: ${wordFormId}`);
+    if (!wordForm) {
+      this.logger.error(`WordForm not found for wordFormId=${wordFormId}`);
+      throw new Error(`WordForm not found: ${wordFormId}`);
+    }
 
     // ✅ MATCHES Interaction entity
     const interaction = this.interactionRepository.create({
@@ -72,14 +101,22 @@ export class InteractionService {
     });
 
     await this.interactionRepository.save(interaction);
-    await this.updateUserWordStatistics(user.id, wordForm.word.id);
+    this.logger.log(`Saved interaction id=${interaction.id} for userId=${user.id}`);
 
-    return interaction;
+    return await this.updateUserWordStatistics(user.id, wordForm.word.id);
   }
 
+  /**
+   * Updates a user's statistics for a specific word based on recent interactions.
+   * @param {number} userId - The internal user ID
+   * @param {number} wordId - The internal word ID
+   * @returns {Promise<void>}
+   */
   async updateUserWordStatistics(userId: number, wordId: number) {
     const now = new Date();
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+    this.logger.debug(`Updating statistics for userId=${userId}, wordId=${wordId}`);
 
     const interactions = await this.interactionRepository
       .createQueryBuilder('i')
@@ -107,6 +144,7 @@ export class InteractionService {
         user: { id: userId },
         word: { id: wordId },
       });
+      this.logger.debug(`Created new UserWordStatistics record for userId=${userId}, wordId=${wordId}`);
     }
 
     record.weighted30Days = weighted30Days;
@@ -116,6 +154,7 @@ export class InteractionService {
 
     await this.userWordStatisticsRepository.save(record);
 
+    this.logger.log(`Updated stats: userId=${userId}, wordId=${wordId}, score=${score.toFixed(2)}`);
     this.logger.debug(
       `Updated stats: userId=${userId}, wordId=${wordId}, score=${score.toFixed(2)}`,
     );

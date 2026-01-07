@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BankService } from 'src/bank/bank.service';
 import { TextTranslatedPayloadDto } from 'src/translation/dto/payload.dto';
 import { Repository } from 'typeorm';
 import { Statement } from './statement.entity';
@@ -16,7 +15,6 @@ export class StatementService {
   constructor(
     @InjectRepository(Statement)
     private readonly statementRepository: Repository<Statement>,
-    private readonly bankService: BankService,
   ) { }
 
   /**

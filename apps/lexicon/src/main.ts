@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, LogLevel } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -9,7 +9,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  app.useLogger(['log', 'debug', 'error', 'warn', 'verbose']);
+  const logLevels: LogLevel[] =
+    process.env.NODE_ENV === 'production'
+      ? ['log', 'error', 'warn']
+      : ['log', 'error', 'warn', 'debug', 'verbose'];
+
+  app.useLogger(logLevels);
 
   // Load environment variables
   const KAFKA_BROKER = configService.get<string>('KAFKA_BROKERS', 'kafka:9092');

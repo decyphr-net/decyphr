@@ -25,7 +25,6 @@ export type Sentence = {
 export type Token = {
   surface: string;
   lemma: string;
-  normalised: string;
   pos: string;
   morph?: Record<string, any>;
 };
@@ -37,6 +36,5 @@ export type Token = {
 export type PreparedToken = {
   surface: string;
   lemma: string;
-  normalised: string;
   pos: string;
 };

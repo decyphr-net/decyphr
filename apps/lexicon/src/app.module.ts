@@ -13,7 +13,7 @@ import { TranslationModule } from './translation/translation.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(AppDataSource.options),
     CommonModule,
     LexiconModule,
@@ -21,7 +21,7 @@ import { TranslationModule } from './translation/translation.module';
     BankModule,
     StatementModule,
     InteractionModule,
-    CefrModule
+    CefrModule,
   ],
 })
 export class AppModule { }
