@@ -1,0 +1,452 @@
+<style>
+  @keyframes progress {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(300%);
+    }
+  }
+
+  .animate-progress {
+    animation: progress 1.2s linear infinite;
+  }
+</style>
+
+<section class="py-12" x-data="statementsApp()" x-init="init()">
+  <div class="max-w-6xl mx-auto px-6 space-y-10">
+
+    <!-- HEADER -->
+    <div
+      class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in">
+      <h1 class="text-4xl font-extrabold tracking-tight">
+        Your Phrases
+      </h1>
+      <p class="mt-3 text-lg opacity-90">
+        Track, translate, and practice the sentences and expressions you care about.
+      </p>
+      <button
+        class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition w-full sm:w-auto"
+        @click="openModal()">
+        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+        Add a phrase
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8" data-tour="phrase-stats">
+
+      <!-- Total phrases -->
+      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
+          <i data-lucide="list" class="w-6 h-6"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate">Total phrases</p>
+          <p class="text-xl font-semibold text-gray-800 truncate" x-text="statements.length">0</p>
+        </div>
+      </div>
+
+      <!-- Translated phrases -->
+      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
+          <i data-lucide="check-circle" class="w-6 h-6"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate">Translated</p>
+          <p class="text-xl font-semibold text-gray-800 truncate" x-text="statements.filter(s => s.translation).length">
+            0
+          </p>
+        </div>
+      </div>
+
+      <!-- Pending translation -->
+      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
+          <i data-lucide="clock" class="w-6 h-6"></i>
+        </div>
+        <div class="min-w-0">
+          <p class="text-sm font-medium text-gray-500 truncate">Pending translation</p>
+          <p class="text-xl font-semibold text-gray-800 truncate"
+            x-text="statements.filter(s => s.autoTranslate && !s.translation).length">0</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- STATEMENT CARDS -->
+    <template x-for="statement in paginatedStatements" :key="statement.id">
+      <div class="rounded-lg border bg-white p-5 space-y-4 shadow hover:shadow-md transition relative overflow-visible"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2">
+
+        <div x-show="statement.translationPending" class="absolute top-0 left-0 w-full h-1 bg-emerald-100"
+          aria-hidden="true">
+          <div class="h-full w-1/3 bg-emerald-500 animate-progress"></div>
+        </div>
+
+        <!-- Three-dot menu -->
+        <div class="absolute top-3 right-3" x-data="{ open: false }">
+          <button @click="open = !open" class="p-1 rounded hover:bg-gray-100">
+            <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </button>
+          <div x-show="open" @click.outside="open=false"
+            class="absolute right-0 mt-2 w-40 bg-white border rounded shadow z-50" style="display: none;"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 transform scale-95"
+            x-transition:enter-end="opacity-100 transform scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 transform scale-100"
+            x-transition:leave-end="opacity-0 transform scale-95">
+            <ul class="divide-y text-sm">
+              <li>
+                <button @click="generateTranslation(statement)" class="w-full text-left px-4 py-2 hover:bg-gray-100">
+                  Generate translation
+                </button>
+              </li>
+              <li>
+                <button @click="openModal(statement)" class="w-full text-left px-4 py-2 hover:bg-gray-100">Edit</button>
+              </li>
+              <li>
+                <button @click="deleteStatement(statement)"
+                  class="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600">Delete</button>
+              </li>
+              <li>
+                <button disabled class="w-full text-left px-4 py-2 text-gray-400">Create flashcard</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Statement -->
+        <p class="text-lg font-semibold" x-text="statement.text"></p>
+
+        <p class="text-gray-600 italic flex items-center gap-2" x-show="statement.translation">
+          <span class="text-xs uppercase text-gray-400">EN</span>
+          <span x-text="statement.translation"></span>
+        </p>
+
+        <!-- Analysis Toggle -->
+        <button @click="statement.showTokens = !statement.showTokens" class="text-sm text-emerald-600 hover:underline">
+          <span x-text="statement.showTokens ? 'Hide analysis' : 'Show linguistic analysis'"></span>
+        </button>
+
+        <!-- TOKEN TABLE -->
+        <div x-show="statement.showTokens" x-transition class="mt-3 overflow-x-auto">
+          <table class="min-w-full text-sm border rounded">
+            <thead class="bg-gray-50 text-gray-700">
+              <tr>
+                <th class="px-3 py-2 border">Position</th>
+                <th class="px-3 py-2 border">Word</th>
+                <th class="px-3 py-2 border">Comes from</th>
+                <th class="px-3 py-2 border">Word type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="token in statement.tokens" :key="token.position">
+                <tr class="odd:bg-white even:bg-gray-50">
+                  <td class="px-3 py-1 border text-center" x-text="token.position"></td>
+                  <td class="px-3 py-1 border" x-text="token.surface"></td>
+                  <td class="px-3 py-1 border text-gray-600" x-text="token.lemma"></td>
+                  <td class="px-3 py-1 border font-mono" x-text="token.pos"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <div x-show="statement.pronunciation || statement.example || statement.notes"
+          class="rounded-md bg-gray-50 border border-gray-200 p-3 space-y-2 text-sm">
+
+          <template x-if="statement.pronunciation">
+            <p class="flex items-center gap-2">
+              <span class="text-xs uppercase text-gray-400">Pronunciation</span>
+              <span class="font-mono text-gray-700" x-text="statement.pronunciation"></span>
+            </p>
+          </template>
+
+          <template x-if="statement.example">
+            <p>
+              <span class="text-xs uppercase text-gray-400 block">Example</span>
+              <span class="text-gray-700 italic" x-text="statement.example"></span>
+            </p>
+          </template>
+
+          <template x-if="statement.notes">
+            <p>
+              <span class="text-xs uppercase text-gray-400 block">Notes</span>
+              <span class="text-gray-700" x-text="statement.notes"></span>
+            </p>
+          </template>
+
+        </div>
+      </div>
+    </template>
+
+    <!-- EMPTY STATE -->
+    <template x-if="!loading && statements.length === 0">
+      <div class="py-16 px-6 rounded-xl bg-emerald-50 text-center shadow-md space-y-4">
+        <i data-lucide="message-square-text" class="w-16 h-16 mx-auto mb-2 text-emerald-400"></i>
+        <h2 class="text-xl font-semibold text-gray-700">No phrases yet</h2>
+        <p class="max-w-md mx-auto text-sm text-gray-600">
+          This is where you’ll see the sentences and expressions you’re practicing.
+          Add one manually or let the system generate translations and linguistic analysis.
+          Each phrase you add helps you track your understanding and progress.
+        </p>
+        <button
+          class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition"
+          @click="openModal()">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          Add your first phrase
+        </button>
+      </div>
+    </template>
+
+    <!-- PAGINATION -->
+    <div class="flex justify-center items-center gap-6" x-show="totalPages > 1">
+      <button @click="page--" :disabled="page === 1"
+        class="border rounded px-3 py-1 text-sm disabled:opacity-40">Previous</button>
+      <span class="text-sm">Page <span x-text="page"></span> / <span x-text="totalPages"></span></span>
+      <button @click="page++" :disabled="page === totalPages"
+        class="border rounded px-3 py-1 text-sm disabled:opacity-40">Next</button>
+    </div>
+
+    <!-- MODAL -->
+    <div x-show="modalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-xl p-6 w-full max-w-lg space-y-4" @click.outside="modalOpen=false">
+        <h2 class="text-xl font-bold" x-text="modalStatement.id ? 'Edit Statement' : 'Add Statement'"></h2>
+
+        <textarea x-model="modalStatement.text" class="w-full border rounded p-3 min-h-[100px]"
+          placeholder="Statement text"></textarea>
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">
+            English translation (optional)
+          </label>
+
+          <textarea x-model="modalStatement.translation" @input="onTranslationInput"
+            :disabled="modalStatement.autoTranslate" class="w-full min-h-[80px] rounded-lg border p-3 text-sm
+                   disabled:bg-gray-100 disabled:text-gray-400" placeholder="Enter translation manually">
+          </textarea>
+
+          <p class="text-xs text-gray-500" x-show="modalStatement.autoTranslate">
+            Translation will be generated automatically.
+          </p>
+
+          <label class="flex items-center gap-2 text-sm text-gray-600">
+            <input type="checkbox" x-model="modalStatement.autoTranslate"
+              class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" />
+            Let the system generate a translation
+          </label>
+        </div>
+
+        <div class="border-t pt-4 space-y-4">
+
+          <h3 class="text-sm font-semibold text-gray-700">
+            Learning details (optional)
+          </h3>
+
+          <!-- Pronunciation -->
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">
+              Pronunciation
+            </label>
+            <input type="text" x-model="modalStatement.pronunciation" placeholder="e.g. /ˈmʲan̪ˠə/"
+              class="w-full rounded-lg border p-2 text-sm" />
+          </div>
+
+          <!-- Example usage -->
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">
+              Example usage
+            </label>
+            <textarea x-model="modalStatement.example" rows="2" placeholder="Short example sentence"
+              class="w-full rounded-lg border p-2 text-sm"></textarea>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1">
+              Personal notes
+            </label>
+            <textarea x-model="modalStatement.notes" rows="3"
+              placeholder="Why this phrase matters, common mistakes, reminders…"
+              class="w-full rounded-lg border p-2 text-sm"></textarea>
+          </div>
+
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button @click="modalOpen=false" class="px-4 py-2 border rounded">Cancel</button>
+          <button @click="submitStatement()" class="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DELETE CONFIRMATION MODAL -->
+    <div x-show="deleteModalOpen" x-transition.opacity
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div x-show="deleteModalOpen" x-transition class="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4"
+        @click.outside="cancelDelete()">
+        <h2 class="text-lg font-bold text-gray-700">Delete Phrase</h2>
+        <p class="text-sm text-gray-600">Are you sure you want to delete this phrase? This action cannot be undone.</p>
+        <div class="flex justify-center gap-4 mt-4">
+          <button @click="cancelDelete()" class="px-4 py-2 rounded border">Cancel</button>
+          <button @click="confirmDeleteStatement()" class="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alpine Component -->
+  <script>
+    function statementsApp() {
+      return {
+        loading: false,
+        statements: [],
+        page: 1,
+        limit: 5,
+        modalOpen: false,
+        modalStatement: { id: null, text: '', meaning: '' },
+        deleteModalOpen: false,
+        statementToDelete: null,
+
+        async init() {
+          try {
+            const res = await fetch('/lexicon/statements/data');
+            if (!res.ok) throw new Error('Failed to load statements');
+
+            const data = await res.json();
+
+            this.statements = data.map(s => ({
+              ...s,
+
+              // UI-only state
+              showTokens: false,
+              autoTranslate: !s.translation,
+              translationPending: false,
+            }));
+          } catch (err) {
+            console.error(err);
+            alert('Failed to load statements');
+          }
+        },
+
+        get totalPages() {
+          return Math.ceil(this.statements.length / this.limit);
+        },
+
+        get paginatedStatements() {
+          const start = (this.page - 1) * this.limit;
+          return this.statements.slice(start, start + this.limit);
+        },
+
+        openModal(statement = null) {
+          this.modalStatement = statement
+            ? {
+              ...statement,
+              autoTranslate: false
+            } : {
+              id: null,
+              text: '',
+              translation: '',
+              autoTranslate: false
+            };
+          this.modalOpen = true;
+        },
+
+        onTranslationInput() {
+          // Manual input always overrides auto-translation
+          if (this.modalStatement.autoTranslate) {
+            this.modalStatement.autoTranslate = false;
+          }
+        },
+
+
+        generateTranslation(statement) {
+          if (statement.translation) {
+            if (!confirm('This will replace the existing translation. Continue?')) return;
+          }
+
+          // TODO: call backend
+          // POST /statements/:id/translate
+
+          // Fake async result
+          setTimeout(() => {
+            statement.translation = 'I am learning Irish';
+            statement.translationLanguage = 'en';
+          }, 800);
+        },
+
+        submitStatement() {
+          if (!this.modalStatement.text.trim()) {
+            alert('Statement cannot be empty.');
+            return;
+          }
+
+          // User provided translation overrides auto
+          if (this.modalStatement.translation?.trim()) {
+            this.modalStatement.autoTranslate = false;
+          }
+
+          if (this.modalStatement.id) {
+            const idx = this.statements.findIndex(s => s.id === this.modalStatement.id);
+            if (idx !== -1) this.statements[idx] = { ...this.modalStatement };
+          } else {
+            const newId =
+              this.statements.length
+                ? Math.max(...this.statements.map(s => s.id)) + 1
+                : 1;
+
+            this.statements.push({
+              ...this.modalStatement,
+              id: newId,
+              language: 'ga',
+              translationLanguage: 'en'
+            });
+          }
+
+          this.modalOpen = false;
+        },
+
+        deleteStatement(statement) {
+          // Open delete modal instead of using confirm
+          this.statementToDelete = statement;
+          this.deleteModalOpen = true;
+        },
+
+        async confirmDeleteStatement() {
+          try {
+            const res = await fetch(`/lexicon/statements/${this.statementToDelete.id}`, {
+              method: 'DELETE',
+            });
+            if (!res.ok) throw new Error('Delete failed');
+
+            // Animate removal
+            this.statements = this.statements.filter(s => s.id !== this.statementToDelete.id);
+
+            this.deleteModalOpen = false;
+            this.statementToDelete = null;
+          } catch (err) {
+            console.error(err);
+            alert('Failed to delete statement');
+          }
+        },
+
+        cancelDelete() {
+          this.deleteModalOpen = false;
+          this.statementToDelete = null;
+        },
+      }
+    }
+  </script>
+</section>

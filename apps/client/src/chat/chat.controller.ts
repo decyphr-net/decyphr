@@ -40,11 +40,8 @@ export class ChatController implements OnModuleInit {
       ['chat.started', 'chat.bot.response'],
       'chat-ui-group',
       async (payload) => {
-        console.log(payload)
         const messageValue = payload.message.value?.toString() ?? '{}';
-        console.log(messageValue)
         const parsed = JSON.parse(messageValue);
-        console.log(parsed)
 
         if (parsed.type === 'started') {
           await this.handleChatStarted(payload);
@@ -54,7 +51,9 @@ export class ChatController implements OnModuleInit {
       },
     );
 
-    this.logger.log('Subscribed to Kafka topics chat.started, chat.bot.response');
+    this.logger.log(
+      'Subscribed to Kafka topics chat.started, chat.bot.response',
+    );
   }
 
   /**
@@ -97,16 +96,16 @@ export class ChatController implements OnModuleInit {
     @Body() body: { botId: string; language: string },
     @Req() req: AuthenticatedRequest,
   ) {
-    const clientId = await this.authService.getClientIdFromSession(req);
+    const user = await this.authService.getUserFromSession(req);
 
     const payload: StartChatPayload = {
       type: 'start',
-      clientId,
+      clientId: user.clientId,
       botId: body.botId,
-      language: body.language,
+      language: user.languageSettings?.[0]?.targetLanguage,
     };
 
-    this.logger.debug(`Producing chat.start for clientId=${clientId}`);
+    this.logger.debug(`Producing chat.start for clientId=${user.clientId}`);
     await this.kafkaService.emit('chat.start', payload);
 
     return { status: 'queued' };
@@ -131,7 +130,7 @@ export class ChatController implements OnModuleInit {
 
     const interaction = {
       type: 'chat_message',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     const payload = {
@@ -141,7 +140,7 @@ export class ChatController implements OnModuleInit {
       clientId: user.clientId,
       messages: body.messages,
       interaction,
-      langToTranslateTo: user.languageSettings?.[0]?.firstLanguage
+      langToTranslateTo: user.languageSettings?.[0]?.firstLanguage,
     };
 
     this.logger.debug(

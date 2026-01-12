@@ -1,8 +1,11 @@
-import { config } from "dotenv";
+import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
 import { User, Word, WordForm } from './bank/bank.entity';
-import { Interaction, UserWordStatistics } from './interaction/interaction.entity';
-import { Statement } from './statement/statement.entity';
+import {
+  Interaction,
+  UserWordStatistics,
+} from './interaction/interaction.entity';
+import { Statement, StatementToken } from './statement/statement.entity';
 config();
 
 export const AppDataSource = new DataSource({
@@ -20,7 +23,8 @@ export const AppDataSource = new DataSource({
     Word,
     User,
     UserWordStatistics,
-    WordForm
+    WordForm,
+    StatementToken,
   ],
-  migrations: [__dirname + "/migrations/*{.js,.ts}"],
+  migrations: [__dirname + '/migrations/*{.js,.ts}'],
 });

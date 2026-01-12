@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken, getRepositoryToken } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
+import { StatementService } from 'src/statement/statement.service';
 import { RedisProfileService } from '../profile.service';
 import { LexiconIngestService } from './lexicon.ingest.service';
 import { NlpCompleteEvent } from './lexicon.ingest.types';
@@ -14,7 +15,6 @@ describe('LexiconIngestService', () => {
   let userRepo: jest.Mocked<Repository<User>>;
   let wordRepo: jest.Mocked<Repository<Word>>;
   let wordFormRepo: jest.Mocked<Repository<WordForm>>;
-  let connection: jest.Mocked<Connection>;
 
   let profile: jest.Mocked<RedisProfileService>;
   let interactionService: jest.Mocked<InteractionService>;
@@ -23,6 +23,17 @@ describe('LexiconIngestService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LexiconIngestService,
+        {
+          provide: StatementService,
+          useValue: {
+            getOrCreate: jest.fn().mockImplementation(async (input) => {
+              // Return a fake statement object
+              return { id: 1, ...input };
+            }),
+            persistFromEvent: jest.fn(),
+            createTokens: jest.fn().mockResolvedValue(undefined),
+          },
+        },
         {
           provide: getConnectionToken(),
           useValue: {
@@ -81,6 +92,7 @@ describe('LexiconIngestService', () => {
 
     profile = module.get(RedisProfileService);
     interactionService = module.get(InteractionService);
+    statementService = module.get<StatementService>(StatementService);
   });
 
   describe('ingestFromEvent', () => {

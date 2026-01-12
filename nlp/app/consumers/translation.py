@@ -37,7 +37,7 @@ async def handle_translation(req: ProcessRequest):
         enriched_payload = {
             "requestId": req.requestId,
             "clientId": req.clientId,
-            "language": req.targetLanguage,
+            "language": req.sourceLanguage,
             "sentences": [s.dict() for s in enriched_sentences],
             "interaction": req.interaction.dict() if req.interaction else None,
         }

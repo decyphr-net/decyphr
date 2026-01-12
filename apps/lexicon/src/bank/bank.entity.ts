@@ -6,6 +6,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -51,7 +52,8 @@ export class WordForm {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Word, (word) => word.forms)
+  @ManyToOne(() => Word, (word) => word.forms, { nullable: false })
+  @JoinColumn({ name: 'wordId' })
   word: Word;
 
   @Column({ length: 100 })

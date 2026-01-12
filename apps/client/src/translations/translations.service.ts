@@ -25,73 +25,6 @@ export interface Interaction {
   timestamp: number;
 }
 
-// @Injectable()
-// export class TranslationsService {
-//   private readonly logger = new Logger(TranslationsService.name);
-
-//   constructor(
-//     private readonly kafkaService: KafkaService,
-//     private readonly authService: AuthService,
-//     private readonly http: HttpService
-//   ) { }
-
-//   async emitTranslationRequest(dto: TranslationDto): Promise < void> {
-//   const user = await this.authService.findUserByClientId(dto.clientId);
-//   const sourceLanguage = user.languageSettings?.[0]?.targetLanguage;
-//   const targetLanguage = user.languageSettings?.[0]?.firstLanguage;
-
-//   const event = {
-//     requestId: dto.requestId,
-//     clientId: dto.clientId,
-//     sourceLanguage,
-//     targetLanguage,
-
-//     interactions: [
-//       {
-//         type: 'translate_text',
-//         timestamp: Date.now(),
-//       },
-//     ],
-
-//     payload: {
-//       text: dto.text
-//     }
-//   };
-
-//   await this.kafkaService.emit(
-//     'translation.translate',
-//     {
-//       key: dto.requestId,
-//       value: event
-//     }
-//   );
-//   this.logger.log(`📤 Emitted translation request for clientId=${dto.clientId}`);
-// }
-
-//   async createVault(text: string, lang: string, clientId: string) {
-
-//   const res = await fetch(process.env.TRANSLATOR_URL + '/vault/create', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json' },
-//     body: JSON.stringify({ text, lang, clientId }),
-//   });
-
-//   const data = await res.json();
-//   console.log(data)
-//   return data.vaultId;
-// }
-
-//   async getVaultList(clientId: string) {
-//   const res = await firstValueFrom(
-//     this.http.get(process.env.TRANSLATOR_URL + '/vault/list', {
-//       params: { clientId },
-//     }),
-//   );
-
-//   return res.data;
-// }
-// }
-
 @Injectable()
 export class TranslationsService {
   private readonly logger = new Logger(TranslationsService.name);
@@ -102,7 +35,7 @@ export class TranslationsService {
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly kafkaService: KafkaService,
-    private readonly http: HttpService
+    private readonly http: HttpService,
   ) { }
 
   async initKTableWatchers() {
@@ -113,13 +46,18 @@ export class TranslationsService {
   renderLayout(partialPath: string, res: Response) {
     // read layout and inject partial route
     const layoutPath = join(__dirname, '..', '..', 'public', 'layout.html');
-    return readFile(layoutPath, 'utf8').then(layout => {
+    return readFile(layoutPath, 'utf8').then((layout) => {
       res.send(layout.replace('{{PARTIAL_ROUTE}}', partialPath));
     });
   }
 
   sendPartial(res: Response) {
-    const partialPath = join(__dirname, '..', '..', 'public/pages/dashboard/translations/translations.html');
+    const partialPath = join(
+      __dirname,
+      '..',
+      '..',
+      'public/pages/dashboard/translations/translations.html',
+    );
     return res.sendFile(partialPath);
   }
 
@@ -130,7 +68,9 @@ export class TranslationsService {
   }
 
   async getClientTranslations(clientId: string) {
-    const response$ = this.httpService.get(`http://translator:3009/translations/${clientId}`);
+    const response$ = this.httpService.get(
+      `http://translator:3009/translations/${clientId}`,
+    );
     const response = await lastValueFrom(response$);
     return response.data;
   }
@@ -141,16 +81,19 @@ export class TranslationsService {
     const subject = new Subject<MessageEvent>();
 
     // ---- translation events
-    this.ktableService.onUpdate('translation.response.table', (requestId, translation) => {
-      // Merge into cache
-      const existing = this.joinCache.get(requestId) || {};
-      this.joinCache.set(requestId, { ...existing, translation });
+    this.ktableService.onUpdate(
+      'translation.response.table',
+      (requestId, translation) => {
+        // Merge into cache
+        const existing = this.joinCache.get(requestId) || {};
+        this.joinCache.set(requestId, { ...existing, translation });
 
-      // Only emit if this translation belongs to this client
-      if (translation?.clientId === clientId) {
-        subject.next({ data: { ...this.joinCache.get(requestId) } } as any);
-      }
-    });
+        // Only emit if this translation belongs to this client
+        if (translation?.clientId === clientId) {
+          subject.next({ data: { ...this.joinCache.get(requestId) } } as any);
+        }
+      },
+    );
 
     // ---- NLP events
     this.ktableService.onUpdate('nlp.complete', (requestId, nlp) => {
@@ -170,18 +113,36 @@ export class TranslationsService {
   }
 
   private normalizePayload(raw: any) {
-    const id = raw.id || raw.requestId || `tmp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
-    const originalText = raw.originalText || raw.sentences?.map((s: any) => s.text).join(' ') || '';
-    const translated = raw.translated || '';  // <- correct property name
+    const id =
+      raw.id ||
+      raw.requestId ||
+      `tmp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+    const originalText =
+      raw.originalText ||
+      raw.sentences?.map((s: any) => s.text).join(' ') ||
+      '';
+    const translated = raw.translated || ''; // <- correct property name
     const createdAt = raw.createdAt || new Date().toISOString();
     const language = raw.language || 'ga';
     const sentences = Array.isArray(raw.sentences)
-      ? raw.sentences.map(s => ({ ...s, tokens: Array.isArray(s.tokens) ? s.tokens : [] }))
+      ? raw.sentences.map((s) => ({
+        ...s,
+        tokens: Array.isArray(s.tokens) ? s.tokens : [],
+      }))
       : [];
-    const flatTokens = sentences.flatMap(s => s.tokens);
+    const flatTokens = sentences.flatMap((s) => s.tokens);
     const loading = translated === '';
 
-    return { id, originalText, translated, createdAt, language, sentences, flatTokens, loading };
+    return {
+      id,
+      originalText,
+      translated,
+      createdAt,
+      language,
+      sentences,
+      flatTokens,
+      loading,
+    };
   }
 
   async emitTranslationRequest(dto: TranslationDto): Promise<void> {
@@ -203,18 +164,17 @@ export class TranslationsService {
       ],
 
       payload: {
-        text: dto.text
-      }
+        text: dto.text,
+      },
     };
 
-    await this.kafkaService.emit(
-      'translation.translate',
-      {
-        key: dto.requestId,
-        value: event
-      }
+    await this.kafkaService.emit('translation.translate', {
+      key: dto.requestId,
+      value: event,
+    });
+    this.logger.log(
+      `📤 Emitted translation request for clientId=${dto.clientId}`,
     );
-    this.logger.log(`📤 Emitted translation request for clientId=${dto.clientId}`);
   }
 
   async createVault(text: string, lang: string, clientId: string) {
@@ -225,7 +185,7 @@ export class TranslationsService {
     });
 
     const data = await res.json();
-    console.log(data)
+    console.log(data);
     return data.vaultId;
   }
 

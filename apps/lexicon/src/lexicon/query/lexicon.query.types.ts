@@ -13,7 +13,7 @@ export interface WordSnapshot {
   word: string;
   lemma: string;
   normalised?: string;
-  tag?: string;
+  pos?: string;
 
   stats: {
     score: number;

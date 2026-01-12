@@ -4,6 +4,8 @@ import { Connection, Repository } from 'typeorm';
 
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
+import { Statement } from 'src/statement/statement.entity';
+import { StatementService } from 'src/statement/statement.service';
 import { RedisProfileService } from '../profile.service';
 import {
   INTERACTION_WEIGHTS,
@@ -37,6 +39,7 @@ export class LexiconIngestService {
     private readonly wordFormRepository: Repository<WordForm>,
     private readonly profile: RedisProfileService,
     private readonly interactionService: InteractionService,
+    private readonly statementService: StatementService,
   ) { }
 
   /**
@@ -61,6 +64,9 @@ export class LexiconIngestService {
     );
     const user = await this.getOrCreateUser(event.clientId);
 
+    // ---------------------------------------------------------------------------
+    // Prepare tokens and persist words/forms
+    // ---------------------------------------------------------------------------
     const tokens = this.prepareTokens(event.sentences);
     this.logger.debug(`Prepared ${tokens.length} candidate tokens`);
 
@@ -70,6 +76,42 @@ export class LexiconIngestService {
     const wordForms = await this.syncWordForms(tokens, words);
     this.logger.debug(`Resolved ${wordForms.length} word forms`);
 
+    // ---------------------------------------------------------------------------
+    // Persist statements for each sentence
+    // ---------------------------------------------------------------------------
+    const statementMap = new Map<string, Statement>();
+    for (const sentence of event.sentences) {
+      const statement = await this.statementService.getOrCreate({
+        text: sentence.text,
+        language: event.language,
+        clientId: event.clientId,
+        source: event.interaction?.type ?? 'nlp',
+        meaning: event.meaning ?? null,
+        timestamp: new Date(),
+      });
+      statementMap.set(sentence.text, statement);
+    }
+
+    // 5. Link tokens to statements
+    for (const sentence of event.sentences) {
+      const statement = statementMap.get(sentence.text);
+      if (!statement) continue;
+
+      await this.statementService.createTokens(
+        statement,
+        sentence.tokens, // include all tokens
+        words, // Word optional
+      );
+    }
+
+    console.log(
+      'WordForms ready:',
+      wordForms.map((wf) => ({ id: wf.id, form: wf.form, wordId: wf.word.id })),
+    );
+
+    // ---------------------------------------------------------------------------
+    // Apply profile / scoring / interaction side effects
+    // ---------------------------------------------------------------------------
     await this.applyIngestionEffects(
       user.clientId,
       wordForms,
@@ -128,7 +170,7 @@ export class LexiconIngestService {
   ): Promise<Map<string, Word>> {
     const keys = tokens.map((t) => ({
       word: t.surface,
-      lemma: t.lemma.slice(0, 50),
+      lemma: (t.lemma ?? t.surface).slice(0, 50),
       pos: t.pos,
       language,
     }));
@@ -186,26 +228,30 @@ export class LexiconIngestService {
     const values = tokens
       .map((t) => {
         const word = words.get(`${t.lemma}:${t.pos}`);
-        if (!word) return null; // skip if Word not found
-        return { wordId: word.id, form: t.surface };
+        if (!word) return null;
+
+        return {
+          word,
+          form: t.surface,
+        };
       })
-      .filter(Boolean) as { wordId: number; form: string }[];
+      .filter(Boolean) as Partial<WordForm>[];
 
     if (!values.length) return [];
 
-    await this.connection
+    await this.wordFormRepository
       .createQueryBuilder()
       .insert()
       .into(WordForm)
       .values(values)
-      .orIgnore() // ignore duplicates
+      .orIgnore()
       .execute();
 
     return this.wordFormRepository.find({
       relations: ['word'],
       where: values.map((v) => ({
-        word: { id: v.wordId },
-        form: v.form,
+        word: { id: v.word!.id },
+        form: v.form!,
       })),
     });
   }
@@ -263,7 +309,7 @@ export class LexiconIngestService {
         if (interaction?.type) {
           await this.interactionService.createInteraction(
             clientId,
-            wf.word.id,
+            wf.id,
             interaction.type,
           );
         }

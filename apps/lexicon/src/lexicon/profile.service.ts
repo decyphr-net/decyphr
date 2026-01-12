@@ -15,9 +15,7 @@ export class RedisProfileService {
 
   private static readonly SLOW_REDIS_MS = 50;
 
-  constructor(
-    @Inject(REDIS) private readonly redis: Redis,
-  ) { }
+  constructor(@Inject(REDIS) private readonly redis: Redis) { }
 
   /**
    * Store a word in Redis.
@@ -37,11 +35,7 @@ export class RedisProfileService {
     }
 
     const start = Date.now();
-    await this.redis.hset(
-      'lexicon:words',
-      wordId.toString(),
-      word,
-    );
+    await this.redis.hset('lexicon:words', wordId.toString(), word);
 
     this.logSlow('hset lexicon:words', start, { wordId });
   }
@@ -61,12 +55,15 @@ export class RedisProfileService {
     scoreDelta: number,
   ) {
     if (!userId || !language) {
-      this.logger.warn('Missing userId or language in addOrUpdateUserWordScore', {
-        userId,
-        language,
-        wordId,
-        scoreDelta,
-      });
+      this.logger.warn(
+        'Missing userId or language in addOrUpdateUserWordScore',
+        {
+          userId,
+          language,
+          wordId,
+          scoreDelta,
+        },
+      );
       return;
     }
 
@@ -82,11 +79,7 @@ export class RedisProfileService {
     const key = `user:${userId}:priority:${language}`;
 
     const start = Date.now();
-    await this.redis.zincrby(
-      key,
-      scoreDelta,
-      wordId.toString(),
-    );
+    await this.redis.zincrby(key, scoreDelta, wordId.toString());
 
     this.logSlow('zincrby priority', start, {
       key,
@@ -111,12 +104,7 @@ export class RedisProfileService {
     const key = `user:${userId}:priority:${language}`;
 
     const start = Date.now();
-    const zrange = await this.redis.zrevrange(
-      key,
-      0,
-      limit - 1,
-      'WITHSCORES',
-    );
+    const zrange = await this.redis.zrevrange(key, 0, limit - 1, 'WITHSCORES');
     this.logSlow('zrevrange priority', start, { key, limit });
 
     if (zrange.length === 0) {
@@ -146,11 +134,7 @@ export class RedisProfileService {
    * @param language - The language code.
    * @param wordId - The ID of the word.
    */
-  async markWordSeen(
-    userId: string,
-    language: string,
-    wordId: number,
-  ) {
+  async markWordSeen(userId: string, language: string, wordId: number) {
     if (!userId || !language || !Number.isInteger(wordId)) {
       this.logger.warn('Invalid input to markWordSeen', {
         userId,
@@ -161,12 +145,8 @@ export class RedisProfileService {
     }
     const key = `user:${userId}:seen:${language}`;
 
-    const start = Date.now()
-    await this.redis.hset(
-      key,
-      wordId.toString(),
-      Date.now().toString(),
-    );
+    const start = Date.now();
+    await this.redis.hset(key, wordId.toString(), Date.now().toString());
     this.logSlow('hset seen', start, { key, wordId });
   }
 
@@ -192,7 +172,7 @@ export class RedisProfileService {
     const start = Date.now();
     const values = await this.redis.hmget(
       key,
-      ...wordIds.map(id => id.toString()),
+      ...wordIds.map((id) => id.toString()),
     );
 
     this.logSlow('hmget seen', start, {

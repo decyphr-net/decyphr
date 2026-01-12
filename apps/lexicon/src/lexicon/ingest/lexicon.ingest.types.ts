@@ -14,6 +14,7 @@ export type NlpCompleteEvent = {
   timestamp?: string;
   interaction?: InteractionMetadata;
   sentences: Sentence[];
+  meaning?: string;
 };
 
 export type Sentence = {
@@ -24,7 +25,7 @@ export type Sentence = {
 
 export type Token = {
   surface: string;
-  lemma: string;
+  lemma?: string;
   pos: string;
   morph?: Record<string, any>;
 };
@@ -35,6 +36,6 @@ export type Token = {
  */
 export type PreparedToken = {
   surface: string;
-  lemma: string;
+  lemma?: string;
   pos: string;
 };

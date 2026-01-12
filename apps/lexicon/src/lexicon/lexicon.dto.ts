@@ -4,7 +4,7 @@ import { IsArray, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class TokenDto {
   @IsString() surface!: string;
-  @IsString() lemma!: string;
+  @IsString() @IsOptional() lemma?: string;
   @IsString() normalised!: string;
   @IsString() pos!: string;
   @IsOptional() morph?: Record<string, any>;

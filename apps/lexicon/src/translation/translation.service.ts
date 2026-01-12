@@ -17,7 +17,7 @@ export class TranslationService {
    * @returns A promise that resolves when the translation statement is stored.
    */
   async handleTranslation(message: TextTranslatedPayloadDto): Promise<void> {
-    await this.statementService.storeStatement(message);
+    // await this.statementService.storeStatement(message);
     return Promise.resolve();
   }
 }

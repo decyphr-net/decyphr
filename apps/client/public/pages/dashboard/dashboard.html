@@ -156,8 +156,25 @@
         </div>
       </a>
 
+      <a href="/lexicon/statements" class="group">
+        <div
+          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="flex flex-col items-center p-6">
+            <i data-lucide="list" class="w-12 h-12 text-emerald-600"></i>
+            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
+              x-text="$store.i18n.t('dashboard.lexicon.title')"></h3>
+          </div>
+          <div class="flex flex-col p-6 pt-0">
+            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.lexicon.description')"></p>
+            <button
+              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-emerald-500 hover:bg-emerald-600 hover:scale-105 transform transition-all duration-300"
+              x-text="$store.i18n.t('dashboard.lexicon.cta')"></button>
+          </div>
+        </div>
+      </a>
+
       <!-- Vault (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
+      <!-- <div class="group relative cursor-not-allowed opacity-60 grayscale">
         <div
           class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
           <div class="flex flex-col items-center p-6">
@@ -177,7 +194,7 @@
             Coming soon
           </span>
         </div>
-      </div>
+      </div> -->
 
       <!-- Verb Practicer (coming soon) -->
       <div class="group relative cursor-not-allowed opacity-60 grayscale">

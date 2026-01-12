@@ -1,167 +1,150 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, Word } from 'src/bank/bank.entity';
 import { In, Repository } from 'typeorm';
+
+import { User, Word } from 'src/bank/bank.entity';
+import { UserWordStatistics } from 'src/interaction/interaction.entity';
 import { RedisProfileService } from '../profile.service';
+import { WordScoringService } from '../scoring.service';
 import { WordSnapshot } from './lexicon.query.types';
 
-/**
- * Lexicon query service.
- *
- * Provides read-only access to a user's lexical state by
- * combining Redis-backed profile statistics with relational
- * Word metadata.
- *
- * This service is optimized for:
- * - fast reads
- * - ranking and decay logic
- * - UI-facing word snapshot generation
- */
 @Injectable()
 export class LexiconQueryService {
   private readonly logger = new Logger(LexiconQueryService.name);
 
   constructor(
     private readonly profile: RedisProfileService,
+    private readonly scoringService: WordScoringService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     @InjectRepository(Word)
     private readonly wordRepository: Repository<Word>,
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserWordStatistics)
+    private readonly userWordRepository: Repository<UserWordStatistics>,
   ) { }
 
-  /**
-   * Returns a ranked snapshot of a user's known words.
-   *
-   * This method:
-   * - fetches raw word scores from Redis
-   * - joins relational Word metadata
-   * - applies time-based score decay
-   * - sorts results by final score
-   *
-   * Missing words or unseen timestamps are handled defensively.
-   *
-   * @param {string} clientId
-   *  External client identifier.
-   *
-   * @param {string} language
-   *  ISO language code used to scope the query.
-   *
-   * @returns {Promise<WordSnapshot[]>}
-   *  Sorted list of word snapshots, highest score first.
-   */
   async getUserWordSnapshot(
     clientId: string,
     language: string,
   ): Promise<WordSnapshot[]> {
-    this.logger.debug(
-      `Fetching word snapshot for clientId=${clientId}, language=${language}`,
-    );
     const user = await this.getOrCreateUser(clientId);
 
-    const raw = await this.profile.getUserTopWords(
-      user.clientId,
-      language,
-      1000,
-    );
+    // ---------------------------------------------------------------------
+    // 1. Load DB stats (language-scoped)
+    // ---------------------------------------------------------------------
+    const statsEntities = await this.userWordRepository.find({
+      where: {
+        user: { id: user.id },
+        word: { language },
+      },
+      relations: ['word'],
+    });
 
-    if (!raw.length) {
-      this.logger.debug(`No word data found for clientId=${clientId}`);
-      return [];
+    if (!statsEntities.length) return [];
+
+    // ---------------------------------------------------------------------
+    // 2. Deduplicate stats by word (pick most recently updated)
+    // ---------------------------------------------------------------------
+    const statsByWord = new Map<number, UserWordStatistics>();
+
+    for (const stat of statsEntities) {
+      const wordId = stat.word.id;
+      const existing = statsByWord.get(wordId);
+
+      if (!existing || stat.lastUpdated > existing.lastUpdated) {
+        statsByWord.set(wordId, stat);
+      }
     }
 
+    const wordIds = [...statsByWord.keys()];
+
+    // ---------------------------------------------------------------------
+    // 3. Load word metadata
+    // ---------------------------------------------------------------------
     const wordEntities = await this.wordRepository.find({
-      where: { id: In(raw.map((r) => r.wordId)) },
+      where: {
+        id: In(wordIds),
+        language,
+      },
     });
 
     const wordMap = new Map(wordEntities.map((w) => [w.id, w]));
 
+    // ---------------------------------------------------------------------
+    // 4. Seen timestamps (Redis)
+    // ---------------------------------------------------------------------
     const seenMap = await this.profile.getUserWordSeen(
       user.clientId,
       language,
-      raw.map((r) => r.wordId),
+      wordIds,
     );
 
-    const snapshots = raw
-      .map((r) => {
-        const word = wordMap.get(r.wordId);
-        if (!word) return null;
+    // ---------------------------------------------------------------------
+    // 5. Compute decayed scores
+    // ---------------------------------------------------------------------
+    const snapshots: WordSnapshot[] = [];
+    const statsToUpdate: UserWordStatistics[] = [];
 
-        const seenAt = seenMap.get(r.wordId);
+    for (const [wordId, stat] of statsByWord.entries()) {
+      const word = wordMap.get(wordId);
+      if (!word) continue;
 
-        const daysSinceSeen = seenAt
-          ? (Date.now() - seenAt) / (1000 * 60 * 60 * 24)
-          : 365; // IMPORTANT: unseen = very old
+      const seenAt = seenMap.get(wordId);
+      const daysSinceSeen = seenAt
+        ? (Date.now() - seenAt) / (1000 * 60 * 60 * 24)
+        : 365;
 
-        const score = this.computeDecayedScore(r.score, daysSinceSeen);
+      const decayedScore = this.scoringService.decayScore(
+        stat.score,
+        daysSinceSeen,
+      );
 
-        return {
-          id: word.id,
-          word: word.word,
-          lemma: word.lemma,
-          pos: word.pos,
-          language: word.language,
-          stats: {
-            score: Number(score.toFixed(2)),
-            rawScore: r.score,
-            lastSeen: seenAt ?? null,
-          },
-        };
-      })
-      .filter(Boolean)
-      .sort((a, b) => b!.stats.score - a!.stats.score) as WordSnapshot[];
+      snapshots.push({
+        id: stat.id,
+        word: word.word,
+        lemma: word.lemma,
+        pos: word.pos,
+        stats: {
+          score: Number(decayedScore.toFixed(2)),
+          rawScore: stat.score,
+          lastSeenAt: seenAt ? new Date(seenAt).toISOString() : null,
+        },
+      });
 
-    this.logger.debug(
-      `Returning ${snapshots.length} word snapshots for clientId=${clientId}`,
-    );
+      if (Math.abs(stat.score - decayedScore) > 0.01) {
+        stat.score = decayedScore;
+        stat.lastUpdated = new Date();
+        statsToUpdate.push(stat);
+      }
+    }
+
+    // ---------------------------------------------------------------------
+    // 6. Persist decay updates (optional but explicit)
+    // ---------------------------------------------------------------------
+    if (statsToUpdate.length) {
+      await this.userWordRepository.save(statsToUpdate);
+    }
+
+    // ---------------------------------------------------------------------
+    // 7. Sort (stable for pagination)
+    // ---------------------------------------------------------------------
+    snapshots.sort((a, b) => b.stats.score - a.stats.score);
+
+    // ---------------------------------------------------------------------
+    // 8. Safety check (can remove later)
+    // ---------------------------------------------------------------------
+    const ids = snapshots.map((s) => s.id);
+    if (new Set(ids).size !== ids.length) {
+      this.logger.error('Duplicate snapshot IDs detected', ids);
+    }
 
     return snapshots;
   }
 
-  // ---------------------------------------------------------------------------
-  // Scoring
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Computes a time-decayed score for a word.
-   *
-   * The decay curve:
-   * - scales with the logarithmic strength of the word
-   * - penalizes long periods without exposure
-   *
-   * @param {number} rawScore
-   *  Base score accumulated for the word.
-   *
-   * @param {number} daysSinceSeen
-   *  Number of days since the word was last observed.
-   *
-   * @returns {number}
-   *  Decayed score value.
-   */
-  private computeDecayedScore(rawScore: number, daysSinceSeen: number): number {
-    const strength = Math.log1p(rawScore);
-    const lambda = 0.15;
-
-    return rawScore * Math.exp((-lambda * daysSinceSeen) / strength);
-  }
-
-  // ---------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
   // User resolution
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Ensures a User entity exists for the given clientId.
-   *
-   * Uses an insert-or-ignore strategy to avoid race conditions
-   * under concurrent access.
-   *
-   * @param {string} clientId
-   *  External client identifier.
-   *
-   * @returns {Promise<User>}
-   *  Resolved User entity.
-   *
-   * TODO: Move to a UserService
-   */
-  private async getOrCreateUser(clientId: string) {
+  // -------------------------------------------------------------------------
+  private async getOrCreateUser(clientId: string): Promise<User> {
     await this.userRepository
       .createQueryBuilder()
       .insert()

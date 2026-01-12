@@ -3,8 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { User, WordForm } from 'src/bank/bank.entity';
+import { WordScoringService } from 'src/lexicon/scoring.service';
 import { Interaction, UserWordStatistics } from './interaction.entity';
-import { computeMastery, MasteryCurve } from './mastery.util';
+import { MasteryCurve } from './mastery.util';
 
 @Injectable()
 export class InteractionService {
@@ -28,6 +29,7 @@ export class InteractionService {
     private readonly wordFormRepository: Repository<WordForm>,
     @InjectRepository(UserWordStatistics)
     private readonly userWordStatisticsRepository: Repository<UserWordStatistics>,
+    private readonly scoringService: WordScoringService,
   ) { }
 
   /**
@@ -56,7 +58,9 @@ export class InteractionService {
       relations: ['word'],
     });
 
-    this.logger.debug(`Found ${stats.length} word statistics for clientId=${clientId}`);
+    this.logger.debug(
+      `Found ${stats.length} word statistics for clientId=${clientId}`,
+    );
     return stats;
   }
 
@@ -68,11 +72,7 @@ export class InteractionService {
    * @returns {Promise<Interaction>} The saved interaction entity
    * @throws {Error} If user or word form cannot be found
    */
-  async createInteraction(
-    clientId: string,
-    wordFormId: number,
-    type: string,
-  ) {
+  async createInteraction(clientId: string, wordFormId: number, type: string) {
     this.logger.debug(
       `Creating interaction: clientId=${clientId}, wordFormId=${wordFormId}, type=${type}`,
     );
@@ -96,12 +96,15 @@ export class InteractionService {
     const interaction = this.interactionRepository.create({
       user,
       wordForm,
+      word: wordForm.word,
       type,
       timestamp: new Date(),
     });
 
     await this.interactionRepository.save(interaction);
-    this.logger.log(`Saved interaction id=${interaction.id} for userId=${user.id}`);
+    this.logger.log(
+      `Saved interaction id=${interaction.id} for userId=${user.id}`,
+    );
 
     return await this.updateUserWordStatistics(user.id, wordForm.word.id);
   }
@@ -114,9 +117,7 @@ export class InteractionService {
    */
   async updateUserWordStatistics(userId: number, wordId: number) {
     const now = new Date();
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-
-    this.logger.debug(`Updating statistics for userId=${userId}, wordId=${wordId}`);
+    const curve = this.getCurveForWord();
 
     const interactions = await this.interactionRepository
       .createQueryBuilder('i')
@@ -125,18 +126,13 @@ export class InteractionService {
       .andWhere('wf.wordId = :wordId', { wordId })
       .getMany();
 
-    const weighted30Days = interactions
-      .filter(i => i.timestamp >= thirtyDaysAgo)
-      .reduce((sum, i) => sum + (this.typeWeights[i.type] ?? 0), 0);
-
-    const curve = this.getCurveForWord();
-    const score = computeMastery(weighted30Days, curve);
+    const { score, weighted30Days } = this.scoringService.scoreWord(
+      interactions,
+      curve,
+    );
 
     let record = await this.userWordStatisticsRepository.findOne({
-      where: {
-        user: { id: userId },
-        word: { id: wordId },
-      },
+      where: { user: { id: userId }, word: { id: wordId } },
     });
 
     if (!record) {
@@ -144,7 +140,6 @@ export class InteractionService {
         user: { id: userId },
         word: { id: wordId },
       });
-      this.logger.debug(`Created new UserWordStatistics record for userId=${userId}, wordId=${wordId}`);
     }
 
     record.weighted30Days = weighted30Days;
@@ -154,8 +149,7 @@ export class InteractionService {
 
     await this.userWordStatisticsRepository.save(record);
 
-    this.logger.log(`Updated stats: userId=${userId}, wordId=${wordId}, score=${score.toFixed(2)}`);
-    this.logger.debug(
+    this.logger.log(
       `Updated stats: userId=${userId}, wordId=${wordId}, score=${score.toFixed(2)}`,
     );
   }

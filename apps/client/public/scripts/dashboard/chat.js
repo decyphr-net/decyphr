@@ -8,7 +8,6 @@ window.chatApp = function () {
     messageInput: '',
     loading: false,
     openBotSelection: false,
-    selectedLanguage: localStorage.getItem('language') || 'ga',
     translations: {},
 
     get activeChat() {
@@ -16,8 +15,6 @@ window.chatApp = function () {
     },
 
     async init() {
-      this.selectedLanguage = localStorage.getItem('language') || 'ga';
-
       const [botsRes, chatsRes] = await Promise.all([
         fetch('/bots', { credentials: 'include' }),
         fetch('/chat/history', { credentials: 'include' }),
@@ -33,6 +30,7 @@ window.chatApp = function () {
         id: chat.id,
         botId: chat.botId,
         name: allBots.find((b) => b.id === chat.botId)?.name || 'Bot',
+        clientId: chat.clientId,
         messages: chat.messages.map((m) => ({
           id: m.id,
           sender: m.role,
@@ -44,7 +42,7 @@ window.chatApp = function () {
       fetch('/auth/me', { credentials: 'include' })
         .then((res) => res.json())
         .then((session) => {
-          if (session.user.clientId) {
+          if (session.user?.clientId) {
             socket.emit('joinRoom', session.user.clientId);
           }
         });
@@ -52,10 +50,12 @@ window.chatApp = function () {
       socket.off('chat-started');
       socket.on('chat-started', (data) => {
         this.loading = false;
+
         const chat = {
           id: data.chatId,
           botId: data.botId,
           name: allBots.find((b) => b.id === +data.botId)?.name || 'Bot',
+          clientId: data.clientId,
           messages: [
             {
               id: Date.now() + Math.random(),
@@ -69,7 +69,7 @@ window.chatApp = function () {
         this.activeChatId = chat.id;
         this.openBotSelection = false;
 
-        // Remove bot from the available bots list
+        // Remove bot from available list
         this.bots = this.bots.filter((b) => b.id !== +data.botId);
       });
 
@@ -87,12 +87,8 @@ window.chatApp = function () {
       });
     },
 
-    saveLanguage() {
-      localStorage.setItem('language', this.selectedLanguage);
-    },
-
     startChat(bot) {
-      this.loading = true; // Show loading while waiting for server
+      this.loading = true;
 
       fetch('/start', {
         method: 'POST',
@@ -100,11 +96,10 @@ window.chatApp = function () {
         credentials: 'include',
         body: JSON.stringify({
           botId: bot.id,
-          language: this.selectedLanguage,
         }),
       }).catch((err) => {
         console.error('[startChat error]', err);
-        this.loading = false; // Stop loading on error
+        this.loading = false;
       });
     },
 
@@ -115,7 +110,6 @@ window.chatApp = function () {
     sendMessage() {
       if (!this.messageInput.trim() || !this.activeChat) return;
 
-      // Add the user's message locally first
       this.activeChat.messages.push({
         id: Date.now() + Math.random(),
         sender: 'user',
@@ -124,13 +118,11 @@ window.chatApp = function () {
 
       this.loading = true;
 
-      // Prepare the full message history to send
       const fullHistory = this.activeChat.messages.map((msg) => ({
         role: msg.sender,
         content: msg.text,
       }));
 
-      // Send to backend to emit to Kafka
       fetch('/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

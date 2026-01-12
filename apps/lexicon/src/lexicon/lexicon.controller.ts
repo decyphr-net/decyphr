@@ -1,5 +1,10 @@
 import { Controller, Get, Logger, Param, ValidationPipe } from '@nestjs/common';
-import { Ctx, EventPattern, KafkaContext, Payload } from '@nestjs/microservices';
+import {
+  Ctx,
+  EventPattern,
+  KafkaContext,
+  Payload,
+} from '@nestjs/microservices';
 import { CefrAssessmentService } from 'src/cefr/cefr.service';
 import { LexiconIngestService } from './ingest/lexicon.ingest.service';
 import { NlpCompleteEventDto } from './lexicon.dto';
@@ -18,14 +23,18 @@ export class LexiconController {
 
   @EventPattern('nlp.complete')
   async handleWordEncounter(
-    @Payload(new ValidationPipe({ transform: true })) event: NlpCompleteEventDto,
+    @Payload(new ValidationPipe({ transform: true }))
+    event: NlpCompleteEventDto,
     @Ctx() context: KafkaContext,
   ) {
     try {
       await this.ingestService.ingestFromEvent(event);
       this.logger.debug(`Processed event ${event.requestId ?? '(no-id)'}`);
     } catch (err) {
-      this.logger.error(`Error processing event ${event.requestId ?? '(no-id)'}: ${err}`, err as any);
+      this.logger.error(
+        `Error processing event ${event.requestId ?? '(no-id)'}: ${err}`,
+        err as any,
+      );
     }
   }
 
@@ -33,7 +42,10 @@ export class LexiconController {
   async getSnapshot(
     @Param('clientId') clientId: string,
     @Param('language') language: string,
-  ): Promise<{ snapshot: WordSnapshot[]; cefr: { level: string; confidence: number } }> {
+  ): Promise<{
+    snapshot: WordSnapshot[];
+    cefr: { level: string; confidence: number };
+  }> {
     const [snapshot, assessment] = await Promise.all([
       this.queryService.getUserWordSnapshot(clientId, language),
       this.cefrService.assess(clientId, language),
@@ -41,7 +53,7 @@ export class LexiconController {
 
     const cefr = {
       level: assessment.cefr,
-      confidence: assessment.confidence
+      confidence: assessment.confidence,
     };
 
     return {
@@ -50,4 +62,3 @@ export class LexiconController {
     };
   }
 }
-
