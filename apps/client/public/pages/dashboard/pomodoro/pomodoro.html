@@ -1,0 +1,423 @@
+<style>
+  .ambient-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .ambient-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(16, 185, 129, 0.15);
+    border-radius: 9999px;
+    animation: float 18s linear infinite;
+  }
+
+  @keyframes float {
+    from {
+      transform: translateY(120vh) translateX(0);
+    }
+
+    to {
+      transform: translateY(-20vh) translateX(60px);
+    }
+  }
+
+  .breathe {
+    animation: breathe 4s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.85;
+    }
+
+    50% {
+      transform: scale(1.08);
+      opacity: 1;
+    }
+  }
+
+  .completion-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 3px solid rgba(16, 185, 129, 0.6);
+    animation: complete-ping 1.2s ease-out forwards;
+  }
+
+  @keyframes complete-ping {
+    0% {
+      transform: scale(0.8);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+
+  @keyframes complete-ring {
+    0% {
+      transform: scale(0.6);
+      opacity: 0.9;
+    }
+
+    100% {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+
+  .animate-complete-ring {
+    animation: complete-ring 1.6s ease-out forwards;
+  }
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+
+    60% {
+      transform: scale(1.15);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .animate-pop {
+    animation: pop 0.6s ease-out forwards;
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.6s ease-out forwards;
+  }
+
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+
+  .breathing-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 9999px;
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  @keyframes breathe {
+    0% {
+      transform: scale(0.85);
+      opacity: 0.6;
+    }
+
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(0.85);
+      opacity: 0.6;
+    }
+  }
+
+  .icon svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+
+  .divider {
+    border-left: 1px dashed rgba(255, 255, 255, 0.5);
+  }
+</style>
+
+<section x-data="pomodoroApp()" x-init="init()"
+  class="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-8 space-y-12">
+
+  <div class="ambient-bg pointer-events-none" aria-hidden="true">
+    <template x-for="i in 25" :key="i">
+      <div class="ambient-dot" :style="`
+          left: ${Math.random() * 100}%;
+          animation-delay: ${Math.random() * 18}s;
+          animation-duration: ${14 + Math.random() * 12}s;
+        `">
+      </div>
+    </template>
+  </div>
+
+  <div class="absolute inset-0 bg-black/40 transition-opacity duration-700 z-0 pointer-events-none"
+    :class="pomodoro.active ? 'opacity-100' : 'opacity-0'"></div>
+
+  <!-- Header -->
+  <div class="text-center space-y-2">
+    <h1 class="text-3xl font-bold text-gray-900">Pomodoro Session</h1>
+    <p class="text-gray-600 max-w-md mx-auto">Set your focus, watch the path of progress, and stay on track while you
+      read or study.</p>
+  </div>
+
+  <!-- Pomodoro Form -->
+  <div
+    class="bg-white relative z-10 rounded-2xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6 w-full max-w-3xl">
+    <div class="flex flex-col gap-2 w-full">
+      <template x-for="(step, i) in steps" :key="i">
+        <div class="flex gap-2 items-center">
+          <input x-model="step.name" type="text" placeholder="Step name"
+            class="flex-1 rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+          <input x-model.number="step.duration" type="number" min="1"
+            class="w-20 rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+          <button @click="steps.splice(i,1)" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded">✕</button>
+        </div>
+      </template>
+
+      <button @click="steps.push({name:'New Step', duration:5, icon:'coffee'})"
+        class="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded">+ Add Step</button>
+
+      <div class="mt-4">
+        <button @click="startPomodoro()"
+          class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-3 rounded-xl shadow transition-all transform hover:scale-105 flex items-center gap-2">
+          <i data-lucide="play" class="w-5 h-5"></i>
+          Start
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pomodoro Path Visualization -->
+  <div x-show="pomodoro.active" x-cloak class="relative w-full max-w-4xl h-56 flex flex-col items-center">
+
+    <!-- Path and Segmented Progress Bar -->
+    <div class="relative w-full max-w-xl mt-10">
+
+      <!-- Background path -->
+      <div class="absolute inset-0 top-1/2 -translate-y-1/2 h-3 bg-gray-200 rounded-full"></div>
+
+      <!-- Segmented progress with dividers -->
+      <div class="relative flex h-3 rounded-full overflow-hidden">
+        <template x-for="(step, i) in steps" :key="i">
+          <div class="flex-1 relative">
+            <!-- Filled part of step -->
+            <div class="absolute inset-0 bg-emerald-500 transition-all duration-300"
+              :style="{ width: getStepProgress(i) + '%' }"></div>
+            <!-- Divider between steps -->
+            <div x-show="i < steps.length - 1" class="absolute right-0 top-0 h-full w-px bg-white/50"></div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Step Icons above bar -->
+      <div class="absolute -top-8 left-0 right-0 flex">
+        <template x-for="(step, i) in steps" :key="i">
+          <div class="flex-1 flex justify-center">
+            <i :class="[
+                'w-5 h-5',
+                i < currentStep ? 'text-emerald-500' :
+                i === currentStep ? 'text-emerald-600' :
+                'text-gray-300'
+              ]" :data-lucide="step.icon"></i>
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- Countdown Timer below the bar with space -->
+    <div class="mt-20 bg-white rounded-2xl shadow px-6 py-4 text-center">
+      <p class="text-xs text-gray-500">Time left</p>
+      <p class="text-3xl font-bold" x-text="formatTime(timer)"></p>
+    </div>
+  </div>
+
+  <div x-show="celebrating" x-transition.opacity.duration.500ms
+    class="fixed inset-0 z-50 flex items-center justify-center bg-emerald-600 text-white pointer-events-auto"
+    @click="celebrating = false; document.body.classList.remove('overflow-hidden')">
+    <div class="relative flex flex-col items-center gap-6">
+      <!-- Expanding ring -->
+      <div class="relative w-48 h-48 mb-10">
+        <div class="breathing-circle"></div>
+      </div>
+
+      <!-- Check icon -->
+      <div
+        class="w-24 h-24 rounded-full bg-white text-emerald-600 flex items-center breathing-circle justify-center shadow-2xl animate-pop">
+        <i data-lucide="check" class="w-12 h-12"></i>
+      </div>
+
+      <!-- Message -->
+      <p class="text-2xl font-semibold tracking-tight animate-fade-up">
+        Session complete
+      </p>
+
+      <p class="text-sm opacity-80 animate-fade-up delay-150">
+        Nice work. Take a breath.
+      </p>
+
+      <button @click.stop="closeCelebration()"
+        class="mt-4 px-4 py-2 bg-white text-emerald-600 rounded-lg font-semibold hover:bg-gray-100">
+        Close
+      </button>
+    </div>
+  </div>
+
+</section>
+<script>
+  function pomodoroApp() {
+    return {
+      pomodoro: {
+        duration: 25,
+        task: '',
+        active: false,
+        breakDuration: 5,
+      },
+
+      timer: 0,
+      interval: null,
+      progress: 0,
+      currentStep: 0,
+      stepProgress: 0,
+
+      totalElapsed: 0,
+
+      completed: false,
+      celebrating: false,
+      mode: 'work',
+
+      steps: [
+        { name: 'Prepare', duration: 5, icon: 'coffee' },
+        { name: 'Focus', duration: 25, icon: 'target' },
+      ],
+
+      init() {
+        lucide.createIcons()
+      },
+
+      startPomodoro() {
+        if (this.interval) return;
+
+        this.pomodoro.active = true;
+        this.totalElapsed = 0;
+        this.timer = this.steps.reduce((sum, step) => sum + step.duration, 0) * 60; // total seconds
+        this.currentStep = 0;
+
+        this.interval = setInterval(() => {
+          this.timer--;
+          this.totalElapsed++;
+
+          const total = this.steps.reduce((sum, step) => sum + step.duration, 0) * 60;
+          let elapsed = 0;
+          let stepIndex = 0;
+
+          for (let i = 0; i < this.steps.length; i++) {
+            const stepSec = this.steps[i].duration * 60;
+            if (this.totalElapsed < elapsed + stepSec) {
+              stepIndex = i;
+              break;
+            }
+            elapsed += stepSec;
+          }
+
+          this.currentStep = stepIndex;
+
+          if (this.timer <= 0) {
+            clearInterval(this.interval);
+            this.interval = null;
+            this.finishPomodoro();
+          }
+        }, 1000);
+      },
+
+      finishPomodoro() {
+        this.celebrating = true
+        document.body.classList.add('overflow-hidden')
+      },
+
+      closeCelebration() {
+        this.celebrating = false;
+        document.body.classList.remove('overflow-hidden');
+
+        // Reset session state
+        this.pomodoro.active = false;
+        this.timer = 0;
+        this.totalElapsed = 0;
+        this.currentStep = 0;
+      },
+
+      startBreak() {
+        this.celebrating = false
+        document.body.classList.remove('overflow-hidden')
+
+        this.mode = 'break'
+        this.timer = this.pomodoro.breakDuration * 60
+        this.progress = 0
+        this.currentStep = 0
+
+        this.startPomodoro()
+      },
+
+      endPomodoro() {
+        this.pomodoro.active = false
+        clearInterval(this.interval)
+        document.body.classList.remove('overflow-hidden')
+      },
+
+      updateStep() {
+        const stepLen =
+          (this.pomodoro.duration * 60) / (this.steps.length - 1)
+
+        this.currentStep = Math.min(
+          this.steps.length - 1,
+          Math.floor(
+            (this.pomodoro.duration * 60 - this.timer) / stepLen
+          )
+        )
+      },
+
+      getStepProgress(index) {
+        const elapsed = this.totalElapsed; // total seconds elapsed
+        let stepStart = 0;
+
+        // sum durations of all previous steps
+        for (let i = 0; i < index; i++) {
+          stepStart += this.steps[i].duration * 60;
+        }
+
+        const stepDuration = this.steps[index].duration * 60;
+        const stepEnd = stepStart + stepDuration;
+
+        if (elapsed <= stepStart) return 0;
+        if (elapsed >= stepEnd) return 100;
+
+        return ((elapsed - stepStart) / stepDuration) * 100;
+      },
+
+      formatTime(seconds) {
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0')
+        const s = String(seconds % 60).padStart(2, '0')
+        return `${m}:${s}`
+      },
+    }
+  }
+</script>

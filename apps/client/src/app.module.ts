@@ -13,6 +13,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { I18nController } from './i18n/i18n.controller';
 import { I18nModule } from './i18n/i18n.module';
 import { LexiconModule } from './lexicon/lexicon.module';
+import { PomodoroModule } from './pomodoro/pomodoro.module';
 import { LanguageSetting } from './settings/entities/LanguageSetting';
 import { SettingsModule } from './settings/settings.module';
 import { TranslationsModule } from './translations/translations.module';
@@ -46,7 +47,8 @@ import { VaultModule } from './vault/vault.module';
     UtilsModule,
     TranslationsModule,
     LexiconModule,
-    VaultModule
+    VaultModule,
+    PomodoroModule,
   ],
   controllers: [AppController, I18nController],
 })
