@@ -1,324 +1,132 @@
-<div class="container mx-auto px-4 space-y-16 bg-gray-50/60">
-
-  <section class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8" x-data="dashboardState()">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-
-      <!-- Status -->
-      <div class="space-y-2">
-        <h1 class="text-2xl font-semibold text-gray-900">
-          <span x-text="$store.i18n.t('dashboard.learningState.title')"></span>
-        </h1>
-
-        <ul class="space-y-1 text-sm text-gray-700">
-          <li class="flex items-center gap-2">
-            <span>🟢</span>
-            <span x-text="learningState.vocab"></span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span>🟡</span>
-            <span x-text="learningState.comprehension"></span>
-          </li>
-          <li class="flex items-center gap-2">
-            <span>🔴</span>
-            <span x-text="learningState.production"></span>
-          </li>
-        </ul>
-
-        <p class="text-xs text-gray-500">
-          <span x-text="$store.i18n.t('dashboard.learningState.lastActive')"></span>:
-          <span x-text="learningState.lastActive"></span>
-        </p>
-      </div>
-
-      <!-- Continue CTA -->
-      <div class="flex-shrink-0">
-        <button @click="continuePractice()" class="inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold
-                 bg-emerald-500 hover:bg-emerald-600 shadow-sm hover:shadow-md transition-all">
-          <i data-lucide="play" class="w-5 h-5 mr-2"></i>
-          <span x-text="$store.i18n.t('dashboard.continue.cta')"></span>
-        </button>
-      </div>
-
-    </div>
-  </section>
+<div class="container mx-auto px-4 space-y-16 bg-gray-50/60 animate-fade-in">
 
   <!-- =============================== -->
-  <!-- SPEAKING & WRITING -->
+  <!-- PRACTICE -->
   <!-- =============================== -->
-  <section id="speaking-writing" data-section="speaking-writing">
+  <section id="practice" class="space-y-6">
     <div class="flex items-center mb-6 space-x-3">
       <div class="p-2 rounded-xl bg-blue-500 text-white shadow-sm">
-        <i data-lucide="message-square" class="w-6 h-6"></i>
+        <i data-lucide="play-circle" class="w-6 h-6"></i>
       </div>
-      <h2 class="text-xl font-semibold tracking-tight text-gray-900"
-        x-text="$store.i18n.t('dashboard.sections.speakingWriting')"></h2>
+      <h2 class="text-xl font-semibold tracking-tight text-gray-900">Practice</h2>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
 
-      <!-- Chat (active) -->
-      <a href="/chat" class="group">
+      <!-- Chat -->
+      <a href="/chat" class="group animate-slide-in delay-100">
         <div
           class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
           <div class="flex flex-col items-center p-6">
-            <i data-lucide="bot" class="w-12 h-12 text-blue-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.chat.title')"></h3>
+            <i data-lucide="message-square" class="w-12 h-12 text-blue-600"></i>
+            <h3 class="text-xl font-semibold mt-4 text-gray-800">Chat</h3>
           </div>
           <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.chat.description')"></p>
+            <p class="text-sm text-gray-600">Practice conversations in your target language.</p>
             <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.chat.cta')"></button>
+              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition">
+              Open Chat
+            </button>
           </div>
         </div>
       </a>
 
-      <!-- Scenario Reviser (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
+      <!-- Pomodoro -->
+      <a href="/pomodoro" class="group animate-slide-in delay-200">
         <div
           class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
           <div class="flex flex-col items-center p-6">
-            <i data-lucide="layers" class="w-12 h-12 text-blue-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.scenarioReviser.title')"></h3>
+            <i data-lucide="clock" class="w-12 h-12 text-red-500"></i>
+            <h3 class="text-xl font-semibold mt-4 text-gray-800">Pomodoro</h3>
           </div>
           <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.scenarioReviser.description')"></p>
+            <p class="text-sm text-gray-600">Boost focus and track study sessions with the Pomodoro technique.</p>
             <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.scenarioReviser.cta')"></button>
+              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition">
+              Start Session
+            </button>
           </div>
         </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div>
-
-      <!-- Mistake Corrector (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="edit-3" class="w-12 h-12 text-blue-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.mistakeCorrector.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.mistakeCorrector.description')">
-            </p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-blue-500 hover:bg-blue-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.mistakeCorrector.cta')"></button>
-          </div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div>
+      </a>
 
     </div>
   </section>
 
   <!-- =============================== -->
-  <!-- VOCABULARY -->
+  <!-- KNOWLEDGE / TOOLS -->
   <!-- =============================== -->
-  <section id="vocabulary" data-section="vocabulary">
+  <section id="tools" class="space-y-6">
     <div class="flex items-center mb-6 space-x-3">
       <div class="p-2 rounded-xl bg-emerald-500 text-white shadow-sm">
-        <i data-lucide="list" class="w-6 h-6"></i>
+        <i data-lucide="tool" class="w-6 h-6"></i>
       </div>
-      <h2 class="text-xl font-semibold tracking-tight text-gray-900"
-        x-text="$store.i18n.t('dashboard.sections.speakingWriting')"></h2>
+      <h2 class="text-xl font-semibold tracking-tight text-gray-900">Knowledge & Tools</h2>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
 
-      <!-- Lexicon (active) -->
-      <a href="/lexicon" class="group">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="list" class="w-12 h-12 text-emerald-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.lexicon.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.lexicon.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-emerald-500 hover:bg-emerald-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.lexicon.cta')"></button>
-          </div>
-        </div>
-      </a>
-
-      <a href="/lexicon/statements" class="group">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="list" class="w-12 h-12 text-emerald-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.lexicon.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.lexicon.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-emerald-500 hover:bg-emerald-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.lexicon.cta')"></button>
-          </div>
-        </div>
-      </a>
-
-      <!-- Vault (coming soon) -->
-      <!-- <div class="group relative cursor-not-allowed opacity-60 grayscale">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="archive" class="w-12 h-12 text-emerald-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.vault.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.vault.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-emerald-500 hover:bg-emerald-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.vault.cta')"></button>
-          </div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div> -->
-
-      <!-- Verb Practicer (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="repeat" class="w-12 h-12 text-emerald-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.verbPracticer.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.verbPracticer.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-emerald-500 hover:bg-emerald-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.verbPracticer.cta')"></button>
-          </div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- =============================== -->
-  <!-- READING & LISTENING -->
-  <!-- =============================== -->
-  <section id="reading-listening">
-    <div class="flex items-center mb-6 space-x-3">
-      <div class="p-2 rounded-xl bg-amber-500 text-white shadow-sm">
-        <i data-lucide="book-open" class="w-6 h-6"></i>
-      </div>
-      <h2 class="text-xl font-semibold tracking-tight text-gray-900"
-        x-text="$store.i18n.t('dashboard.sections.readingListening')"></h2>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-      <!-- Storytime (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="book" class="w-12 h-12 text-amber-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.storytime.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.storytime.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-amber-500 hover:bg-amber-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.storytime.cta')"></button>
-          </div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div>
-
-      <!-- Book Tracker (coming soon) -->
-      <div class="group relative cursor-not-allowed opacity-60 grayscale">
-        <div
-          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="flex flex-col items-center p-6">
-            <i data-lucide="bookmark" class="w-12 h-12 text-amber-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.bookTracker.title')"></h3>
-          </div>
-          <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.bookTracker.description')"></p>
-            <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-amber-500 hover:bg-amber-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.bookTracker.cta')"></button>
-          </div>
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/70 backdrop-blur-sm">
-          <span class="px-4 py-2 text-sm font-semibold tracking-wide text-gray-700 bg-gray-200 rounded-full shadow">
-            Coming soon
-          </span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- =============================== -->
-  <!-- TOOLS -->
-  <!-- =============================== -->
-  <section id="tools">
-    <div class="flex items-center mb-6 space-x-3">
-      <div class="p-2 rounded-xl bg-violet-500 text-white shadow-sm">
-        <i data-lucide="wrench" class="w-6 h-6"></i>
-      </div>
-      <h2 class="text-xl font-semibold tracking-tight text-gray-900" x-text="$store.i18n.t('dashboard.sections.tools')">
-      </h2>
-    </div>
-
-    <div class="grid grid-cols-3 sm:grid-cols-2 gap-6">
-      <!-- Tools: Translation (active) -->
-      <a href="/translations" class="group">
+      <!-- Translation -->
+      <a href="/translations" class="group animate-slide-in delay-100">
         <div
           class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
           <div class="flex flex-col items-center p-6">
             <i data-lucide="languages" class="w-12 h-12 text-violet-600"></i>
-            <h3 class="text-xl font-semibold tracking-tight mt-4 text-gray-800"
-              x-text="$store.i18n.t('dashboard.toolsTranslation.title')"></h3>
+            <h3 class="text-xl font-semibold mt-4 text-gray-800">Translation</h3>
           </div>
           <div class="flex flex-col p-6 pt-0">
-            <p class="flex-1 text-sm text-gray-600" x-text="$store.i18n.t('dashboard.toolsTranslation.description')">
-            </p>
+            <p class="text-sm text-gray-600">Translate words, phrases, and sentences instantly.</p>
             <button
-              class="inline-flex items-center justify-center px-4 py-2 mt-4 rounded-lg text-white font-semibold bg-violet-500 hover:bg-violet-600 hover:scale-105 transform transition-all duration-300"
-              x-text="$store.i18n.t('dashboard.toolsTranslation.cta')"></button>
+              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-violet-500 text-white font-semibold hover:bg-violet-600 transition">
+              Open Translator
+            </button>
           </div>
         </div>
       </a>
+
+      <!-- Lexicon -->
+      <a href="/lexicon" class="group animate-slide-in delay-200">
+        <div
+          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="flex flex-col items-center p-6">
+            <i data-lucide="list" class="w-12 h-12 text-emerald-600"></i>
+            <h3 class="text-xl font-semibold mt-4 text-gray-800">Lexicon</h3>
+          </div>
+          <div class="flex flex-col p-6 pt-0">
+            <p class="text-sm text-gray-600">View your vocabulary stats and learning progress.</p>
+            <button
+              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-emerald-500 text-white font-semibold hover:bg-emerald-600 transition">
+              Open Lexicon
+            </button>
+          </div>
+        </div>
+      </a>
+
+      <!-- Phrasebook -->
+      <a href="/lexicon/statements" class="group animate-slide-in delay-300">
+        <div
+          class="flex flex-col h-full bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <div class="flex flex-col items-center p-6">
+            <i data-lucide="book-open" class="w-12 h-12 text-amber-500"></i>
+            <h3 class="text-xl font-semibold mt-4 text-gray-800">Phrasebook</h3>
+          </div>
+          <div class="flex flex-col p-6 pt-0">
+            <p class="text-sm text-gray-600">Manage phrases and words, generate translations, and create flashcards.</p>
+            <button
+              class="inline-flex items-center justify-center mt-4 px-4 py-2 rounded-lg bg-amber-500 text-white font-semibold hover:bg-amber-600 transition">
+              Open Phrasebook
+            </button>
+          </div>
+        </div>
+      </a>
+
     </div>
   </section>
 
 </div>
 
-<script src="/scripts/dashboard/dashboard.js" defer></script>
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.start();
+    if (window.lucide) lucide.createIcons();
+  });
+</script>
