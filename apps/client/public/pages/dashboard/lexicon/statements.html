@@ -78,18 +78,18 @@
 
     <!-- STATEMENT CARDS -->
     <template x-for="statement in paginatedStatements" :key="statement.id">
-      <div class="rounded-lg border bg-white p-5 space-y-4 shadow hover:shadow-md transition relative overflow-visible"
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2"
-        x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-2">
+      <!-- Card wrapper -->
+      <div class="relative">
 
-        <div x-show="statement.translationPending" class="absolute top-0 left-0 w-full h-1 bg-emerald-100"
-          aria-hidden="true">
-          <div class="h-full w-1/3 bg-emerald-500 animate-progress"></div>
+        <div x-show="statement.loading" class="absolute inset-0 bg-white/60 flex items-center justify-center z-50">
+          <svg class="w-8 h-8 text-emerald-500 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
         </div>
 
         <!-- Three-dot menu -->
-        <div class="absolute top-3 right-3" x-data="{ open: false }">
+        <div class="absolute top-3 right-3 z-50" x-data="{ open: false }">
           <button @click="open = !open" class="p-1 rounded hover:bg-gray-100">
             <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
               <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -123,67 +123,73 @@
           </div>
         </div>
 
-        <!-- Statement -->
-        <p class="text-lg font-semibold" x-text="statement.text"></p>
+        <!-- Actual card -->
+        <div class="rounded-lg border bg-white p-5 space-y-4 shadow hover:shadow-md transition overflow-hidden">
 
-        <p class="text-gray-600 italic flex items-center gap-2" x-show="statement.translation">
-          <span class="text-xs uppercase text-gray-400">EN</span>
-          <span x-text="statement.translation"></span>
-        </p>
+          <!-- Statement text -->
+          <p class="text-lg font-semibold" x-text="statement.text"></p>
 
-        <!-- Analysis Toggle -->
-        <button @click="statement.showTokens = !statement.showTokens" class="text-sm text-emerald-600 hover:underline">
-          <span x-text="statement.showTokens ? 'Hide analysis' : 'Show linguistic analysis'"></span>
-        </button>
+          <!-- Translation -->
+          <p class="text-gray-600 italic flex items-center gap-2" x-show="statement.translation">
+            <span x-text="statement.translation"></span>
+          </p>
 
-        <!-- TOKEN TABLE -->
-        <div x-show="statement.showTokens" x-transition class="mt-3 overflow-x-auto">
-          <table class="min-w-full text-sm border rounded">
-            <thead class="bg-gray-50 text-gray-700">
-              <tr>
-                <th class="px-3 py-2 border">Position</th>
-                <th class="px-3 py-2 border">Word</th>
-                <th class="px-3 py-2 border">Comes from</th>
-                <th class="px-3 py-2 border">Word type</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template x-for="token in statement.tokens" :key="token.position">
-                <tr class="odd:bg-white even:bg-gray-50">
-                  <td class="px-3 py-1 border text-center" x-text="token.position"></td>
-                  <td class="px-3 py-1 border" x-text="token.surface"></td>
-                  <td class="px-3 py-1 border text-gray-600" x-text="token.lemma"></td>
-                  <td class="px-3 py-1 border font-mono" x-text="token.pos"></td>
+          <!-- Analysis toggle -->
+          <button @click="statement.showTokens = !statement.showTokens"
+            class="text-sm text-emerald-600 hover:underline">
+            <span x-text="statement.showTokens ? 'Hide analysis' : 'Show linguistic analysis'"></span>
+          </button>
+
+          <!-- Token table -->
+          <div x-show="statement.showTokens" x-transition class="mt-3 overflow-x-auto">
+            <table class="min-w-full text-sm border rounded">
+              <thead class="bg-gray-50 text-gray-700">
+                <tr>
+                  <th class="px-3 py-2 border">Position</th>
+                  <th class="px-3 py-2 border">Word</th>
+                  <th class="px-3 py-2 border">Comes from</th>
+                  <th class="px-3 py-2 border">Word type</th>
                 </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                <template x-for="token in statement.tokens" :key="token.position">
+                  <tr class="odd:bg-white even:bg-gray-50">
+                    <td class="px-3 py-1 border text-center" x-text="token.position"></td>
+                    <td class="px-3 py-1 border" x-text="token.surface"></td>
+                    <td class="px-3 py-1 border text-gray-600" x-text="token.lemma"></td>
+                    <td class="px-3 py-1 border font-mono" x-text="token.pos"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
 
-        <div x-show="statement.pronunciation || statement.example || statement.notes"
-          class="rounded-md bg-gray-50 border border-gray-200 p-3 space-y-2 text-sm">
+          <!-- Pronunciation / Example / Notes -->
+          <div x-show="statement.pronunciation || statement.example || statement.notes"
+            class="rounded-md bg-gray-50 border border-gray-200 p-3 space-y-2 text-sm">
 
-          <template x-if="statement.pronunciation">
-            <p class="flex items-center gap-2">
-              <span class="text-xs uppercase text-gray-400">Pronunciation</span>
-              <span class="font-mono text-gray-700" x-text="statement.pronunciation"></span>
-            </p>
-          </template>
+            <template x-if="statement.pronunciation">
+              <p class="flex items-center gap-2">
+                <span class="text-xs uppercase text-gray-400">Pronunciation</span>
+                <span class="font-mono text-gray-700" x-text="statement.pronunciation"></span>
+              </p>
+            </template>
 
-          <template x-if="statement.example">
-            <p>
-              <span class="text-xs uppercase text-gray-400 block">Example</span>
-              <span class="text-gray-700 italic" x-text="statement.example"></span>
-            </p>
-          </template>
+            <template x-if="statement.example">
+              <p>
+                <span class="text-xs uppercase text-gray-400 block">Example</span>
+                <span class="text-gray-700 italic" x-text="statement.example"></span>
+              </p>
+            </template>
 
-          <template x-if="statement.notes">
-            <p>
-              <span class="text-xs uppercase text-gray-400 block">Notes</span>
-              <span class="text-gray-700" x-text="statement.notes"></span>
-            </p>
-          </template>
+            <template x-if="statement.notes">
+              <p>
+                <span class="text-xs uppercase text-gray-400 block">Notes</span>
+                <span class="text-gray-700" x-text="statement.notes"></span>
+              </p>
+            </template>
 
+          </div>
         </div>
       </div>
     </template>
@@ -316,7 +322,7 @@
         page: 1,
         limit: 5,
         modalOpen: false,
-        modalStatement: { id: null, text: '', meaning: '' },
+        modalStatement: { id: null, text: '', translation: '' },
         deleteModalOpen: false,
         statementToDelete: null,
 
@@ -329,16 +335,47 @@
 
             this.statements = data.map(s => ({
               ...s,
-
               // UI-only state
               showTokens: false,
               autoTranslate: !s.translation,
-              translationPending: false,
+              loading: false,          // <-- per-card loading state
             }));
           } catch (err) {
             console.error(err);
             alert('Failed to load statements');
           }
+
+          // ---------------- SSE CONNECTION ----------------
+          try {
+            const source = new EventSource('/lexicon/statements/stream');
+
+            source.onmessage = (event) => {
+              console.log('SSE received', event.data);
+              const data = JSON.parse(event.data);
+
+              const idx = this.statements.findIndex(s => s.id === data.id);
+              if (idx !== -1) {
+                this.statements[idx] = {
+                  ...this.statements[idx],
+                  ...data,
+                  loading: false, // <-- stop spinner
+                };
+              } else {
+                this.statements.unshift({
+                  ...data,
+                  showTokens: false,
+                  loading: false, // ensure new items are not spinning
+                });
+              }
+            };
+
+            source.onerror = () => {
+              console.warn('SSE connection lost, reconnecting...');
+            };
+          } catch (err) {
+            console.error('Failed to initialize SSE', err);
+          }
+          // -------------------------------------------------
         },
 
         get totalPages() {
@@ -352,93 +389,124 @@
 
         openModal(statement = null) {
           this.modalStatement = statement
-            ? {
-              ...statement,
-              autoTranslate: false
-            } : {
-              id: null,
-              text: '',
-              translation: '',
-              autoTranslate: false
-            };
+            ? { ...statement, autoTranslate: false }
+            : { id: null, text: '', translation: '', autoTranslate: false };
           this.modalOpen = true;
         },
 
         onTranslationInput() {
-          // Manual input always overrides auto-translation
           if (this.modalStatement.autoTranslate) {
             this.modalStatement.autoTranslate = false;
           }
         },
 
+        async generateTranslation(statement) {
+          if (statement.translation && !confirm('This will replace the existing translation. Continue?')) return;
 
-        generateTranslation(statement) {
-          if (statement.translation) {
-            if (!confirm('This will replace the existing translation. Continue?')) return;
-          }
+          statement.loading = true; // start per-card loading
 
-          // TODO: call backend
-          // POST /statements/:id/translate
+          try {
+            // TODO: replace with actual backend call
+            await new Promise(res => setTimeout(res, 800));
 
-          // Fake async result
-          setTimeout(() => {
             statement.translation = 'I am learning Irish';
             statement.translationLanguage = 'en';
-          }, 800);
+          } catch (err) {
+            console.error(err);
+            alert('Failed to generate translation');
+          } finally {
+            statement.loading = false; // stop per-card loading
+          }
         },
 
-        submitStatement() {
+        async submitStatement() {
           if (!this.modalStatement.text.trim()) {
             alert('Statement cannot be empty.');
             return;
           }
 
-          // User provided translation overrides auto
-          if (this.modalStatement.translation?.trim()) {
-            this.modalStatement.autoTranslate = false;
-          }
+          const isEdit = !!this.modalStatement.id;
+          const endpoint = isEdit
+            ? `/lexicon/statements/${this.modalStatement.id}/edit`
+            : '/lexicon/statements';
 
-          if (this.modalStatement.id) {
-            const idx = this.statements.findIndex(s => s.id === this.modalStatement.id);
-            if (idx !== -1) this.statements[idx] = { ...this.modalStatement };
-          } else {
-            const newId =
-              this.statements.length
-                ? Math.max(...this.statements.map(s => s.id)) + 1
-                : 1;
+          const targetStatement = isEdit
+            ? this.statements.find(s => s.id === this.modalStatement.id)
+            : null;
 
-            this.statements.push({
-              ...this.modalStatement,
-              id: newId,
-              language: 'ga',
-              translationLanguage: 'en'
+          if (targetStatement) targetStatement.loading = true;
+
+          try {
+            const res = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                text: this.modalStatement.text,
+                translation: this.modalStatement.translation,
+                pronunciation: this.modalStatement.pronunciation,
+                notes: this.modalStatement.notes,
+                autoTranslate: this.modalStatement.autoTranslate,
+              }),
             });
-          }
 
-          this.modalOpen = false;
+            if (!res.ok) throw new Error('Save failed');
+
+            if (isEdit) {
+              const idx = this.statements.findIndex(s => s.id === this.modalStatement.id);
+              if (idx !== -1) {
+                this.statements[idx] = {
+                  ...this.statements[idx],
+                  text: this.modalStatement.text,
+                  translation: this.modalStatement.autoTranslate ? null : this.modalStatement.translation,
+                  translationPending: this.modalStatement.autoTranslate,
+                  pronunciation: this.modalStatement.pronunciation,
+                  notes: this.modalStatement.notes,
+                };
+              }
+            } else {
+              const created = await res.json();
+              this.statements.unshift({
+                ...created,
+                showTokens: false,
+                translationPending: created.autoTranslate,
+                loading: false,
+              });
+            }
+
+            this.modalOpen = false;
+          } catch (err) {
+            console.error(err);
+            alert('Failed to save statement');
+          } finally {
+            if (targetStatement) targetStatement.loading = false;
+          }
         },
 
         deleteStatement(statement) {
-          // Open delete modal instead of using confirm
           this.statementToDelete = statement;
           this.deleteModalOpen = true;
         },
 
         async confirmDeleteStatement() {
+          const statement = this.statementToDelete;
+          if (!statement) return;
+
+          statement.loading = true;
+
           try {
-            const res = await fetch(`/lexicon/statements/${this.statementToDelete.id}`, {
+            const res = await fetch(`/lexicon/statements/${statement.id}`, {
               method: 'DELETE',
             });
             if (!res.ok) throw new Error('Delete failed');
 
-            // Animate removal
-            this.statements = this.statements.filter(s => s.id !== this.statementToDelete.id);
-
+            this.statements = this.statements.filter(s => s.id !== statement.id);
             this.deleteModalOpen = false;
             this.statementToDelete = null;
           } catch (err) {
             console.error(err);
             alert('Failed to delete statement');
+          } finally {
+            statement.loading = false;
           }
         },
 
@@ -449,4 +517,6 @@
       }
     }
   </script>
+
+
 </section>

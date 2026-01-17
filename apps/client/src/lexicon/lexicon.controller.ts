@@ -7,24 +7,107 @@ import {
   Delete,
   Get,
   Logger,
+  OnModuleInit,
   Param,
   Post,
   Req,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { EachMessagePayload, Kafka } from 'kafkajs';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedRequest } from 'src/auth/types/request';
 import { LexiconService } from './lexicon.service';
 
+export class UpdateStatementDto {
+  text?: string;
+  translation?: string;
+  pronunciation?: string;
+  notes?: string;
+
+  autoTranslate?: boolean;
+
+  interaction?: {
+    type: string;
+    timestamp?: number;
+  };
+}
+
 @Controller('')
-export class LexiconController {
+export class LexiconController implements OnModuleInit {
   private readonly logger = new Logger(LexiconController.name);
+  private kafka: Kafka;
+  private consumer: any;
+  private sseClients: Response[] = [];
 
   constructor(
     private readonly authService: AuthService,
     private readonly lexiconService: LexiconService,
-  ) { }
+  ) {
+    this.kafka = new Kafka({
+      clientId: 'lexicon-service',
+      brokers: ['kafka:9092'], // adjust as needed
+    });
+    this.consumer = this.kafka.consumer({ groupId: 'lexicon-group' });
+  }
+
+  async onModuleInit() {
+    await this.consumer.connect();
+    await this.consumer.subscribe({
+      topic: 'statement.created',
+      fromBeginning: false,
+    });
+    await this.consumer.subscribe({
+      topic: 'statement.updated',
+      fromBeginning: false,
+    });
+
+    await this.consumer.run({
+      eachMessage: async ({ topic, message }: EachMessagePayload) => {
+        if (!message.value) return;
+
+        try {
+          const payload = JSON.parse(message.value.toString());
+          this.logger.log(`Received message from ${topic}: ${payload.id}`);
+
+          // Prepare SSE payload
+          const data = JSON.stringify({
+            id: payload.id,
+            text: payload.text,
+            translation: payload.translation,
+            pronunciation: payload.pronunciation,
+            notes: payload.notes,
+          });
+
+          // Broadcast to SSE clients
+          this.sseClients.forEach((client) =>
+            client.write(`data: ${data}\n\n`),
+          );
+        } catch (err) {
+          this.logger.error('Failed to process Kafka message', err);
+        }
+      },
+    });
+  }
+
+  @Get('/lexicon/statements/stream')
+  async streamStatements(@Res() res: Response) {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    // Send a ping to keep connection alive every 15s
+    const keepAlive = setInterval(() => res.write(':\n\n'), 15000);
+
+    // Add client to list
+    this.sseClients.push(res);
+
+    // Remove client when connection closes
+    res.on('close', () => {
+      clearInterval(keepAlive);
+      this.sseClients = this.sseClients.filter((c) => c !== res);
+    });
+  }
 
   /**
    * Renders the full layout with the lexicon partial path injected.
@@ -193,6 +276,72 @@ export class LexiconController {
     } catch (err) {
       this.logger.error(`Failed to delete statement ${id}`, err);
       return res.status(500).json({ error: 'Failed to delete statement' });
+    }
+  }
+
+  @Post('/lexicon/statements')
+  async createStatement(
+    @Body() body: UpdateStatementDto,
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.getUserFromSession(req);
+
+    try {
+      await this.lexiconService.handleStatementEvent({
+        clientId: user.clientId,
+        changes: {
+          text: body.text,
+          translation: body.translation,
+          pronunciation: body.pronunciation,
+          notes: body.notes,
+        },
+        interaction: {
+          type: 'statement_created',
+          timestamp: Date.now(),
+        },
+        autoTranslate: body.autoTranslate,
+      });
+
+      return res.json({ ok: true });
+    } catch (err) {
+      this.logger.error('Failed to create statement', err);
+      return res.status(500).json({ error: 'Create failed' });
+    }
+  }
+
+  @Post('/lexicon/statements/:id/edit')
+  async editStatement(
+    @Param('id') id: string,
+    @Body() body: UpdateStatementDto,
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    const user = await this.authService.getUserFromSession(req);
+
+    console.log(id);
+
+    try {
+      await this.lexiconService.handleStatementEvent({
+        statementId: id,
+        clientId: user.clientId,
+        changes: {
+          text: body.text,
+          translation: body.translation,
+          pronunciation: body.pronunciation,
+          notes: body.notes,
+        },
+        interaction: {
+          type: 'text_updated',
+          timestamp: Date.now(),
+        },
+        autoTranslate: body.autoTranslate,
+      });
+
+      return res.json({ ok: true });
+    } catch (err) {
+      this.logger.error(`Failed to edit statement ${id}`, err);
+      return res.status(500).json({ error: 'Edit failed' });
     }
   }
 }

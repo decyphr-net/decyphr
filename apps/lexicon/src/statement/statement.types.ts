@@ -5,4 +5,5 @@ export interface CreateStatementInput {
   source: string;
   meaning?: string | null;
   timestamp?: Date;
+  requestId?: string;
 }

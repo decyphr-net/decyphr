@@ -12,23 +12,31 @@ export class TranslationService {
   ) { }
 
   async handleTranslation(payload: TranslationDto): Promise<void> {
-
-    const { requestId, clientId, sourceLanguage, targetLanguage, interactions, payload: innerPayload } = payload;
+    const {
+      requestId,
+      clientId,
+      sourceLanguage,
+      targetLanguage,
+      interactions,
+      payload: innerPayload,
+      statementId,
+    } = payload;
 
     const translation = await this.groqProvider.translateSimple(
       innerPayload.text,
       sourceLanguage,
-      targetLanguage
+      targetLanguage,
     );
 
     const responseMessage = {
       requestId,
       clientId,
+      statementId,
       sourceLanguage,
       targetLanguage,
       translated: translation.translated,
       originalText: innerPayload.text,
-      interaction: interactions[0]
+      interaction: interactions[0],
     };
 
     await this.translationClient.emit('translation.complete', {
@@ -37,7 +45,7 @@ export class TranslationService {
     });
 
     this.logger.log(
-      `📤 Translation COMPLETE emitted for requestId=${payload.requestId}`
+      `📤 Translation COMPLETE emitted for requestId=${payload.requestId}`,
     );
   }
 }

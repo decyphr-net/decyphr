@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createHash } from 'crypto';
 import { Repository } from 'typeorm';
@@ -12,7 +13,7 @@ import { Statement, StatementToken } from './statement.entity';
 import { CreateStatementInput } from './statement.types';
 
 @Injectable()
-export class StatementService {
+export class StatementService implements OnModuleInit {
   private readonly logger = new Logger(StatementService.name);
 
   constructor(
@@ -20,7 +21,12 @@ export class StatementService {
     private readonly statementRepository: Repository<Statement>,
     @InjectRepository(StatementToken)
     private readonly tokenRepository: Repository<StatementToken>,
+    @Inject('STATEMENT_PRODUCER') private readonly kafkaProducer: ClientKafka,
   ) { }
+
+  async onModuleInit() {
+    await this.kafkaProducer.connect();
+  }
 
   /**
    * Creates or retrieves a statement derived from an ingestion event.
@@ -38,6 +44,10 @@ export class StatementService {
     });
 
     if (statement) {
+      if (!statement.requestId && input.requestId) {
+        statement.requestId = input.requestId;
+        await this.statementRepository.save(statement);
+      }
       return statement;
     }
 
@@ -49,6 +59,7 @@ export class StatementService {
       clientId: input.clientId,
       fingerprint,
       createdAt: input.timestamp ?? new Date(),
+      requestId: input.requestId,
     });
 
     this.logger.debug(
@@ -180,5 +191,52 @@ export class StatementService {
 
   async deleteStatementById(id: number): Promise<void> {
     await this.statementRepository.delete({ id });
+  }
+
+  async findById(id: number): Promise<Statement | null> {
+    return this.statementRepository.findOne({
+      where: { id },
+      relations: ['tokens'],
+    });
+  }
+
+  async save(statement: Statement): Promise<Statement> {
+    return this.statementRepository.save(statement);
+  }
+
+  async clearTokens(statementId: number): Promise<void> {
+    await this.tokenRepository.delete({ statement: { id: statementId } });
+  }
+
+  async updateTranslation(event: any) {
+    const { statementId, requestId, translated } = event;
+    if (!translated) throw new Error('No translation provided');
+
+    let statement: Statement;
+
+    if (statementId) {
+      statement = await this.statementRepository.findOne({
+        where: { id: statementId },
+      });
+    } else if (requestId) {
+      statement = await this.statementRepository.findOne({
+        where: { requestId },
+      });
+    } else {
+      throw new Error('No statementId or requestId provided');
+    }
+
+    if (!statement) {
+      this.logger.warn(
+        `Translation received but statement not found (statementId=${statementId}, requestId=${requestId})`,
+      );
+      return; // swallow event
+    }
+    statement.meaning = translated;
+    await this.statementRepository.save(statement);
+
+    await this.kafkaProducer.emit('statement.updated', {
+      value: JSON.stringify(statement),
+    });
   }
 }

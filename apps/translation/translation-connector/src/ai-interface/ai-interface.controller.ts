@@ -1,7 +1,19 @@
-import { Controller, Get, Inject, Logger, OnModuleInit, Param } from '@nestjs/common';
-import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
+import {
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  OnModuleInit,
+  Param,
+} from '@nestjs/common';
+import { ClientKafka, MessagePattern } from '@nestjs/microservices';
 import { AiInterfaceService } from './ai-interface.service';
 import { TranslationDto } from './dto/translation.dto';
+
+interface KafkaMessage<T> {
+  key: string;
+  value: T;
+}
 
 /**
  * Controller that handles translation-related requests and responses.
@@ -39,7 +51,9 @@ export class AiInterfaceController implements OnModuleInit {
   @MessagePattern('translation.complete')
   async handleTranslationResponse(message: any) {
     try {
-      this.logger.log(`Received translation response: ${JSON.stringify(message)}`);
+      this.logger.log(
+        `Received translation response: ${JSON.stringify(message)}`,
+      );
 
       const value = message;
 
@@ -64,14 +78,15 @@ export class AiInterfaceController implements OnModuleInit {
       const key = record.requestId;
 
       // Emit to KTable topic
-      await this.client.emit('translation.response.table', { key, value: translation });
+      await this.client.emit('translation.response.table', {
+        key,
+        value: translation,
+      });
       this.logger.log('✅ Stored + emitted translation.response.table');
-
     } catch (error) {
       this.logger.error('Failed to handle translation response', error);
     }
   }
-
 
   /**
    * Handles translation request messages from Kafka.
@@ -81,9 +96,10 @@ export class AiInterfaceController implements OnModuleInit {
    * @param translationRequest The translation request from Kafka.
    */
   @MessagePattern('translation.translate')
-  async translateText(@Payload() translationRequest: TranslationDto) {
+  async translateText(message: KafkaMessage<TranslationDto>) {
+    const translationRequest = message.value;
     this.logger.log(
-      `Received translation request from Kafka: ${JSON.stringify(translationRequest)}`
+      `Received translation request from Kafka: ${JSON.stringify(translationRequest)}`,
     );
 
     try {
@@ -92,7 +108,9 @@ export class AiInterfaceController implements OnModuleInit {
         value: translationRequest,
       });
 
-      this.logger.log(`Translation request emitted to AI service with key ${translationRequest.requestId}`);
+      this.logger.log(
+        `Translation request emitted to AI service with key ${translationRequest.requestId}`,
+      );
     } catch (error) {
       this.logger.error('Failed to emit translation request', error.stack);
     }
@@ -108,7 +126,10 @@ export class AiInterfaceController implements OnModuleInit {
         data: translations,
       };
     } catch (error) {
-      this.logger.error(`Failed to fetch translations for client ${clientId}:`, error.stack);
+      this.logger.error(
+        `Failed to fetch translations for client ${clientId}:`,
+        error.stack,
+      );
       return {
         success: false,
         message: 'Failed to fetch translations',

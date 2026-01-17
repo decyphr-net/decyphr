@@ -9,6 +9,7 @@ import { TranslationsService } from './translations.service';
 @Module({
   controllers: [TranslationsController],
   providers: [TranslationsService],
-  imports: [KafkaModule, AuthModule, HttpModule]
+  imports: [KafkaModule, AuthModule, HttpModule],
+  exports: [TranslationsService],
 })
 export class TranslationsModule { }

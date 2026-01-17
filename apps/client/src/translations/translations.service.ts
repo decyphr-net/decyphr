@@ -155,6 +155,7 @@ export class TranslationsService {
       clientId: dto.clientId,
       sourceLanguage,
       targetLanguage,
+      statementId: dto.statementId,
 
       interactions: [
         {

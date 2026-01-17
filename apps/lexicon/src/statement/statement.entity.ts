@@ -67,6 +67,9 @@ export class Statement {
 
   @OneToMany(() => StatementToken, (token) => token.statement)
   tokens: StatementToken[];
+
+  @Column({ type: 'varchar', length: 36, nullable: true, unique: true })
+  requestId?: string;
 }
 
 @Entity('statement_tokens')

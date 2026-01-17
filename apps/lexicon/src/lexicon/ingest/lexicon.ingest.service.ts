@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 
+import { ClientKafka } from '@nestjs/microservices';
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
 import { Statement } from 'src/statement/statement.entity';
@@ -28,7 +29,7 @@ import {
  * This service is deliberately stateless and driven entirely by events.
  */
 @Injectable()
-export class LexiconIngestService {
+export class LexiconIngestService implements OnModuleInit {
   private readonly logger = new Logger(LexiconIngestService.name);
 
   constructor(
@@ -40,7 +41,12 @@ export class LexiconIngestService {
     private readonly profile: RedisProfileService,
     private readonly interactionService: InteractionService,
     private readonly statementService: StatementService,
+    @Inject('STATEMENT_PRODUCER') private readonly kafkaProducer: ClientKafka,
   ) { }
+
+  async onModuleInit() {
+    await this.kafkaProducer.connect();
+  }
 
   /**
    * Entry point for lexicon ingestion.
@@ -81,14 +87,43 @@ export class LexiconIngestService {
     // ---------------------------------------------------------------------------
     const statementMap = new Map<string, Statement>();
     for (const sentence of event.sentences) {
-      const statement = await this.statementService.getOrCreate({
-        text: sentence.text,
-        language: event.language,
-        clientId: event.clientId,
-        source: event.interaction?.type ?? 'nlp',
-        meaning: event.meaning ?? null,
-        timestamp: new Date(),
-      });
+      let statement: Statement;
+
+      if (event.statementId) {
+        // Existing statement edit
+        statement = await this.statementService.findById(event.statementId);
+        if (!statement) {
+          this.logger.warn(
+            `Statement id=${event.statementId} not found, creating new`,
+          );
+          statement = await this.statementService.getOrCreate({
+            text: sentence.text,
+            language: event.language,
+            clientId: event.clientId,
+            source: event.interaction?.type ?? 'nlp',
+            meaning: event.meaning ?? null,
+            timestamp: new Date(),
+            requestId: event.requestId,
+          });
+        } else {
+          // update fields like translation, pronunciation, notes
+          statement.text = sentence.text;
+          statement.meaning = event.meaning ?? statement.meaning;
+          await this.statementService.save(statement);
+        }
+      } else {
+        // new statement
+        statement = await this.statementService.getOrCreate({
+          text: sentence.text,
+          language: event.language,
+          clientId: event.clientId,
+          source: event.interaction?.type ?? 'nlp',
+          meaning: event.meaning ?? null,
+          timestamp: new Date(),
+          requestId: event.requestId,
+        });
+      }
+
       statementMap.set(sentence.text, statement);
     }
 
@@ -97,17 +132,30 @@ export class LexiconIngestService {
       const statement = statementMap.get(sentence.text);
       if (!statement) continue;
 
+      const textChanged =
+        !event.statementId || statement.text !== sentence.text;
+
+      if (textChanged) {
+        await this.statementService.clearTokens(statement.id);
+        await this.kafkaProducer.emit(
+          'statement.updated',
+          JSON.stringify(statement),
+        );
+      }
+
       await this.statementService.createTokens(
         statement,
-        sentence.tokens, // include all tokens
-        words, // Word optional
+        sentence.tokens,
+        words,
       );
-    }
 
-    console.log(
-      'WordForms ready:',
-      wordForms.map((wf) => ({ id: wf.id, form: wf.form, wordId: wf.word.id })),
-    );
+      if (event.interaction.type === 'statement_created') {
+        await this.kafkaProducer.emit(
+          'statement.created',
+          JSON.stringify(statement),
+        );
+      }
+    }
 
     // ---------------------------------------------------------------------------
     // Apply profile / scoring / interaction side effects

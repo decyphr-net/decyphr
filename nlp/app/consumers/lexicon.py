@@ -1,7 +1,7 @@
 import logging
 
 from app.utils.kafka.dispatcher import consumes
-from app.schemas import LexiconImportRequest
+from app.schemas import LexiconImportRequest, StatementEvent
 from app.nlp import process_text
 from app.utils.kafka.producer import KafkaProducerWrapper
 from app.utils.normalisers.normaliser import normalize_token
@@ -33,4 +33,38 @@ async def handle_lexicon_import(req: LexiconImportRequest):
         key=req.requestId,
         message=resp.json(),
     )
+    await producer.stop()
+
+
+@consumes("statement.events", validation=StatementEvent)
+async def handle_statement_event(req: StatementEvent):
+    producer = KafkaProducerWrapper()
+    await producer.start()
+
+    # 1️⃣ NLP only cares about text
+    resp = process_text(
+        req.changes.text,
+        lang=req.language,
+    )
+
+    # 2️⃣ Propagate identity + metadata
+    if req.type == "statement_created":
+        resp.requestId = req.requestId or req.timestamp
+    elif req.type == "statement_updated":
+        resp.requestId = req.statementId
+    resp.clientId = req.clientId
+    resp.interaction = req.interaction
+
+    # 3️⃣ Normalize tokens
+    for sentence in resp.sentences or []:
+        for token in sentence.tokens:
+            token.normalised = normalize_token(token.surface, req.language)
+
+    # 4️⃣ Emit NLP result
+    await producer.send(
+        topic="nlp.complete",
+        key=str(req.statementId),
+        message=resp.json(),
+    )
+
     await producer.stop()

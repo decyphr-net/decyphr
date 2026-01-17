@@ -1,5 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 export class InteractionMetadata {
   @IsString()
@@ -36,4 +41,7 @@ export class TranslationDto {
   interactions: InteractionMetadata;
 
   payload: { text: string };
+
+  @IsString()
+  statementId?: string;
 }

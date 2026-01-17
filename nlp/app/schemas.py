@@ -1,5 +1,5 @@
 # app/schemas.py
-from typing import Any
+from typing import Any, Literal
 from pydantic import BaseModel
 
 
@@ -56,3 +56,22 @@ class LexiconImportRequest(BaseModel):
     targetLanguage: str
     words: list[str]
     interaction: InteractionMetadata
+
+
+class StatementChanges(BaseModel):
+    text: str
+    translation: str | None = None
+    pronunciation: str | None = None
+    notes: str | None = None
+
+
+class StatementEvent(BaseModel):
+    statementId: str | None
+    requestId: str | None
+    clientId: str
+    changes: StatementChanges
+    interaction: InteractionMetadata
+    type: Literal["statement_created", "statement_updated"]
+    autoTranslate: bool = False
+    timestamp: int
+    language: str

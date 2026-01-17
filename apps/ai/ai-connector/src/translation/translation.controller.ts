@@ -1,9 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import {
-  EventPattern,
-  Payload,
-  Transport
-} from '@nestjs/microservices';
+import { EventPattern, Payload, Transport } from '@nestjs/microservices';
 import { z } from 'zod';
 import { TranslationDto } from './translation-request.dto';
 import { TranslationService } from './translation.service';
@@ -12,9 +8,7 @@ import { TranslationService } from './translation.service';
 export class TranslationController {
   private readonly logger = new Logger(TranslationController.name);
 
-  constructor(
-    private readonly translationService: TranslationService,
-  ) { }
+  constructor(private readonly translationService: TranslationService) { }
 
   /**
    * Handles translation requests received from the `ai.translation.request` Kafka topic.
@@ -24,10 +18,8 @@ export class TranslationController {
    */
   @EventPattern('ai.translation.request', Transport.KAFKA)
   async getTranslation<T extends z.ZodTypeAny>(
-    @Payload() payload: any,
+    @Payload() message: TranslationDto,
   ): Promise<void> {
-    const message = payload?.value;
-
     this.logger.log(
       `📩 Received translation request for clientId: ${message.clientId}`,
     );

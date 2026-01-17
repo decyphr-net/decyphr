@@ -15,6 +15,7 @@ export type NlpCompleteEvent = {
   interaction?: InteractionMetadata;
   sentences: Sentence[];
   meaning?: string;
+  statementId?: number;
 };
 
 export type Sentence = {

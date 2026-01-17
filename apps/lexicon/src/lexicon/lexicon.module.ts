@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { CefrAssessmentService } from 'src/cefr/cefr.service';
 import { CommonModule } from 'src/common/common.module';
@@ -31,6 +32,20 @@ import { WordScoringService } from './scoring.service';
       WordForm,
       Statement,
       StatementToken,
+    ]),
+    ClientsModule.register([
+      {
+        name: 'STATEMENT_PRODUCER',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            brokers: ['kafka:9092'],
+          },
+          consumer: {
+            groupId: 'statement-producer-group',
+          },
+        },
+      },
     ]),
   ],
   controllers: [LexiconController],
