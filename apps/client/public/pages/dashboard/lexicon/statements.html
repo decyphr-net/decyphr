@@ -442,19 +442,32 @@
           )
             return;
 
-          statement.loading = true; // start per-card loading
+          statement.loading = true;
 
           try {
-            // TODO: replace with actual backend call
-            await new Promise((res) => setTimeout(res, 800));
+            const res = await fetch(
+              `/lexicon/statements/${statement.id}/edit`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  text: statement.text,
+                  translation: null, // leave null, backend will fill via NLP
+                  autoTranslate: true, // indicates system-generated translation
+                  pronunciation: statement.pronunciation,
+                  notes: statement.notes,
+                  example: statement.example,
+                }),
+              },
+            );
 
-            statement.translation = 'I am learning Irish';
-            statement.translationLanguage = 'en';
+            if (!res.ok) throw new Error('Failed to generate translation');
+
+            // optional: optimistic UI update
+            statement.loading = true;
           } catch (err) {
             console.error(err);
             alert('Failed to generate translation');
-          } finally {
-            statement.loading = false; // stop per-card loading
           }
         },
 
