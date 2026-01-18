@@ -158,12 +158,21 @@ The JSON must have exactly these keys:
 - sourceLang
 - targetLang
 
+IMPORTANT:
+- "translated" MUST be a single string.
+- If multiple translations exist, choose the most common one.
+- Do NOT include alternatives.
+- Do NOT use symbols like ||, /, or commas to list options.
+
 Output must begin with { and end with }.
 `.trim();
 
     try {
       const result = await this.llm.invoke(prompt);
+      console.log(result)
       const raw = this.extractTextFromAIMessage(result);
+
+      console.log(raw);
 
       const parsed = this.safeJsonParse(raw);
       return SimpleTranslationSchema.parse(parsed);
