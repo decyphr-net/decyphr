@@ -80,6 +80,11 @@
       </div>
     </div>
 
+    <div class="mb-4">
+      <input type="text" x-model="searchQuery" placeholder="Search phrases..."
+        class="w-full rounded border px-3 py-2 text-sm" />
+    </div>
+
     <!-- STATEMENT CARDS -->
     <template x-for="statement in paginatedStatements" :key="statement.id">
       <!-- Card wrapper -->
@@ -341,6 +346,7 @@
         modalStatement: { id: null, text: '', translation: '' },
         deleteModalOpen: false,
         statementToDelete: null,
+        searchQuery: '',
 
         async init() {
           try {
@@ -413,13 +419,23 @@
           // -------------------------------------------------
         },
 
+        get filteredStatements() {
+          if (!this.searchQuery.trim()) return this.statements;
+          const q = this.searchQuery.toLowerCase();
+          return this.statements.filter(
+            (s) =>
+              s.text.toLowerCase().includes(q) ||
+              (s.translation && s.translation.toLowerCase().includes(q)),
+          );
+        },
+
         get totalPages() {
-          return Math.ceil(this.statements.length / this.limit);
+          return Math.ceil(this.filteredStatements.length / this.limit);
         },
 
         get paginatedStatements() {
           const start = (this.page - 1) * this.limit;
-          return this.statements.slice(start, start + this.limit);
+          return this.filteredStatements.slice(start, start + this.limit);
         },
 
         openModal(statement = null) {
