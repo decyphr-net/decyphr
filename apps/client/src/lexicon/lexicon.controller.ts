@@ -74,9 +74,10 @@ export class LexiconController implements OnModuleInit {
           const data = JSON.stringify({
             id: payload.id,
             text: payload.text,
-            translation: payload.translation,
+            meaning: payload.meaning,
             pronunciation: payload.pronunciation,
             notes: payload.notes,
+            tokens: payload.tokens,
           });
 
           // Broadcast to SSE clients

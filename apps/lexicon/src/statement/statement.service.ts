@@ -193,10 +193,13 @@ export class StatementService implements OnModuleInit {
     await this.statementRepository.delete({ id });
   }
 
-  async findById(id: number): Promise<Statement | null> {
+  findById(
+    id: number,
+    options?: { relations?: string[] },
+  ): Promise<Statement | undefined> {
     return this.statementRepository.findOne({
       where: { id },
-      relations: ['tokens'],
+      relations: options?.relations,
     });
   }
 
@@ -217,10 +220,12 @@ export class StatementService implements OnModuleInit {
     if (statementId) {
       statement = await this.statementRepository.findOne({
         where: { id: statementId },
+        relations: ['tokens'],
       });
     } else if (requestId) {
       statement = await this.statementRepository.findOne({
         where: { requestId },
+        relations: ['tokens'],
       });
     } else {
       throw new Error('No statementId or requestId provided');
@@ -230,13 +235,30 @@ export class StatementService implements OnModuleInit {
       this.logger.warn(
         `Translation received but statement not found (statementId=${statementId}, requestId=${requestId})`,
       );
-      return; // swallow event
+      return;
     }
     statement.meaning = translated;
     await this.statementRepository.save(statement);
 
+    this.logger.debug(
+      'TOKENS BEFORE EMIT',
+      JSON.stringify(statement.tokens, null, 2),
+    );
+
     await this.kafkaProducer.emit('statement.updated', {
-      value: JSON.stringify(statement),
+      value: JSON.stringify({
+        id: statement.id,
+        requestId: statement.requestId,
+        text: statement.text,
+        meaning: statement.meaning,
+        tokens: statement.tokens.map((token) => ({
+          id: token.id,
+          position: token.position,
+          surface: token.surface,
+          lemma: token.lemma,
+          pos: token.pos,
+        })),
+      }),
     });
   }
 }

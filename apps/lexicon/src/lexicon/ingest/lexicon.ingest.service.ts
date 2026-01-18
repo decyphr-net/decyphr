@@ -18,6 +18,28 @@ import {
   PreparedToken,
 } from './lexicon.ingest.types';
 
+function serializeStatement(statement: Statement) {
+  return {
+    id: statement.id,
+    requestId: statement.requestId,
+    text: statement.text,
+    meaning: statement.meaning,
+    translation: statement.translation,
+    pronunciation: statement.pronunciation,
+    example: statement.example,
+    notes: statement.notes,
+    tokens:
+      statement.tokens?.map((t) => ({
+        position: t.position,
+        surface: t.surface,
+        lemma: t.lemma,
+        pos: t.pos,
+      })) ?? [],
+    language: statement.language,
+    clientId: statement.clientId,
+  };
+}
+
 /**
  * Service responsible for ingesting NLP-completed text into the lexicon.
  *
@@ -137,22 +159,42 @@ export class LexiconIngestService implements OnModuleInit {
 
       if (textChanged) {
         await this.statementService.clearTokens(statement.id);
+
+        await this.statementService.createTokens(
+          statement,
+          sentence.tokens,
+          words,
+        );
+
+        const statementWithTokens = await this.statementService.findById(
+          statement.id,
+          {
+            relations: ['tokens'],
+          },
+        );
+
         await this.kafkaProducer.emit(
           'statement.updated',
-          JSON.stringify(statement),
+          serializeStatement(statementWithTokens),
         );
       }
 
-      await this.statementService.createTokens(
-        statement,
-        sentence.tokens,
-        words,
-      );
-
       if (event.interaction.type === 'statement_created') {
+        await this.statementService.createTokens(
+          statement,
+          sentence.tokens,
+          words,
+        );
+
+        const statementWithTokens = await this.statementService.findById(
+          statement.id,
+          {
+            relations: ['tokens'],
+          },
+        );
         await this.kafkaProducer.emit(
           'statement.created',
-          JSON.stringify(statement),
+          serializeStatement(statementWithTokens),
         );
       }
     }
