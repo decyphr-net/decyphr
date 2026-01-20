@@ -295,5 +295,73 @@
       "short": "An estimate based on your vocabulary exposure.",
       "long": "Your CEFR level is estimated from the difficulty of the words in your lexicon and your confidence with them. It is not an exam result and does not measure grammar, speaking, or writing ability. Use it as a progress indicator."
     }
+  },
+  "phrasebook": {
+    "title": "Your Phrases",
+    "subtitle": "Track, translate, and practice the sentences and expressions you care about.",
+    "stats": {
+      "total": "Total phrases",
+      "translated": "Translated",
+      "pending": "Pending translation"
+    },
+    "searchPlaceholder": "Search phrases…",
+    "actions": {
+      "add": "Add a phrase",
+      "edit": "Edit",
+      "delete": "Delete",
+      "generateTranslation": "Generate translation",
+      "createFlashcard": "Create flashcard"
+    },
+    "table": {
+      "position": "Position",
+      "word": "Word",
+      "lemma": "Comes from",
+      "pos": "Word type"
+    },
+    "modals": {
+      "addEditTitle": {
+        "add": "Add Statement",
+        "edit": "Edit Statement"
+      },
+      "learningDetails": "Learning details (optional)",
+      "pronunciation": "Pronunciation",
+      "example": "Example usage",
+      "notes": "Personal notes",
+      "translation": {
+        "label": "Translation (optional)",
+        "autoTranslate": "Let the system generate a translation",
+        "autoTranslateHint": "Translation will be generated automatically."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "delete": "Delete",
+        "confirmDelete": "Confirm deletion"
+      },
+      "deleteConfirmation": {
+        "title": "Delete Phrase",
+        "body": "Are you sure you want to delete this phrase? This action cannot be undone."
+      }
+    },
+    "emptyState": {
+      "title": "No phrases yet",
+      "description": "This is where you’ll see the sentences and expressions you’re practicing. Add one manually or let the system generate translations and linguistic analysis. Each phrase you add helps you track your understanding and progress.",
+      "cta": "Add your first phrase"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageText": "Page"
+    },
+    "analysisToggle": {
+      "show": "Show linguistic analysis",
+      "hide": "Hide analysis"
+    },
+    "placeholders": {
+      "statementText": "Statement text",
+      "pronunciation": "e.g. /ˈmʲan̪ˠə/",
+      "example": "Short example sentence",
+      "notes": "Why this phrase matters, common mistakes, reminders…"
+    }
   }
 }

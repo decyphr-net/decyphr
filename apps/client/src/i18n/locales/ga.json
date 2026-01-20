@@ -289,5 +289,73 @@
     "title": "Leibhéal CEFR",
     "short": "Meastachán bunaithe ar do nochtadh foclóra.",
     "long": "Déantar do leibhéal CEFR a mheas bunaithe ar dheacracht na bhfocal i do lexicon agus ar do mhuintearas leo. Ní toradh scrúdaithe é agus ní thomhaiseann sé gramadach, labhairt ná scríobh. Bain úsáid as mar tháscaire dul chun cinn."
+  },
+  "phrasebook": {
+    "title": "Do Fhrásaí",
+    "subtitle": "Rianaigh, aistrigh agus cleachtaigh na ráitis agus na nathanna is tábhachtaí duit.",
+    "stats": {
+      "total": "Líon iomlán frásaí",
+      "translated": "Aistrithe",
+      "pending": "Aistriú ar feitheamh"
+    },
+    "searchPlaceholder": "Cuardaigh frásaí…",
+    "actions": {
+      "add": "Cuir frása leis",
+      "edit": "Cuir in eagar",
+      "delete": "Scrios",
+      "generateTranslation": "Gin aistriúchán",
+      "createFlashcard": "Cruthaigh splancchárta"
+    },
+    "table": {
+      "position": "Suíomh",
+      "word": "Focal",
+      "lemma": "Tagann ó",
+      "pos": "Cineál focail"
+    },
+    "modals": {
+      "addEditTitle": {
+        "add": "Cuir ráiteas leis",
+        "edit": "Cuir ráiteas in eagar"
+      },
+      "learningDetails": "Sonraí foghlama (roghnach)",
+      "pronunciation": "Fuaimniú",
+      "example": "Úsáid shamplach",
+      "notes": "Nótaí pearsanta",
+      "translation": {
+        "label": "Aistriúchán (roghnach)",
+        "autoTranslate": "Lig don chóras aistriúchán a ghiniúint",
+        "autoTranslateHint": "Ginfear an t-aistriúchán go huathoibríoch."
+      },
+      "buttons": {
+        "cancel": "Cealaigh",
+        "save": "Sábháil",
+        "delete": "Scrios",
+        "confirmDelete": "Deimhnigh scriosadh"
+      },
+      "deleteConfirmation": {
+        "title": "Scrios frása",
+        "body": "An bhfuil tú cinnte gur mhaith leat an frása seo a scriosadh? Ní féidir an gníomh seo a chur ar ceal."
+      }
+    },
+    "emptyState": {
+      "title": "Níl aon fhrásaí ann fós",
+      "description": "Seo an áit a bhfeicfidh tú na ráitis agus na nathanna atá tú ag cleachtadh. Is féidir leat ceann a chur leis de láimh nó ligean don chóras aistriúcháin agus anailís teangeolaíoch a ghiniúint. Cabhraíonn gach frása a chuireann tú leis le do thuiscint agus do dhul chun cinn a rianú.",
+      "cta": "Cuir do chéad fhrása leis"
+    },
+    "pagination": {
+      "prev": "Roimhe seo",
+      "next": "Ar aghaidh",
+      "pageText": "Leathanach"
+    },
+    "analysisToggle": {
+      "show": "Taispeáin anailís teangeolaíoch",
+      "hide": "Folaigh anailís"
+    },
+    "placeholders": {
+      "statementText": "Téacs an ráitis",
+      "pronunciation": "m.sh. /ˈmʲan̪ˠə/",
+      "example": "Abairt shamplach ghearr",
+      "notes": "Cén fáth a bhfuil an frása seo tábhachtach, botúin choitianta, meabhrúcháin…"
+    }
   }
 }

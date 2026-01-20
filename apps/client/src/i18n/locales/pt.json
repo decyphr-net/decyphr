@@ -278,5 +278,73 @@
     "title": "Nível CEFR",
     "short": "Uma estimativa baseada na sua exposição ao vocabulário.",
     "long": "O seu nível CEFR é estimado a partir da dificuldade das palavras no seu léxico e da sua confiança nelas. Não é um resultado de exame e não mede gramática, fala ou escrita. Use-o como um indicador de progresso."
+  },
+  "phrasebook": {
+    "title": "As Tuas Frases",
+    "subtitle": "Acompanha, traduz e pratica as frases e expressões que são importantes para ti.",
+    "stats": {
+      "total": "Total de frases",
+      "translated": "Traduzidas",
+      "pending": "Tradução pendente"
+    },
+    "searchPlaceholder": "Pesquisar frases…",
+    "actions": {
+      "add": "Adicionar frase",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "generateTranslation": "Gerar tradução",
+      "createFlashcard": "Criar flashcard"
+    },
+    "table": {
+      "position": "Posição",
+      "word": "Palavra",
+      "lemma": "Deriva de",
+      "pos": "Classe gramatical"
+    },
+    "modals": {
+      "addEditTitle": {
+        "add": "Adicionar frase",
+        "edit": "Editar frase"
+      },
+      "learningDetails": "Detalhes de aprendizagem (opcional)",
+      "pronunciation": "Pronúncia",
+      "example": "Exemplo de uso",
+      "notes": "Notas pessoais",
+      "translation": {
+        "label": "Tradução (opcional)",
+        "autoTranslate": "Permitir que o sistema gere a tradução",
+        "autoTranslateHint": "A tradução será gerada automaticamente."
+      },
+      "buttons": {
+        "cancel": "Cancelar",
+        "save": "Guardar",
+        "delete": "Eliminar",
+        "confirmDelete": "Confirmar eliminação"
+      },
+      "deleteConfirmation": {
+        "title": "Eliminar frase",
+        "body": "Tens a certeza de que queres eliminar esta frase? Esta ação não pode ser anulada."
+      }
+    },
+    "emptyState": {
+      "title": "Ainda não há frases",
+      "description": "Aqui verás as frases e expressões que estás a praticar. Podes adicionar uma manualmente ou deixar o sistema gerar traduções e análise linguística. Cada frase adicionada ajuda a acompanhar a tua compreensão e progresso.",
+      "cta": "Adicionar a tua primeira frase"
+    },
+    "pagination": {
+      "prev": "Anterior",
+      "next": "Seguinte",
+      "pageText": "Página"
+    },
+    "analysisToggle": {
+      "show": "Mostrar análise linguística",
+      "hide": "Ocultar análise"
+    },
+    "placeholders": {
+      "statementText": "Texto da frase",
+      "pronunciation": "ex.: /ˈmʲan̪ˠə/",
+      "example": "Frase de exemplo curta",
+      "notes": "Porque esta frase é importante, erros comuns, lembretes…"
+    }
   }
 }
