@@ -11,7 +11,7 @@ import { RedisProfileService } from '../profile.service';
 import {
   INTERACTION_WEIGHTS,
   POS_MULTIPLIERS,
-} from './lexicon.ingest.contants';
+} from './lexicon.ingest.constants';
 import {
   InteractionMetadata,
   NlpCompleteEvent,

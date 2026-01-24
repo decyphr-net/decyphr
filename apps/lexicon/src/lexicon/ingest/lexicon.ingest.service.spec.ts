@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, DataSource, Repository } from 'typeorm';
 
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
@@ -8,91 +8,128 @@ import { StatementService } from 'src/statement/statement.service';
 import { RedisProfileService } from '../profile.service';
 import { LexiconIngestService } from './lexicon.ingest.service';
 import { NlpCompleteEvent } from './lexicon.ingest.types';
+import { WordScoringService } from '../scoring.service';
+import { Logger } from '@nestjs/common';
+
+type StatementProducer = any;
+
+// ------------------------------------------------------------------
+// Helper to create a simple jest‑mocked repository
+function createMockRepo<T>() {
+  return {
+    findOne: jest.fn(),
+    find: jest.fn(),
+    save: jest.fn(),
+    create: jest.fn(),
+  } as unknown as jest.Mocked<Repository<T>>;
+}
 
 describe('LexiconIngestService', () => {
   let service: LexiconIngestService;
 
+  // ----- repository mocks -----
   let userRepo: jest.Mocked<Repository<User>>;
   let wordRepo: jest.Mocked<Repository<Word>>;
   let wordFormRepo: jest.Mocked<Repository<WordForm>>;
 
-  let profile: jest.Mocked<RedisProfileService>;
+  // ----- other service mocks -----
+  let profileService: jest.Mocked<RedisProfileService>;
   let interactionService: jest.Mocked<InteractionService>;
+  let statementService: jest.Mocked<StatementService>;
+  let wordScoringService: jest.Mocked<WordScoringService>;
+
+  // ----- DataSource mock -----
+  let dataSource: Partial<DataSource>;
+
+  // ----- STATEMENT_PRODUCER mock -----
+  let statementProducer: StatementProducer;
 
   beforeEach(async () => {
+    // ---- create the mocks ----
+    userRepo = createMockRepo<User>();
+    wordRepo = createMockRepo<Word>();
+    wordFormRepo = createMockRepo<WordForm>();
+
+    wordFormRepo.createQueryBuilder = jest
+      .fn()
+      .mockReturnValue({
+        insert: jest.fn().mockReturnThis(),
+        into: jest.fn().mockReturnThis(),
+        values: jest.fn().mockReturnThis(),
+        orIgnore: jest.fn().mockReturnThis(),
+        execute: jest.fn().mockResolvedValue(undefined),
+      });
+
+    profileService = {
+      setWord: jest.fn(),
+      addOrUpdateUserWordScore: jest.fn(),
+      markWordSeen: jest.fn(),
+    } as unknown as jest.Mocked<RedisProfileService>;
+
+    interactionService = {
+      createInteraction: jest.fn(),
+    } as unknown as jest.Mocked<InteractionService>;
+
+    statementService = {
+      getOrCreate: jest.fn().mockImplementation(async (input) => ({
+        id: 1,
+        ...input,
+      })),
+      persistFromEvent: jest.fn(),
+      createTokens: jest.fn().mockResolvedValue(undefined),
+      clearTokens: jest.fn().mockResolvedValue(undefined),
+      findById: jest.fn().mockImplementation(async (id: number, opts?: any) => ({
+        id,
+        tokens: [],
+      })),
+    } as unknown as jest.Mocked<StatementService>;
+
+    wordScoringService = {
+      scoreWord: jest.fn(),
+    } as unknown as jest.Mocked<WordScoringService>;
+
+    dataSource = {
+      createQueryRunner: jest.fn().mockReturnValue({
+        connect: jest.fn(),
+        startTransaction: jest.fn(),
+        commitTransaction: jest.fn(),
+        rollbackTransaction: jest.fn(),
+        release: jest.fn(),
+      }),
+    };
+
+    statementProducer = {
+      send: jest.fn(),
+      emit: jest.fn().mockResolvedValue(undefined),
+    } as unknown as StatementProducer;
+
+    // ---- build the testing module ----
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LexiconIngestService,
-        {
-          provide: StatementService,
-          useValue: {
-            getOrCreate: jest.fn().mockImplementation(async (input) => {
-              // Return a fake statement object
-              return { id: 1, ...input };
-            }),
-            persistFromEvent: jest.fn(),
-            createTokens: jest.fn().mockResolvedValue(undefined),
-          },
-        },
-        {
-          provide: getConnectionToken(),
-          useValue: {
-            createQueryBuilder: jest.fn().mockReturnValue({
-              insert: jest.fn().mockReturnThis(),
-              into: jest.fn().mockReturnThis(),
-              values: jest.fn().mockReturnThis(),
-              orIgnore: jest.fn().mockReturnThis(),
-              execute: jest.fn(),
-            }),
-          },
-        },
-        {
-          provide: getRepositoryToken(User),
-          useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(Word),
-          useValue: {
-            find: jest.fn(),
-          },
-        },
-        {
-          provide: getRepositoryToken(WordForm),
-          useValue: {
-            find: jest.fn(),
-          },
-        },
-        {
-          provide: RedisProfileService,
-          useValue: {
-            setWord: jest.fn(),
-            addOrUpdateUserWordScore: jest.fn(),
-            markWordSeen: jest.fn(),
-          },
-        },
-        {
-          provide: InteractionService,
-          useValue: {
-            createInteraction: jest.fn(),
-          },
-        },
+        Logger,
+
+        // ----- repository providers -----
+        { provide: getRepositoryToken(User), useValue: userRepo },
+        { provide: getRepositoryToken(Word), useValue: wordRepo },
+        { provide: getRepositoryToken(WordForm), useValue: wordFormRepo },
+
+        // ----- other service providers -----
+        { provide: RedisProfileService, useValue: profileService },
+        { provide: InteractionService, useValue: interactionService },
+        { provide: StatementService, useValue: statementService },
+        { provide: WordScoringService, useValue: wordScoringService },
+
+        // ----- DataSource -----
+        { provide: DataSource, useValue: dataSource },
+
+        // ----- STATEMENT_PRODUCER token -----
+        { provide: 'STATEMENT_PRODUCER', useValue: statementProducer },
       ],
     }).compile();
 
+    // Grab the service under test
     service = module.get(LexiconIngestService);
-
-    userRepo = module.get(getRepositoryToken(User));
-    wordRepo = module.get(getRepositoryToken(Word));
-    wordFormRepo = module.get(getRepositoryToken(WordForm));
-    connection = module.get(getConnectionToken());
-
-    profile = module.get(RedisProfileService);
-    interactionService = module.get(InteractionService);
-    statementService = module.get<StatementService>(StatementService);
   });
 
   describe('ingestFromEvent', () => {
@@ -136,9 +173,9 @@ describe('LexiconIngestService', () => {
 
       await service.ingestFromEvent(event);
 
-      expect(profile.setWord).toHaveBeenCalledWith(word.id, word.lemma);
-      expect(profile.addOrUpdateUserWordScore).toHaveBeenCalled();
-      expect(profile.markWordSeen).toHaveBeenCalledWith(
+      expect(profileService.setWord).toHaveBeenCalledWith(word.id, word.lemma);
+      expect(profileService.addOrUpdateUserWordScore).toHaveBeenCalled();
+      expect(profileService.markWordSeen).toHaveBeenCalledWith(
         'client-1',
         'en',
         word.id,
@@ -146,7 +183,7 @@ describe('LexiconIngestService', () => {
 
       expect(interactionService.createInteraction).toHaveBeenCalledWith(
         'client-1',
-        word.id,
+        wordForm.id,
         'lexicon_import',
       );
     });

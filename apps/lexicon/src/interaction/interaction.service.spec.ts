@@ -15,6 +15,7 @@ import { User, WordForm } from 'src/bank/bank.entity';
 import { Interaction, UserWordStatistics } from './interaction.entity';
 import { InteractionService } from './interaction.service';
 import * as masteryUtil from './mastery.util'; // <-- import the util module
+import { WordScoringService } from 'src/lexicon/scoring.service';
 
 /* ------------------------------------------------------------------
    Helper factories – lightweight objects for the mocks
@@ -81,6 +82,7 @@ describe('InteractionService', () => {
   let userRepo: MockRepo<User>;
   let wordFormRepo: MockRepo<WordForm>;
   let statsRepo: MockRepo<UserWordStatistics>;
+  let scoringService: jest.Mocked<WordScoringService>;
 
   /* --------------------------------------------------------------
      Module setup – inject mocked repositories
@@ -90,6 +92,11 @@ describe('InteractionService', () => {
     userRepo = createMockRepo<User>();
     wordFormRepo = createMockRepo<WordForm>();
     statsRepo = createMockRepo<UserWordStatistics>();
+
+    scoringService = {
+      scoreWord: jest.fn(),
+      decayScore: jest.fn().mockImplementation((s) => s),
+    } as unknown as jest.Mocked<WordScoringService>;
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -110,6 +117,10 @@ describe('InteractionService', () => {
         {
           provide: getRepositoryToken(UserWordStatistics),
           useValue: statsRepo,
+        },
+        {
+          provide: WordScoringService,
+          useValue: scoringService,
         },
       ],
     }).compile();
@@ -262,6 +273,11 @@ describe('InteractionService', () => {
       }));
       statsRepo.save!.mockResolvedValue(undefined);
 
+      scoringService.scoreWord.mockReturnValue({
+        score: 0.73,
+        weighted30Days: 0.73,
+      });
+
       // Force a deterministic mastery calculation
       jest.spyOn(masteryUtil, 'computeMastery').mockReturnValue(0.73);
 
@@ -295,6 +311,11 @@ describe('InteractionService', () => {
       const existing = mockStats({ id: 222 });
       statsRepo.findOne!.mockResolvedValue(existing);
       statsRepo.save!.mockResolvedValue(undefined);
+
+      scoringService.scoreWord.mockReturnValue({
+      score: 0.42,
+      weighted30Days: 0.42,
+    });
 
       jest.spyOn(masteryUtil, 'computeMastery').mockReturnValue(0.42);
 
