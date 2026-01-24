@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: 20
+
+jobs:
+  # -------------------------------------------------
+  # 1. Detect changes
+  # -------------------------------------------------
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      bots: ${{ steps.filter.outputs.bots }}
+      chat: ${{ steps.filter.outputs.chat }}
+      lexicon: ${{ steps.filter.outputs.lexicon }}
+      ai: ${{ steps.filter.outputs.ai }}
+      translation: ${{ steps.filter.outputs.translation }}
+      nlp: ${{ steps.filter.outputs.nlp }}
+      client: ${{ steps.filter.outputs.client }}
+      global: ${{ steps.filter.outputs.global }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            global:
+              - 'docker-compose.yml'
+              - 'package.json'
+              - 'package-lock.json'
+
+            bots:
+              - 'apps/chat/bots/**'
+
+            chat:
+              - 'apps/chat/chat/**'
+
+            lexicon:
+              - 'apps/lexicon/**'
+
+            ai:
+              - 'apps/ai/ai-connector/**'
+
+            translation:
+              - 'apps/translation/translation-connector/**'
+
+            nlp:
+              - 'nlp/**'
+
+            client:
+              - 'apps/client/**'
+
+  # -------------------------------------------------
+  # 2. Lexicon tests
+  # -------------------------------------------------
+  lexicon-tests:
+    needs: changes
+    if: needs.changes.outputs.lexicon == 'true' || needs.changes.outputs.global == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - working-directory: apps/lexicon
+        run: |
+          npm ci
+          npm test
+
+  # -------------------------------------------------
+  # 3. Docker build (main only)
+  # -------------------------------------------------
+  docker-build:
+    needs:
+      - changes
+      - lexicon-tests
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push changed images
+        run: |
+            set -e
+
+            build_and_push () {
+            NAME=$1
+            CONTEXT=$2
+
+            if git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep -q "^${CONTEXT#./}/"; then
+                echo "🔨 Building $NAME"
+
+                docker build \
+                -t ghcr.io/${{ github.repository }}/${NAME}:${{ github.sha }} \
+                $CONTEXT
+
+                docker push ghcr.io/${{ github.repository }}/${NAME}:${{ github.sha }}
+            else
+                echo "⏭️  Skipping $NAME (no changes)"
+            fi
+            }
+
+            build_and_push translator ./apps/translation/translation-connector
+            build_and_push ai-connector ./apps/ai/ai-connector
+            build_and_push bots ./apps/chat/bots
+            build_and_push chat ./apps/chat/chat
+            build_and_push nlp ./nlp
+            build_and_push lexicon ./apps/lexicon
+            build_and_push client ./apps/client
