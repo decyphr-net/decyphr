@@ -110,27 +110,32 @@ export class LexiconIngestService implements OnModuleInit {
     const statementMap = new Map<string, Statement>();
     for (const sentence of event.sentences) {
       let statement: Statement;
+      const id = event.requestId ?? event.statementId;
 
-      if (event.statementId) {
+      if (id) {
         // Existing statement edit
-        statement = await this.statementService.findById(event.statementId);
+        statement = await this.statementService.findById(+id);
         if (!statement) {
-          this.logger.warn(
-            `Statement id=${event.statementId} not found, creating new`,
-          );
+          this.logger.warn(`Statement id=${id} not found, creating new`);
           statement = await this.statementService.getOrCreate({
             text: sentence.text,
             language: event.language,
             clientId: event.clientId,
             source: event.interaction?.type ?? 'nlp',
             meaning: event.meaning ?? null,
+            pronunciation: event.changes?.pronunciation ?? null,
+            notes: event.changes?.notes ?? null,
             timestamp: new Date(),
             requestId: event.requestId,
           });
         } else {
           // update fields like translation, pronunciation, notes
           statement.text = sentence.text;
-          statement.meaning = event.meaning ?? statement.meaning;
+          statement.meaning = event.changes.translation ?? statement.meaning;
+          statement.pronunciation =
+            event.changes?.pronunciation ?? statement.pronunciation;
+          statement.notes = event.changes?.notes ?? statement.notes;
+
           await this.statementService.save(statement);
         }
       } else {

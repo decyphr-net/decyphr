@@ -6,4 +6,6 @@ export interface CreateStatementInput {
   meaning?: string | null;
   timestamp?: Date;
   requestId?: string;
+  pronunciation?: string;
+  notes?: string;
 }

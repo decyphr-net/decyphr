@@ -42,14 +42,6 @@ class ChatDeltaPayload(BaseModel):
     interaction: InteractionMetadata
 
 
-class ProcessResponse(BaseModel):
-    requestId: str | None
-    language: str
-    sentences: list[SentenceTokens] | None = None
-    clientId: str | None
-    interaction: InteractionMetadata | None = None
-
-
 class LexiconImportRequest(BaseModel):
     requestId: str
     clientId: str
@@ -75,3 +67,12 @@ class StatementEvent(BaseModel):
     autoTranslate: bool = False
     timestamp: int
     language: str
+
+
+class ProcessResponse(BaseModel):
+    requestId: str | None
+    language: str
+    sentences: list[SentenceTokens] | None = None
+    clientId: str | None
+    interaction: InteractionMetadata | None = None
+    changes: StatementChanges | None = None

@@ -3,6 +3,13 @@ export type InteractionMetadata = {
   timestamp?: string;
 };
 
+export type StatementChanges = {
+  meaning?: string;
+  pronunciation?: string;
+  notes?: string;
+  translation?: string;
+};
+
 /**
  * Raw NLP event after DTO validation
  * This is a WRITE-SIDE contract
@@ -15,7 +22,11 @@ export type NlpCompleteEvent = {
   interaction?: InteractionMetadata;
   sentences: Sentence[];
   meaning?: string;
+  translation?: string;
+  pronuciation?: string;
+  notes?: string;
   statementId?: number;
+  changes?: StatementChanges;
 };
 
 export type Sentence = {

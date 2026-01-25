@@ -1,7 +1,7 @@
 import logging
 
 from app.utils.kafka.dispatcher import consumes
-from app.schemas import LexiconImportRequest, StatementEvent
+from app.schemas import LexiconImportRequest, StatementChanges, StatementEvent
 from app.nlp import process_text
 from app.utils.kafka.producer import KafkaProducerWrapper
 from app.utils.normalisers.normaliser import normalize_token
@@ -54,6 +54,14 @@ async def handle_statement_event(req: StatementEvent):
         resp.requestId = req.statementId
     resp.clientId = req.clientId
     resp.interaction = req.interaction
+    if resp.changes is None:
+        resp.changes = StatementChanges(text=req.changes.text if req.changes else "")
+
+    # Then safely set optional fields
+    if req.changes:
+        resp.changes.translation = req.changes.translation
+        resp.changes.pronunciation = req.changes.pronunciation
+        resp.changes.notes = req.changes.notes
 
     # 3️⃣ Normalize tokens
     for sentence in resp.sentences or []:
