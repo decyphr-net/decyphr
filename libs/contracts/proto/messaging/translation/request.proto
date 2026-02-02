@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package messaging.translation;
+
+import "messaging/common/interaction.proto";
+import "messaging/common/entity.proto";
+
+message TranslationRequest {
+  string request_id = 1;
+  string source_language = 2;
+  string target_language = 3;
+  string text = 4;
+  string client_id = 5;
+
+  messaging.common.InteractionMetadata interaction = 6;
+  messaging.common.EntityReference entity = 7;
+}

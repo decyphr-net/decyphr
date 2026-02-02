@@ -1,0 +1,4 @@
+version: v1
+name: decyphr.messaging.translation
+deps:
+  - decyphr.messaging.common
