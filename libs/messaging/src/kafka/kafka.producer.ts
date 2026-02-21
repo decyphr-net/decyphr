@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { v4 as uuidv4 } from 'uuid';
+import { lastValueFrom } from 'rxjs';
 
 import { KafkaTopics } from './topics';
 import { plainToInstance } from 'class-transformer';
@@ -62,7 +63,7 @@ export class KafkaProducer {
     };
 
     await this.withRetry(async () => {
-      await this.client.emit(topic, { value: payload, headers });
+      await lastValueFrom(this.client.emit(topic, { value: payload, headers }));
       this.logger.debug(
         `Message emitted to "${topic}" (correlation-id: ${correlationId})`,
       );

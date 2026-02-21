@@ -119,9 +119,6 @@ export class LexiconService {
 
     await this.kafka.emit('statement.events', event);
 
-    console.log(input);
-    console.log(input.statementId);
-
     // Optionally trigger translation if requested
     if (input.autoTranslate) {
       await this.translationsService.emitTranslationRequest({

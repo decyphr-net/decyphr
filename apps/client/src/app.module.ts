@@ -19,6 +19,8 @@ import { SettingsModule } from './settings/settings.module';
 import { TranslationsModule } from './translations/translations.module';
 import { UtilsModule } from './utils/utils.module';
 import { VaultModule } from './vault/vault.module';
+import { FlashcardsModule } from './flashcards/flashcards.module';
+import { PhrasebookModule } from './phrasebook/phrasebook.module';
 
 @Module({
   imports: [
@@ -49,6 +51,8 @@ import { VaultModule } from './vault/vault.module';
     LexiconModule,
     VaultModule,
     PomodoroModule,
+    FlashcardsModule,
+    PhrasebookModule,
   ],
   controllers: [AppController, I18nController],
 })

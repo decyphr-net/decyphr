@@ -3,8 +3,8 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class InteractionMetadata {
   @IsString()
   @IsNotEmpty()
-  type: string;
+  type!: string;
 
   @IsNumber()
-  timestamp: number;
+  timestamp!: number;
 }

@@ -2,11 +2,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { create } from '@bufbuild/protobuf';
-
-import { TranslationRequestSchema, TranslationRequest } from '../generated/messaging/translation/request_pb';
-import { InteractionMetadataSchema } from '../generated/messaging/common/interaction_pb';
-import { EntityReferenceSchema } from '../generated/messaging/common/entity_pb';
 
 import { KafkaProducer, KafkaRequestOptions } from './kafka.producer';
 import { KafkaTopics } from './topics';
@@ -30,28 +25,7 @@ export class TranslationProducer {
     const dto = plainToInstance(TranslationDto, payloadDto);
     await validateOrReject(dto);
 
-    // 2️⃣ Convert to protobuf
-    const proto: TranslationRequest = create(TranslationRequestSchema, {
-      requestId: dto.requestId,
-      clientId: dto.clientId,
-      text: dto.text,
-      sourceLanguage: dto.sourceLanguage,
-      targetLanguage: dto.targetLanguage,
-
-      interaction: create(InteractionMetadataSchema, {
-        type: dto.interaction.type,
-        timestamp: BigInt(dto.interaction.timestamp),
-      }),
-
-      entity: dto.statementId
-        ? create(EntityReferenceSchema, {
-            entityType: 'statement',
-            id: BigInt(dto.statementId),
-          })
-        : undefined,
-    });
-
-    // 3️⃣ Prepare Kafka request options
+    // 2️⃣ Prepare Kafka request options
     const requestOptions: KafkaRequestOptions = {
       correlationId: options?.correlationId,
       sourceEvent: 'translating_statement',
@@ -59,9 +33,34 @@ export class TranslationProducer {
       extraHeaders: options?.extraHeaders,
     };
 
+    // 3️⃣ Emit using the legacy translation contract expected by translator/ai-connector.
+    // This preserves compatibility with existing downstream consumers.
+    const event = {
+      requestId: dto.requestId,
+      clientId: dto.clientId,
+      sourceLanguage: dto.sourceLanguage,
+      targetLanguage: dto.targetLanguage,
+      statementId:
+        typeof dto.statementId === 'number' ? String(dto.statementId) : undefined,
+      interactions: [
+        {
+          type: dto.interaction.type,
+          timestamp: dto.interaction.timestamp,
+        },
+      ],
+      payload: {
+        text: dto.text,
+      },
+    };
+
     // 4️⃣ Emit
     try {
-      await this.producer.request(KafkaTopics.TRANSLATION_TRANSLATE, proto, undefined, requestOptions);
+      await this.producer.request(
+        KafkaTopics.TRANSLATION_TRANSLATE,
+        event,
+        undefined,
+        requestOptions,
+      );
 
       this.logger.debug(
         `Translation request emitted for clientId=${dto.clientId} (correlation-id=${requestOptions.correlationId ?? 'generated'})`

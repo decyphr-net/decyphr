@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createHash } from 'crypto';
+import { lastValueFrom } from 'rxjs';
 import { Repository } from 'typeorm';
 
 import { Word } from 'src/bank/bank.entity';
@@ -245,20 +246,22 @@ export class StatementService implements OnModuleInit {
       JSON.stringify(statement.tokens, null, 2),
     );
 
-    await this.kafkaProducer.emit('statement.updated', {
-      value: JSON.stringify({
-        id: statement.id,
-        requestId: statement.requestId,
-        text: statement.text,
-        meaning: statement.meaning,
-        tokens: statement.tokens.map((token) => ({
-          id: token.id,
-          position: token.position,
-          surface: token.surface,
-          lemma: token.lemma,
-          pos: token.pos,
-        })),
+    await lastValueFrom(
+      this.kafkaProducer.emit('statement.updated', {
+        value: JSON.stringify({
+          id: statement.id,
+          requestId: statement.requestId,
+          text: statement.text,
+          meaning: statement.meaning,
+          tokens: statement.tokens.map((token) => ({
+            id: token.id,
+            position: token.position,
+            surface: token.surface,
+            lemma: token.lemma,
+            pos: token.pos,
+          })),
+        }),
       }),
-    });
+    );
   }
 }

@@ -1,7 +1,11 @@
 import logging
 
 from app.utils.kafka.dispatcher import consumes
-from app.schemas import LexiconImportRequest, StatementChanges, StatementEvent
+from app.schemas import (
+    LexiconImportRequest,
+    StatementChanges,
+    StatementEvent,
+)
 from app.nlp import process_text
 from app.utils.kafka.producer import KafkaProducerWrapper
 from app.utils.normalisers.normaliser import normalize_token
@@ -48,10 +52,8 @@ async def handle_statement_event(req: StatementEvent):
     )
 
     # 2️⃣ Propagate identity + metadata
-    if req.type == "statement_created":
-        resp.requestId = req.requestId or req.timestamp
-    elif req.type == "statement_updated":
-        resp.requestId = req.statementId
+    resp.requestId = req.requestId
+    resp.statementId = int(req.statementId) if req.statementId else None
     resp.clientId = req.clientId
     resp.interaction = req.interaction
     if resp.changes is None:
@@ -68,10 +70,10 @@ async def handle_statement_event(req: StatementEvent):
         for token in sentence.tokens:
             token.normalised = normalize_token(token.surface, req.language)
 
-    # 4️⃣ Emit NLP result
+    # 4️⃣ Emit NLP result for downstream lexicon ingestion
     await producer.send(
         topic="nlp.complete",
-        key=str(req.statementId),
+        key=str(req.statementId or req.requestId or ""),
         message=resp.json(),
     )
 

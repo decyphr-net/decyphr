@@ -3,6 +3,7 @@ import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
 
 import { ClientKafka } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { User, Word, WordForm } from 'src/bank/bank.entity';
 import { InteractionService } from 'src/interaction/interaction.service';
 import { Statement } from 'src/statement/statement.entity';
@@ -37,6 +38,25 @@ function serializeStatement(statement: Statement) {
       })) ?? [],
     language: statement.language,
     clientId: statement.clientId,
+  };
+}
+
+function serializePhrasebookTokens(
+  statement: Statement,
+  event: NlpCompleteEvent,
+) {
+  return {
+    requestId: event.requestId ?? statement.requestId,
+    statementId: event.statementId ?? null,
+    clientId: event.clientId,
+    language: event.language,
+    tokens:
+      statement.tokens?.map((token) => ({
+        position: token.position,
+        surface: token.surface,
+        lemma: token.lemma,
+        pos: token.pos,
+      })) ?? [],
   };
 }
 
@@ -110,13 +130,19 @@ export class LexiconIngestService implements OnModuleInit {
     const statementMap = new Map<string, Statement>();
     for (const sentence of event.sentences) {
       let statement: Statement;
-      const id = event.requestId ?? event.statementId;
+      const statementId =
+        typeof event.statementId === 'number' &&
+        Number.isFinite(event.statementId)
+          ? event.statementId
+          : undefined;
 
-      if (id) {
+      if (statementId != null) {
         // Existing statement edit
-        statement = await this.statementService.findById(+id);
+        statement = await this.statementService.findById(statementId);
         if (!statement) {
-          this.logger.warn(`Statement id=${id} not found, creating new`);
+          this.logger.warn(
+            `Statement id=${statementId} not found, creating new`,
+          );
           statement = await this.statementService.getOrCreate({
             text: sentence.text,
             language: event.language,
@@ -131,7 +157,7 @@ export class LexiconIngestService implements OnModuleInit {
         } else {
           // update fields like translation, pronunciation, notes
           statement.text = sentence.text;
-          statement.meaning = event.changes.translation ?? statement.meaning;
+          statement.meaning = event.changes?.translation ?? statement.meaning;
           statement.pronunciation =
             event.changes?.pronunciation ?? statement.pronunciation;
           statement.notes = event.changes?.notes ?? statement.notes;
@@ -159,49 +185,35 @@ export class LexiconIngestService implements OnModuleInit {
       const statement = statementMap.get(sentence.text);
       if (!statement) continue;
 
-      const textChanged =
-        !event.statementId || statement.text !== sentence.text;
+      await this.statementService.clearTokens(statement.id);
+      await this.statementService.createTokens(
+        statement,
+        sentence.tokens,
+        words,
+      );
 
-      if (textChanged) {
-        await this.statementService.clearTokens(statement.id);
+      const statementWithTokens = await this.statementService.findById(
+        statement.id,
+        {
+          relations: ['tokens'],
+        },
+      );
 
-        await this.statementService.createTokens(
-          statement,
-          sentence.tokens,
-          words,
-        );
-
-        const statementWithTokens = await this.statementService.findById(
-          statement.id,
-          {
-            relations: ['tokens'],
-          },
-        );
-
-        await this.kafkaProducer.emit(
-          'statement.updated',
+      await lastValueFrom(
+        this.kafkaProducer.emit(
+          event.interaction?.type === 'statement_created'
+            ? 'statement.created'
+            : 'statement.updated',
           serializeStatement(statementWithTokens),
-        );
-      }
+        ),
+      );
 
-      if (event.interaction.type === 'statement_created') {
-        await this.statementService.createTokens(
-          statement,
-          sentence.tokens,
-          words,
-        );
-
-        const statementWithTokens = await this.statementService.findById(
-          statement.id,
-          {
-            relations: ['tokens'],
-          },
-        );
-        await this.kafkaProducer.emit(
-          'statement.created',
-          serializeStatement(statementWithTokens),
-        );
-      }
+      await lastValueFrom(
+        this.kafkaProducer.emit(
+          'phrasebook.tokens',
+          serializePhrasebookTokens(statementWithTokens, event),
+        ),
+      );
     }
 
     // ---------------------------------------------------------------------------

@@ -114,6 +114,18 @@ services:
       - mariadb
     env_file:
       - ./apps/lexicon/.env
+  phrasebook:
+    build:
+      context: .
+      dockerfile: ./apps/phrasebook/Dockerfile
+    ports:
+      - "3011:3011"
+    restart: always
+    depends_on:
+      - kafka
+      - mariadb
+    env_file:
+      - ./apps/phrasebook/.env
 
   client:
     build:

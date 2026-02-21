@@ -1,0 +1,130 @@
+<section x-data="studyMode()" class="min-h-screen bg-gray-50 py-12">
+  <div class="max-w-2xl mx-auto px-4 space-y-6">
+
+    <!-- Header -->
+    <header class="flex justify-between items-center">
+      <div>
+        <h1 class="text-xl font-semibold text-emerald-600" x-text="deck.name"></h1>
+        <p class="text-sm text-gray-500">
+          Card <span x-text="currentIndex + 1"></span> of
+          <span x-text="cards.length"></span>
+        </p>
+      </div>
+
+      <span class="text-sm text-gray-400">
+        Due now
+      </span>
+    </header>
+
+    <!-- Card -->
+    <div class="rounded-xl bg-white shadow p-8 min-h-[280px] flex flex-col justify-between">
+
+      <!-- FRONT -->
+      <div class="flex-1 flex items-center justify-center text-center">
+        <p class="text-3xl font-semibold" x-text="currentCard.text"></p>
+      </div>
+
+      <!-- SHOW ANSWER -->
+      <div x-show="!revealed" class="text-center">
+        <button @click="reveal"
+          class="mt-6 px-6 py-3 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700">
+          Show answer
+        </button>
+      </div>
+
+      <!-- BACK -->
+      <div x-show="revealed" x-transition class="space-y-6">
+        <div class="border-t pt-4 text-center space-y-2">
+          <p class="text-lg italic text-gray-700" x-text="currentCard.meaning"></p>
+
+          <template x-if="currentCard.pronunciation">
+            <p class="text-sm font-mono text-gray-500" x-text="currentCard.pronunciation"></p>
+          </template>
+
+          <template x-if="currentCard.notes">
+            <p class="text-sm text-gray-600" x-text="currentCard.notes"></p>
+          </template>
+        </div>
+
+        <!-- Rating -->
+        <div class="grid grid-cols-4 gap-3">
+          <button @click="rate('again')" class="rating-btn bg-red-100 text-red-700">
+            Again <span class="text-xs text-gray-300">soon</span>
+          </button>
+          <button @click="rate('hard')" class="rating-btn bg-orange-100 text-orange-700">
+            Hard <span class="text-xs text-gray-300">short</span>
+          </button>
+          <button @click="rate('good')" class="rating-btn bg-emerald-100 text-emerald-700">
+            Good <span class="text-xs text-gray-300">normal</span>
+          </button>
+          <button @click="rate('easy')" class="rating-btn bg-blue-100 text-blue-700">
+            Easy <span class="text-xs text-gray-300">long</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function studyMode() {
+    return {
+      deck: {
+        id: 1,
+        name: "Everyday Irish"
+      },
+
+      cards: [
+        {
+          id: 101,
+          text: "Bhí mé ag snámh",
+          meaning: "I was swimming",
+          pronunciation: "vee may egg snaav",
+          notes: "Past tense of bí"
+        },
+        {
+          id: 102,
+          text: "Tá ocras orm",
+          meaning: "I am hungry",
+          pronunciation: "taw ok-russ orum",
+          notes: null
+        },
+        {
+          id: 103,
+          text: "Neart",
+          meaning: "Strength",
+          pronunciation: "nyart",
+          notes: "Often used idiomatically"
+        }
+      ],
+
+      currentIndex: 0,
+      revealed: false,
+
+      get currentCard() {
+        return this.cards[this.currentIndex];
+      },
+
+      reveal() {
+        this.revealed = true;
+      },
+
+      rate(result) {
+        console.log("Rated", result, "for card", this.currentCard.id);
+
+        this.nextCard();
+      },
+
+      nextCard() {
+        this.revealed = false;
+
+        if (this.currentIndex < this.cards.length - 1) {
+          this.currentIndex++;
+        } else {
+          alert("🎉 Deck complete!");
+        }
+      }
+    };
+  }
+</script>

@@ -17,7 +17,7 @@ import { UtilsModule } from './utils/utils.module';
     ChatModule,
     UtilsModule,
     EnrichmentModule,
-    GuessModule
+    GuessModule,
   ],
   controllers: [AppController],
   providers: [AppService],

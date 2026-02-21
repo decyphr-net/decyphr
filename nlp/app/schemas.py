@@ -71,8 +71,24 @@ class StatementEvent(BaseModel):
 
 class ProcessResponse(BaseModel):
     requestId: str | None
+    statementId: int | None = None
     language: str
     sentences: list[SentenceTokens] | None = None
     clientId: str | None
     interaction: InteractionMetadata | None = None
     changes: StatementChanges | None = None
+
+
+class PhrasebookToken(BaseModel):
+    surface: str
+    lemma: str | None = None
+    pos: str | None = None
+    position: int
+
+
+class PhrasebookTokensEvent(BaseModel):
+    requestId: str | None
+    statementId: str | None
+    clientId: str
+    language: str
+    tokens: list[PhrasebookToken]

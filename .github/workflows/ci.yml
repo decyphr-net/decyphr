@@ -124,3 +124,58 @@ jobs:
             build_and_push nlp ./nlp
             build_and_push lexicon ./apps/lexicon
             build_and_push client ./apps/client
+
+  # -------------------------------------------------
+  # 4️⃣ Deploy only changed services
+  # -------------------------------------------------
+  deploy:
+    needs:
+      - changes
+      - docker-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/deploy/misneach
+
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+            SERVICES=""
+
+            if [[ "${{ needs.changes.outputs.lexicon }}" == "true" ]]; then
+              SERVICES="$SERVICES lexicon"
+            fi
+            if [[ "${{ needs.changes.outputs.bots }}" == "true" ]]; then
+              SERVICES="$SERVICES bots"
+            fi
+            if [[ "${{ needs.changes.outputs.chat }}" == "true" ]]; then
+              SERVICES="$SERVICES chat"
+            fi
+            if [[ "${{ needs.changes.outputs.ai }}" == "true" ]]; then
+              SERVICES="$SERVICES ai-connector"
+            fi
+            if [[ "${{ needs.changes.outputs.translation }}" == "true" ]]; then
+              SERVICES="$SERVICES translator"
+            fi
+            if [[ "${{ needs.changes.outputs.nlp }}" == "true" ]]; then
+              SERVICES="$SERVICES nlp"
+            fi
+            if [[ "${{ needs.changes.outputs.client }}" == "true" ]]; then
+              SERVICES="$SERVICES client"
+            fi
+
+            if [[ -z "$SERVICES" ]]; then
+              echo "No services changed, skipping deploy"
+              exit 0
+            fi
+
+            echo "Deploying services: $SERVICES"
+            docker compose pull $SERVICES
+            docker compose up -d $SERVICES

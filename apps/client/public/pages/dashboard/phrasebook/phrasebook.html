@@ -326,21 +326,21 @@
         page: 1,
         limit: 5,
         modalOpen: false,
-        modalStatement: { id: null, text: '', translation: '' },
+        modalStatement: { id: null, text: '', translation: '', autoTranslate: false, pronunciation: '', example: '', notes: '' },
         deleteModalOpen: false,
         statementToDelete: null,
         searchQuery: '',
 
         async init() {
+          this.loading = true;
           try {
-            const res = await fetch('/lexicon/statements/data');
-            if (!res.ok) throw new Error('Failed to load statements');
-
+            // Load phrasebook
+            const res = await fetch('/phrasebook/list');
+            if (!res.ok) throw new Error('Failed to load phrasebook');
             const data = await res.json();
 
             this.statements = data.map((s) => ({
               ...s,
-              // UI-only state
               showTokens: false,
               autoTranslate: !s.translation,
               loading: false,
@@ -348,46 +348,32 @@
           } catch (err) {
             console.error(err);
             alert('Failed to load statements');
+          } finally {
+            this.loading = false;
           }
 
           // ---------------- SSE CONNECTION ----------------
           try {
-            const source = new EventSource('/lexicon/statements/stream');
-
+            const source = new EventSource('/phrasebook/stream');
             source.onmessage = (event) => {
               const data = JSON.parse(event.data);
-
-              const idx = this.statements.findIndex((s) => s.id === data.id);
-
-              // infer completion
-              const isComplete =
-                data.status === 'complete' ||
-                data.meaning !== undefined ||
-                data.translation !== undefined ||
-                (Array.isArray(data.tokens) && data.tokens.length > 0);
+              const idx = this.statements.findIndex((s) => s.id === data.phrase.id);
 
               const normalized = {
-                id: data.id,
-                text: data.text,
-
-                // backend fields
-                translation: data.translation ?? data.meaning ?? null,
-                tokens: data.tokens ?? [],
-                pronunciation: data.pronunciation ?? null,
-                example: data.example ?? null,
-                notes: data.notes ?? null,
-
-                // UI state
-                loading: !isComplete,
+                id: data.phrase.id,
+                text: data.phrase.text,
+                translation: data.phrase.translation ?? null,
+                tokens: data.phrase.tokens ?? [],
+                pronunciation: data.phrase.pronunciation ?? null,
+                example: data.phrase.example ?? null,
+                notes: data.phrase.notes ?? null,
+                loading: false,
                 showTokens: false,
+                autoTranslate: !data.phrase.translation,
               };
 
               if (idx !== -1) {
-                this.statements[idx] = {
-                  ...this.statements[idx], // preserve UI-only state
-                  ...normalized,
-                  loading: !isComplete,
-                };
+                this.statements[idx] = { ...this.statements[idx], ...normalized };
               } else {
                 this.statements.unshift(normalized);
               }
@@ -399,7 +385,6 @@
           } catch (err) {
             console.error('Failed to initialize SSE', err);
           }
-          // -------------------------------------------------
         },
 
         get filteredStatements() {
@@ -408,7 +393,7 @@
           return this.statements.filter(
             (s) =>
               s.text.toLowerCase().includes(q) ||
-              (s.translation && s.translation.toLowerCase().includes(q)),
+              (s.translation && s.translation.toLowerCase().includes(q))
           );
         },
 
@@ -424,49 +409,28 @@
         openModal(statement = null) {
           this.modalStatement = statement
             ? { ...statement, autoTranslate: false }
-            : { id: null, text: '', translation: '', autoTranslate: false };
+            : { id: null, text: '', translation: '', autoTranslate: false, pronunciation: '', example: '', notes: '' };
           this.modalOpen = true;
         },
 
         onTranslationInput() {
-          if (this.modalStatement.autoTranslate) {
-            this.modalStatement.autoTranslate = false;
-          }
+          if (this.modalStatement.autoTranslate) this.modalStatement.autoTranslate = false;
         },
 
         async generateTranslation(statement) {
-          if (
-            statement.translation &&
-            !confirm('This will replace the existing translation. Continue?')
-          )
-            return;
-
+          if (statement.translation && !confirm('This will replace the existing translation. Continue?')) return;
           statement.loading = true;
-
           try {
-            const res = await fetch(
-              `/lexicon/statements/${statement.id}/edit`,
-              {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  text: statement.text,
-                  translation: null, // leave null, backend will fill via NLP
-                  autoTranslate: true, // indicates system-generated translation
-                  pronunciation: statement.pronunciation,
-                  notes: statement.notes,
-                  example: statement.example,
-                }),
-              },
-            );
-
+            const res = await fetch(`/phrasebook/${statement.id}/translate`, {
+              method: 'POST',
+            });
             if (!res.ok) throw new Error('Failed to generate translation');
-
-            // optional: optimistic UI update
-            statement.loading = true;
+            // Optimistic: mark loading until SSE updates
           } catch (err) {
             console.error(err);
             alert('Failed to generate translation');
+          } finally {
+            statement.loading = false;
           }
         },
 
@@ -477,55 +441,21 @@
           }
 
           const isEdit = !!this.modalStatement.id;
-          const endpoint = isEdit
-            ? `/lexicon/statements/${this.modalStatement.id}/edit`
-            : '/lexicon/statements';
-
-          const targetStatement = isEdit
-            ? this.statements.find((s) => s.id === this.modalStatement.id)
-            : null;
-
-          if (targetStatement) targetStatement.loading = true;
+          const endpoint = isEdit ? `/phrasebook/${this.modalStatement.id}` : '/phrasebook';
 
           try {
             const res = await fetch(endpoint, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                text: this.modalStatement.text,
-                translation: this.modalStatement.translation,
-                pronunciation: this.modalStatement.pronunciation,
-                notes: this.modalStatement.notes,
-                autoTranslate: this.modalStatement.autoTranslate,
-              }),
+              body: JSON.stringify(this.modalStatement),
             });
-
             if (!res.ok) throw new Error('Save failed');
 
-            if (isEdit) {
-              const idx = this.statements.findIndex(
-                (s) => s.id === this.modalStatement.id,
-              );
-              if (idx !== -1) {
-                this.statements[idx] = {
-                  ...this.statements[idx],
-                  text: this.modalStatement.text,
-                  translation: this.modalStatement.autoTranslate
-                    ? null
-                    : this.modalStatement.translation,
-                  translationPending: this.modalStatement.autoTranslate,
-                  pronunciation: this.modalStatement.pronunciation,
-                  notes: this.modalStatement.notes,
-                };
-              }
-            }
-
             this.modalOpen = false;
+            // Let SSE handle updates for optimistic UI
           } catch (err) {
             console.error(err);
             alert('Failed to save statement');
-          } finally {
-            if (targetStatement) targetStatement.loading = false;
           }
         },
 
@@ -539,16 +469,13 @@
           if (!statement) return;
 
           statement.loading = true;
-
           try {
-            const res = await fetch(`/lexicon/statements/${statement.id}`, {
+            const res = await fetch(`/phrasebook/${statement.id}`, {
               method: 'DELETE',
             });
             if (!res.ok) throw new Error('Delete failed');
 
-            this.statements = this.statements.filter(
-              (s) => s.id !== statement.id,
-            );
+            this.statements = this.statements.filter((s) => s.id !== statement.id);
             this.deleteModalOpen = false;
             this.statementToDelete = null;
           } catch (err) {
@@ -566,4 +493,5 @@
       };
     }
   </script>
+
 </section>

@@ -1,6 +1,6 @@
 export type InteractionMetadata = {
   type: string;
-  timestamp?: string;
+  timestamp?: string | number;
 };
 
 export type StatementChanges = {
@@ -30,7 +30,7 @@ export type NlpCompleteEvent = {
 };
 
 export type Sentence = {
-  sentenceId: string;
+  sentenceId?: string;
   text: string;
   tokens: Token[];
 };

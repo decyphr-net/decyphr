@@ -1,1 +1,4 @@
 node_modules/
+libs/messaging/dist/
+nlp/app/__pycache__/
+nlp/app/consumers/__pycache__/

@@ -1,0 +1,5 @@
+node_modules
+apps/phrasebook/node_modules
+apps/phrasebook/dist
+libs/messaging/node_modules
+libs/messaging/dist

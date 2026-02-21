@@ -7,6 +7,7 @@ import {
   Param,
 } from '@nestjs/common';
 import { ClientKafka, MessagePattern } from '@nestjs/microservices';
+import { lastValueFrom } from 'rxjs';
 import { AiInterfaceService } from './ai-interface.service';
 import { TranslationDto } from './dto/translation.dto';
 
@@ -22,6 +23,41 @@ interface KafkaMessage<T> {
 @Controller()
 export class AiInterfaceController implements OnModuleInit {
   private readonly logger = new Logger(AiInterfaceController.name);
+
+  private extractKafkaValue<T>(payload: unknown): T | null {
+    let value: unknown = payload;
+
+    if (typeof value === 'object' && value !== null && 'value' in value) {
+      value = (value as { value: unknown }).value;
+    }
+
+    if (typeof value === 'string') {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        return null;
+      }
+    }
+
+    if (typeof value === 'object' && value !== null && 'value' in value) {
+      const nested = (value as { value: unknown }).value;
+      if (typeof nested === 'string') {
+        try {
+          value = JSON.parse(nested);
+        } catch {
+          return null;
+        }
+      } else if (nested != null) {
+        value = nested;
+      }
+    }
+
+    if (typeof value !== 'object' || value === null) {
+      return null;
+    }
+
+    return value as T;
+  }
 
   constructor(
     private readonly service: AiInterfaceService,
@@ -49,13 +85,13 @@ export class AiInterfaceController implements OnModuleInit {
    * @param response The translation response received from Kafka.
    */
   @MessagePattern('translation.complete')
-  async handleTranslationResponse(message: any) {
+  async handleTranslationResponse(message: unknown) {
     try {
       this.logger.log(
         `Received translation response: ${JSON.stringify(message)}`,
       );
 
-      const value = message;
+      const value = this.extractKafkaValue<Record<string, any>>(message);
 
       if (!value?.requestId) {
         this.logger.error('Invalid Kafka message: Missing requestId');
@@ -78,10 +114,12 @@ export class AiInterfaceController implements OnModuleInit {
       const key = record.requestId;
 
       // Emit to KTable topic
-      await this.client.emit('translation.response.table', {
-        key,
-        value: translation,
-      });
+      await lastValueFrom(
+        this.client.emit('translation.response.table', {
+          key,
+          value: translation,
+        }),
+      );
       this.logger.log('✅ Stored + emitted translation.response.table');
     } catch (error) {
       this.logger.error('Failed to handle translation response', error);
@@ -96,17 +134,24 @@ export class AiInterfaceController implements OnModuleInit {
    * @param translationRequest The translation request from Kafka.
    */
   @MessagePattern('translation.translate')
-  async translateText(message: KafkaMessage<TranslationDto>) {
-    const translationRequest = message.value;
+  async translateText(message: unknown) {
+    const translationRequest = this.extractKafkaValue<TranslationDto>(message);
     this.logger.log(
       `Received translation request from Kafka: ${JSON.stringify(translationRequest)}`,
     );
 
+    if (!translationRequest?.requestId) {
+      this.logger.error('Invalid translation request payload');
+      return;
+    }
+
     try {
-      await this.client.emit('ai.translation.request', {
-        key: translationRequest.requestId,
-        value: translationRequest,
-      });
+      await lastValueFrom(
+        this.client.emit('ai.translation.request', {
+          key: translationRequest.requestId,
+          value: translationRequest,
+        }),
+      );
 
       this.logger.log(
         `Translation request emitted to AI service with key ${translationRequest.requestId}`,

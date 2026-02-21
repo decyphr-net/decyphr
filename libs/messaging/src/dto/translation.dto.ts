@@ -6,27 +6,27 @@ import { InteractionMetadata } from './interaction-metadata.dto';
 export class TranslationDto {
   @IsString()
   @IsNotEmpty()
-  requestId: string;
+  requestId!: string;
 
   @IsString()
   @IsNotEmpty()
-  sourceLanguage: string;
+  sourceLanguage!: string;
 
   @IsString()
   @IsNotEmpty()
-  targetLanguage: string;
+  targetLanguage!: string;
 
   @IsString()
   @IsNotEmpty()
-  text: string;
+  text!: string;
 
   @IsString()
   @IsNotEmpty()
-  clientId: string;
+  clientId!: string;
 
   @ValidateNested()
   @Type(() => InteractionMetadata)
-  interaction: InteractionMetadata;
+  interaction!: InteractionMetadata;
 
   @IsNumber()
   statementId?: number;
