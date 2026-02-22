@@ -120,7 +120,7 @@
                   x-text="$store.i18n.t('phrasebook.actions.delete')"></button>
               </li>
               <li>
-                <button disabled class="w-full text-left px-4 py-2 text-gray-400"
+                <button @click="open=false; openCreateFlashcardModal(statement)" class="w-full text-left px-4 py-2 hover:bg-gray-100"
                   x-text="$store.i18n.t('phrasebook.actions.createFlashcard')"></button>
               </li>
             </ul>
@@ -315,6 +315,73 @@
         </div>
       </div>
     </div>
+
+    <div x-show="translationConfirmOpen" x-transition.opacity
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div x-show="translationConfirmOpen" x-transition class="bg-white rounded-xl p-6 w-full max-w-sm text-center space-y-4"
+        @click.outside="cancelGenerateTranslation()">
+        <h2 class="text-lg font-bold text-gray-700">Replace translation</h2>
+        <p class="text-sm text-gray-600">
+          This will replace the existing translation. Continue?
+        </p>
+        <div class="flex justify-center gap-4 mt-4">
+          <button @click="cancelGenerateTranslation()" class="px-4 py-2 rounded border">Cancel</button>
+          <button @click="confirmGenerateTranslation()" class="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700">
+            Continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div x-show="flashcardModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-xl p-6 w-full max-w-lg space-y-4" @click.outside="closeFlashcardModal()">
+        <h2 class="text-xl font-bold">Create flashcard</h2>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Deck</label>
+          <select x-model="flashcardForm.deckId" class="w-full rounded-lg border p-2 text-sm">
+            <option value="">Select a deck</option>
+            <template x-for="deck in flashcardDecks" :key="deck.id">
+              <option :value="String(deck.id)" x-text="deck.name"></option>
+            </template>
+            <option value="__new__">Create new deck</option>
+          </select>
+        </div>
+
+        <div x-show="flashcardForm.deckId === '__new__'">
+          <label class="block text-xs font-medium text-gray-500 mb-1">New deck name</label>
+          <input type="text" x-model="flashcardForm.newDeckName" class="w-full rounded-lg border p-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Front</label>
+          <textarea x-model="flashcardForm.front" rows="2" class="w-full rounded-lg border p-2 text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Back</label>
+          <textarea x-model="flashcardForm.back" rows="2" class="w-full rounded-lg border p-2 text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Pronunciation (optional)</label>
+          <input type="text" x-model="flashcardForm.pronunciation" class="w-full rounded-lg border p-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Notes (optional)</label>
+          <textarea x-model="flashcardForm.notes" rows="2" class="w-full rounded-lg border p-2 text-sm"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button @click="closeFlashcardModal()" class="px-4 py-2 rounded border">Cancel</button>
+          <button @click="submitFlashcard()" :disabled="flashcardModalLoading"
+            class="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Alpine Component -->
@@ -331,6 +398,19 @@
         statementToDelete: null,
         searchQuery: '',
         pendingCreate: {},
+        translationConfirmOpen: false,
+        statementToTranslate: null,
+        flashcardModalOpen: false,
+        flashcardModalLoading: false,
+        flashcardDecks: [],
+        flashcardForm: {
+          deckId: '',
+          newDeckName: '',
+          front: '',
+          back: '',
+          pronunciation: '',
+          notes: '',
+        },
 
         async init() {
           this.loading = true;
@@ -439,7 +519,16 @@
         },
 
         async generateTranslation(statement) {
-          if (statement.translation && !confirm('This will replace the existing translation. Continue?')) return;
+          if (statement.translation) {
+            this.statementToTranslate = statement;
+            this.translationConfirmOpen = true;
+            return;
+          }
+
+          await this.performGenerateTranslation(statement);
+        },
+
+        async performGenerateTranslation(statement) {
           statement.loading = true;
           try {
             const res = await fetch(`/phrasebook/${statement.id}/translate`, {
@@ -452,6 +541,19 @@
             console.error(err);
             alert('Failed to generate translation');
           }
+        },
+
+        cancelGenerateTranslation() {
+          this.translationConfirmOpen = false;
+          this.statementToTranslate = null;
+        },
+
+        async confirmGenerateTranslation() {
+          const statement = this.statementToTranslate;
+          this.translationConfirmOpen = false;
+          this.statementToTranslate = null;
+          if (!statement) return;
+          await this.performGenerateTranslation(statement);
         },
 
         async submitStatement() {
@@ -532,6 +634,84 @@
         cancelDelete() {
           this.deleteModalOpen = false;
           this.statementToDelete = null;
+        },
+
+        async openCreateFlashcardModal(statement) {
+          try {
+            const decksRes = await fetch('/flashcards/decks', { cache: 'no-store' });
+            if (!decksRes.ok) throw new Error('Failed to load decks');
+            this.flashcardDecks = await decksRes.json();
+            this.flashcardForm = {
+              deckId: this.flashcardDecks[0] ? String(this.flashcardDecks[0].id) : '__new__',
+              newDeckName: this.flashcardDecks[0] ? '' : 'Phrasebook',
+              front: statement.text || '',
+              back: statement.translation || '',
+              pronunciation: statement.pronunciation || '',
+              notes: statement.notes || '',
+            };
+            this.flashcardModalOpen = true;
+          } catch (err) {
+            console.error(err);
+            alert('Failed to load decks');
+          }
+        },
+
+        closeFlashcardModal() {
+          this.flashcardModalOpen = false;
+          this.flashcardModalLoading = false;
+        },
+
+        async submitFlashcard() {
+          this.flashcardModalLoading = true;
+
+          try {
+            let deckId = this.flashcardForm.deckId;
+            if (!deckId) throw new Error('Please select a deck');
+
+            if (deckId === '__new__') {
+              const newDeckName = (this.flashcardForm.newDeckName || '').trim();
+              if (!newDeckName) throw new Error('New deck name is required');
+
+              const createRes = await fetch('/flashcards/decks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  name: newDeckName,
+                  description: 'Cards created from phrasebook',
+                  language: 'ga',
+                }),
+              });
+
+              if (!createRes.ok) throw new Error('Failed to create deck');
+              const createdDeck = await createRes.json();
+              deckId = String(createdDeck.id);
+            }
+
+            const front = (this.flashcardForm.front || '').trim();
+            const back = (this.flashcardForm.back || '').trim();
+            if (!front || !back) throw new Error('Front and back are required');
+
+            const cardRes = await fetch(`/flashcards/decks/${deckId}/cards`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                front,
+                back,
+                pronunciation: this.flashcardForm.pronunciation || undefined,
+                notes: this.flashcardForm.notes || undefined,
+              }),
+            });
+
+            if (!cardRes.ok) throw new Error('Failed to create flashcard');
+
+            this.closeFlashcardModal();
+            alert('Flashcard created');
+          } catch (err) {
+            console.error(err);
+            alert(err.message || 'Failed to create flashcard');
+          } finally {
+            this.flashcardModalLoading = false;
+          }
         },
       };
     }

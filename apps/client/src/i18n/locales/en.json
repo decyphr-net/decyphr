@@ -242,7 +242,9 @@
       "word": "Word",
       "baseForm": "Base form",
       "partOfSpeech": "Word type",
-      "confidence": "Confidence"
+      "confidence": "Confidence",
+      "actions": "Actions",
+      "createFlashcard": "Create flashcard"
     },
     "empty": {
       "title": "Your word list is empty.",

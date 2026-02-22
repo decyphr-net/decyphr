@@ -1,4 +1,4 @@
-<section x-data="studyMode()" class="min-h-screen bg-gray-50 py-12">
+<section x-data="studyMode()" x-init="init()" class="min-h-screen bg-gray-50 py-12">
   <div class="max-w-2xl mx-auto px-4 space-y-6">
 
     <!-- Header -->
@@ -71,49 +71,85 @@
   function studyMode() {
     return {
       deck: {
-        id: 1,
-        name: "Everyday Irish"
+        id: null,
+        name: "Due cards"
       },
 
-      cards: [
-        {
-          id: 101,
-          text: "Bhí mé ag snámh",
-          meaning: "I was swimming",
-          pronunciation: "vee may egg snaav",
-          notes: "Past tense of bí"
-        },
-        {
-          id: 102,
-          text: "Tá ocras orm",
-          meaning: "I am hungry",
-          pronunciation: "taw ok-russ orum",
-          notes: null
-        },
-        {
-          id: 103,
-          text: "Neart",
-          meaning: "Strength",
-          pronunciation: "nyart",
-          notes: "Often used idiomatically"
-        }
-      ],
+      cards: [],
 
       currentIndex: 0,
       revealed: false,
+      loading: true,
 
       get currentCard() {
-        return this.cards[this.currentIndex];
+        if (!this.cards.length) {
+          return {
+            id: null,
+            text: 'No due cards',
+            meaning: 'You are caught up',
+            pronunciation: null,
+            notes: null,
+          };
+        }
+
+        const card = this.cards[this.currentIndex];
+        return {
+          id: card.id,
+          text: card.front,
+          meaning: card.back,
+          pronunciation: card.pronunciation,
+          notes: card.notes,
+        };
+      },
+
+      async init() {
+        try {
+          const url = new URL(window.location.href);
+          const packId = url.searchParams.get('packId');
+          const query = new URLSearchParams();
+          if (packId) {
+            query.set('packId', packId);
+          }
+          query.set('limit', '50');
+
+          const res = await fetch(`/flashcards/study/due?${query.toString()}`);
+          if (!res.ok) throw new Error('Failed to fetch due cards');
+          this.cards = await res.json();
+
+          if (packId) {
+            this.deck.id = Number(packId);
+            const deckRes = await fetch(`/flashcards/decks/${packId}`);
+            if (deckRes.ok) {
+              const deck = await deckRes.json();
+              this.deck.name = deck.name;
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load study cards', err);
+          this.cards = [];
+        } finally {
+          this.loading = false;
+        }
       },
 
       reveal() {
         this.revealed = true;
       },
 
-      rate(result) {
-        console.log("Rated", result, "for card", this.currentCard.id);
+      async rate(result) {
+        if (!this.currentCard.id) return;
 
-        this.nextCard();
+        try {
+          await fetch(`/flashcards/cards/${this.currentCard.id}/attempt`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ grade: result }),
+          });
+        } catch (err) {
+          console.error('Failed to record attempt', err);
+        } finally {
+          this.nextCard();
+        }
       },
 
       nextCard() {
@@ -122,7 +158,8 @@
         if (this.currentIndex < this.cards.length - 1) {
           this.currentIndex++;
         } else {
-          alert("🎉 Deck complete!");
+          alert("Deck complete!");
+          window.location.href = '/flashcards';
         }
       }
     };

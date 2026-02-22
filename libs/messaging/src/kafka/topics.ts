@@ -4,4 +4,6 @@ export enum KafkaTopics {
   PHRASEBOOK_TOKENS = 'phrasebook.tokens',
   PHRASEBOOK_COMMANDS = 'phrasebook.commands',
   PHRASEBOOK_EVENTS = 'phrasebook.events',
+  FLASHCARDS_COMMANDS = 'flashcards.commands',
+  FLASHCARDS_EVENTS = 'flashcards.events',
 };

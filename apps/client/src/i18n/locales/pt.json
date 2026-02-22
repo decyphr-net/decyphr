@@ -217,7 +217,9 @@
       "word": "Palavra",
       "baseForm": "Forma base",
       "partOfSpeech": "Tipo de palavra",
-      "confidence": "Confiança"
+      "confidence": "Confiança",
+      "actions": "Ações",
+      "createFlashcard": "Criar flashcard"
     },
     "empty": {
       "title": "A sua lista de palavras está vazia.",

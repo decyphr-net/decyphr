@@ -127,6 +127,19 @@ services:
     env_file:
       - ./apps/phrasebook/.env
 
+  flashcards:
+    build:
+      context: .
+      dockerfile: ./apps/flashcards/Dockerfile
+    ports:
+      - "3012:3012"
+    restart: always
+    depends_on:
+      - kafka
+      - mariadb
+    env_file:
+      - ./apps/flashcards/.env
+
   client:
     build:
       context: ./apps/client
@@ -137,6 +150,7 @@ services:
     depends_on:
       - mariadb
       - kafka
+      - flashcards
 
 volumes:
   mariadb_data:

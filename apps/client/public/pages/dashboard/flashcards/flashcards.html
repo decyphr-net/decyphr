@@ -33,7 +33,7 @@
           Your decks
         </h2>
 
-        <button @click="createDeck" class="text-sm text-emerald-600 hover:underline">
+        <button @click="openDeckModal" class="text-sm text-emerald-600 hover:underline">
           + New deck
         </button>
       </div>
@@ -56,11 +56,62 @@
                   <span x-text="deck.dueCount"></span> due
                 </span>
               </div>
+
+              <button
+                class="mt-3 w-full rounded border border-emerald-200 px-3 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50"
+                @click.stop="openCardModal(deck)">
+                + Add card
+              </button>
             </div>
           </div>
         </template>
       </div>
     </section>
+
+    <div x-show="showDeckModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-xl p-6 w-full max-w-md space-y-4" @click.outside="closeDeckModal()">
+        <h2 class="text-xl font-semibold text-gray-800">Create deck</h2>
+
+        <input x-model="deckForm.name" type="text" placeholder="Deck name" class="w-full rounded border px-3 py-2 text-sm" />
+        <input x-model="deckForm.description" type="text" placeholder="Description (optional)" class="w-full rounded border px-3 py-2 text-sm" />
+        <input x-model="deckForm.language" type="text" placeholder="Language code (e.g. ga)" class="w-full rounded border px-3 py-2 text-sm" />
+
+        <div class="flex justify-end gap-3">
+          <button @click="closeDeckModal()" class="px-4 py-2 rounded border">Cancel</button>
+          <button @click="createDeck()" class="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <div x-show="showCardModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div class="bg-white rounded-xl p-6 w-full max-w-lg space-y-4" @click.outside="closeCardModal()">
+        <h2 class="text-xl font-semibold text-gray-800">Add flashcard</h2>
+
+        <label class="block text-sm text-gray-600">Deck</label>
+        <select x-model="cardForm.deckId" class="w-full rounded border px-3 py-2 text-sm">
+          <template x-for="deck in decks" :key="deck.id">
+            <option :value="String(deck.id)" x-text="deck.name"></option>
+          </template>
+        </select>
+
+        <label class="block text-sm text-gray-600">Front</label>
+        <textarea x-model="cardForm.front" class="w-full rounded border px-3 py-2 text-sm min-h-[80px]"></textarea>
+
+        <label class="block text-sm text-gray-600">Back</label>
+        <textarea x-model="cardForm.back" class="w-full rounded border px-3 py-2 text-sm min-h-[80px]"></textarea>
+
+        <label class="block text-sm text-gray-600">Pronunciation (optional)</label>
+        <input x-model="cardForm.pronunciation" type="text" class="w-full rounded border px-3 py-2 text-sm" />
+
+        <label class="block text-sm text-gray-600">Notes (optional)</label>
+        <textarea x-model="cardForm.notes" class="w-full rounded border px-3 py-2 text-sm min-h-[60px]"></textarea>
+
+        <div class="flex justify-end gap-3">
+          <button @click="closeCardModal()" class="px-4 py-2 rounded border">Cancel</button>
+          <button @click="submitCard()" class="px-4 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700">Save</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 </section>
@@ -68,9 +119,23 @@
   function flashcardLanding() {
     return {
       decks: [],
+      showDeckModal: false,
+      showCardModal: false,
+      deckForm: {
+        name: '',
+        description: '',
+        language: 'ga',
+      },
+      cardForm: {
+        deckId: '',
+        front: '',
+        back: '',
+        pronunciation: '',
+        notes: '',
+      },
       async init() {
         try {
-          const res = await fetch('/flashcards/decks');
+          const res = await fetch('/flashcards/decks', { cache: 'no-store' });
           if (!res.ok) throw new Error('Failed to fetch decks');
           this.decks = await res.json();
         } catch (err) {
@@ -85,12 +150,101 @@
 
       openDeck(deck) {
         console.log("Open deck", deck.id);
-        window.location.href = `/flashcards/study/${deck.id}`;
+        window.location.href = `/flashcards/study?packId=${deck.id}`;
+      },
+
+      openDeckModal() {
+        this.deckForm = {
+          name: '',
+          description: '',
+          language: 'ga',
+        };
+        this.showDeckModal = true;
+      },
+
+      closeDeckModal() {
+        this.showDeckModal = false;
+      },
+
+      openCardModal(deck = null) {
+        this.cardForm = {
+          deckId: deck ? String(deck.id) : (this.decks[0] ? String(this.decks[0].id) : ''),
+          front: '',
+          back: '',
+          pronunciation: '',
+          notes: '',
+        };
+        this.showCardModal = true;
+      },
+
+      closeCardModal() {
+        this.showCardModal = false;
       },
 
       createDeck() {
-        console.log("Create new deck");
-        // future: open modal or navigate to create deck page
+        const name = (this.deckForm.name || '').trim();
+        if (!name) {
+          alert('Deck name is required');
+          return;
+        }
+
+        fetch('/flashcards/decks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name,
+            description: this.deckForm.description || undefined,
+            language: this.deckForm.language || 'ga',
+          })
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error('Failed to create deck');
+            return res.json();
+          })
+          .then((deck) => {
+            this.decks.unshift({
+              ...deck,
+              cardCount: deck.cardCount ?? 0,
+              dueCount: deck.dueCount ?? 0,
+            });
+            this.closeDeckModal();
+          })
+          .catch((err) => console.error('Failed to create deck', err));
+      },
+
+      async submitCard() {
+        const deckId = Number(this.cardForm.deckId);
+        const front = (this.cardForm.front || '').trim();
+        const back = (this.cardForm.back || '').trim();
+        if (!deckId || !front || !back) {
+          alert('Deck, front, and back are required');
+          return;
+        }
+
+        try {
+          const res = await fetch(`/flashcards/decks/${deckId}/cards`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              front,
+              back,
+              pronunciation: this.cardForm.pronunciation || undefined,
+              notes: this.cardForm.notes || undefined,
+            }),
+          });
+
+          if (!res.ok) throw new Error('Failed to add card');
+
+          const idx = this.decks.findIndex((d) => d.id === deckId);
+          if (idx !== -1) {
+            this.decks[idx].cardCount = (this.decks[idx].cardCount || 0) + 1;
+          }
+
+          this.closeCardModal();
+        } catch (err) {
+          console.error('Failed to add card', err);
+          alert('Failed to add card');
+        }
       }
     };
   }

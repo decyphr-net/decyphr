@@ -228,7 +228,9 @@
       "word": "Focal",
       "baseForm": "Bunfhoirm",
       "partOfSpeech": "Cineál focal",
-      "confidence": "Muinín"
+      "confidence": "Muinín",
+      "actions": "Gníomhartha",
+      "createFlashcard": "Cruthaigh splancchárta"
     },
     "empty": {
       "title": "Tá do liosta focal folamh.",

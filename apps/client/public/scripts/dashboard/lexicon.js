@@ -15,6 +15,16 @@ document.addEventListener('alpine:init', () => {
 
     showImport: false,
     importText: '',
+    flashcardModalOpen: false,
+    flashcardModalLoading: false,
+    flashcardDecks: [],
+    flashcardForm: {
+      deckId: '',
+      newDeckName: '',
+      front: '',
+      back: '',
+      notes: '',
+    },
 
     // ---------------- Counters ----------------
     get highCount() {
@@ -123,6 +133,91 @@ document.addEventListener('alpine:init', () => {
       this.showImport = false;
       this.importText = '';
       await this.loadSnapshot(this.clientId);
+    },
+
+    async openCreateFlashcardModal(item) {
+      try {
+        const decksRes = await fetch('/flashcards/decks', { cache: 'no-store' });
+        if (!decksRes.ok) throw new Error('Failed to load decks');
+        const frontText = (item.word || item.lemma || '').trim();
+        if (!frontText) {
+          alert('This lexicon row has no word text to use as card front');
+          return;
+        }
+
+        const notesParts = [];
+        if (item.pos) notesParts.push(`POS: ${item.pos}`);
+        if (item.stats?.score != null) {
+          notesParts.push(`Lexicon confidence: ${Number(item.stats.score).toFixed(2)}`);
+        }
+
+        this.flashcardDecks = await decksRes.json();
+        this.flashcardForm = {
+          deckId: this.flashcardDecks[0] ? String(this.flashcardDecks[0].id) : '__new__',
+          newDeckName: this.flashcardDecks[0] ? '' : 'Lexicon',
+          front: frontText,
+          back: '',
+          notes: notesParts.join(' | '),
+        };
+        this.flashcardModalOpen = true;
+      } catch (err) {
+        console.error('Failed to open lexicon flashcard modal', err);
+        alert('Failed to load decks');
+      }
+    },
+
+    closeFlashcardModal() {
+      this.flashcardModalOpen = false;
+      this.flashcardModalLoading = false;
+    },
+
+    async submitFlashcardFromLexicon() {
+      this.flashcardModalLoading = true;
+      try {
+        let deckId = this.flashcardForm.deckId;
+        if (!deckId) throw new Error('Please select a deck');
+
+        if (deckId === '__new__') {
+          const newDeckName = (this.flashcardForm.newDeckName || '').trim();
+          if (!newDeckName) throw new Error('New deck name is required');
+
+          const createRes = await fetch('/flashcards/decks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: newDeckName,
+              description: 'Cards created from lexicon entries',
+              language: 'ga',
+            }),
+          });
+          if (!createRes.ok) throw new Error('Failed to create deck');
+          const createdDeck = await createRes.json();
+          deckId = String(createdDeck.id);
+        }
+
+        const front = (this.flashcardForm.front || '').trim();
+        const back = (this.flashcardForm.back || '').trim();
+        if (!front || !back) throw new Error('Front and back are required');
+
+        const cardRes = await fetch(`/flashcards/decks/${deckId}/cards`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            front,
+            back,
+            notes: this.flashcardForm.notes || undefined,
+          }),
+        });
+        if (!cardRes.ok) throw new Error('Failed to create flashcard');
+
+        this.closeFlashcardModal();
+        alert('Flashcard created');
+      } catch (err) {
+        console.error('Failed to create flashcard from lexicon item', err);
+        alert(err.message || 'Failed to create flashcard');
+      } finally {
+        this.flashcardModalLoading = false;
+      }
     },
 
     // ---------------- Load Snapshot ----------------

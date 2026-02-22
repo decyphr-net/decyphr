@@ -183,12 +183,15 @@
                 </div>
               </div>
             </th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-emerald-800">
+              <span x-text="$store.i18n.t('lexicon.table.actions')"></span>
+            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <!-- Loading spinner (centered) -->
           <tr x-show="loading">
-            <td colspan="4" class="py-12 text-center">
+            <td colspan="5" class="py-12 text-center">
               <svg class="animate-spin h-8 w-8 text-emerald-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -198,8 +201,8 @@
           </tr>
 
           <!-- Empty state (nice icon + CTA) -->
-          <tr x-show="!loading && filteredData.length === 0"">
-            <td colspan=" 4" class="py-12 text-center text-gray-500">
+          <tr x-show="!loading && filteredData.length === 0">
+            <td colspan="5" class="py-12 text-center text-gray-500">
             <i data-lucide="folder-search" class="w-12 h-12 mx-auto mb-4 text-emerald-400"></i>
             <p class="mb-2 font-medium" x-text="$store.i18n.t('lexicon.empty.title')"></p>
             <button
@@ -226,6 +229,14 @@
                     'bg-red-600'    : Number(item.stats?.score) <= 0.50
                   }" x-text="Number(item.stats?.score).toFixed(2)">
                 </span>
+              </td>
+              <td class="px-4 py-2">
+                <button
+                  @click="openCreateFlashcardModal(item)"
+                  class="inline-flex items-center gap-1 rounded border border-emerald-200 px-2 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-50">
+                  <i data-lucide="square-plus" class="w-3 h-3"></i>
+                  <span x-text="$store.i18n.t('lexicon.table.createFlashcard')"></span>
+                </button>
               </td>
             </tr>
           </template>
@@ -266,6 +277,54 @@
     </div>
 
   </div>
+
+  <div x-show="flashcardModalOpen" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
+      <h2 class="text-xl font-semibold mb-2">Create flashcard</h2>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Deck</label>
+          <select x-model="flashcardForm.deckId" class="w-full rounded-lg border p-2 text-sm">
+            <option value="">Select a deck</option>
+            <template x-for="deck in flashcardDecks" :key="deck.id">
+              <option :value="String(deck.id)" x-text="deck.name"></option>
+            </template>
+            <option value="__new__">Create new deck</option>
+          </select>
+        </div>
+
+        <div x-show="flashcardForm.deckId === '__new__'">
+          <label class="block text-xs font-medium text-gray-500 mb-1">New deck name</label>
+          <input type="text" x-model="flashcardForm.newDeckName" class="w-full rounded-lg border p-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Front</label>
+          <input type="text" x-model="flashcardForm.front" class="w-full rounded-lg border p-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Back</label>
+          <textarea x-model="flashcardForm.back" rows="3" class="w-full rounded-lg border p-2 text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">Notes (optional)</label>
+          <textarea x-model="flashcardForm.notes" rows="2" class="w-full rounded-lg border p-2 text-sm"></textarea>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-2">
+        <button @click="closeFlashcardModal()" class="px-4 py-2 text-sm rounded bg-gray-200">Cancel</button>
+        <button @click="submitFlashcardFromLexicon()" :disabled="flashcardModalLoading"
+          class="px-4 py-2 text-sm rounded bg-emerald-600 text-white disabled:opacity-50">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div x-show="showImport" x-cloak class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
     <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">

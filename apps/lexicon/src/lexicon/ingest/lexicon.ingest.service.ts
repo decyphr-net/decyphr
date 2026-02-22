@@ -414,10 +414,12 @@ export class LexiconIngestService implements OnModuleInit {
         await this.profile.markWordSeen(clientId, language, word.id);
 
         if (interaction?.type) {
+          const correctness = this.interactionCorrectness(interaction.type);
           await this.interactionService.createInteraction(
             clientId,
             wf.id,
             interaction.type,
+            correctness,
           );
         }
       }),
@@ -468,6 +470,16 @@ export class LexiconIngestService implements OnModuleInit {
    */
   private posMultiplier(pos: string): number {
     return POS_MULTIPLIERS[pos] ?? POS_MULTIPLIERS.DEFAULT;
+  }
+
+  private interactionCorrectness(type: string): number | undefined {
+    if (type === 'flashcard_guess_correct') {
+      return 1;
+    }
+    if (type === 'flashcard_guess_incorrect') {
+      return 0;
+    }
+    return undefined;
   }
 
   // ---------------------------------------------------------------------------

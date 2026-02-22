@@ -28,9 +28,16 @@ export function dashboardSidebar() {
     /* ----- navigation data ----- */
     navSections: [
       {
+        title: 'Home',
+        items: [
+          { id: 'dashboard', label: 'Dashboard', href: '/dashboard', icon: 'layout-dashboard' },
+        ],
+      },
+      {
         title: 'Speaking & Writing',
         items: [
           { id: 'chat', label: 'Chat', href: '/chat', icon: 'bot' },
+          { id: 'pomodoro', label: 'Pomodoro', href: '/pomodoro', icon: 'clock-3' },
         ],
       },
       {
@@ -45,8 +52,14 @@ export function dashboardSidebar() {
           {
             id: 'phrasebook',
             label: 'Phrasebook',
-            href: '/lexicon/statements',
+            href: '/phrasebook',
             icon: 'archive',
+          },
+          {
+            id: 'flashcards',
+            label: 'Flashcards',
+            href: '/flashcards',
+            icon: 'credit-card',
           },
         ],
       },

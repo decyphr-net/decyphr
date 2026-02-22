@@ -17,6 +17,8 @@ export class InteractionService {
     chat_message: 0.6,
     chat_message_bot: 0.3,
     passive_read: 0.1,
+    flashcard_guess_correct: 0.8,
+    flashcard_guess_incorrect: -0.3,
     default: 0.3,
   };
 
@@ -72,7 +74,12 @@ export class InteractionService {
    * @returns {Promise<Interaction>} The saved interaction entity
    * @throws {Error} If user or word form cannot be found
    */
-  async createInteraction(clientId: string, wordFormId: number, type: string) {
+  async createInteraction(
+    clientId: string,
+    wordFormId: number,
+    type: string,
+    correctness?: number,
+  ) {
     this.logger.debug(
       `Creating interaction: clientId=${clientId}, wordFormId=${wordFormId}, type=${type}`,
     );
@@ -98,6 +105,7 @@ export class InteractionService {
       wordForm,
       word: wordForm.word,
       type,
+      correctness,
       timestamp: new Date(),
     });
 
