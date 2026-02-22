@@ -8,16 +8,73 @@ import {
   Body,
   Query,
   ParseIntPipe,
-  ValidationPipe,
 } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { KafkaTopics, PhrasebookTokensDto } from '@decyphr/messaging';
 import { PhrasebookService } from './phrasebook.service';
 import { UpdatePhraseDto } from './phrasebook.dto';
 
+type PhrasebookCommand =
+  | {
+      action: 'create';
+      requestId: string;
+      clientId: string;
+      data: UpdatePhraseDto;
+    }
+  | {
+      action: 'update';
+      requestId: string;
+      clientId: string;
+      phraseId: number;
+      data: UpdatePhraseDto;
+    }
+  | {
+      action: 'delete';
+      requestId: string;
+      clientId: string;
+      phraseId: number;
+    }
+  | {
+      action: 'translate';
+      requestId: string;
+      clientId: string;
+      phraseId: number;
+    };
+
 @Controller()
 export class PhrasebookController {
   constructor(private readonly service: PhrasebookService) {}
+
+  private extractKafkaValue(payload: unknown): any {
+    let value: unknown = payload;
+
+    if (typeof value === 'object' && value !== null && 'value' in value) {
+      value = (value as { value: unknown }).value;
+    }
+
+    if (typeof value === 'string') {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        return null;
+      }
+    }
+
+    if (typeof value === 'object' && value !== null && 'value' in value) {
+      const nested = (value as { value: unknown }).value;
+      if (typeof nested === 'string') {
+        try {
+          value = JSON.parse(nested);
+        } catch {
+          return null;
+        }
+      } else if (nested != null) {
+        value = nested;
+      }
+    }
+
+    return value;
+  }
 
   // ---------------- CRUD ----------------
 
@@ -61,20 +118,49 @@ export class PhrasebookController {
   }
 
   @EventPattern(KafkaTopics.PHRASEBOOK_TOKENS)
-  handlePhrasebookTokens(
-    @Payload(new ValidationPipe({ transform: true }))
-    payload: PhrasebookTokensDto,
-  ) {
-    return this.service.handlePhrasebookTokens(payload);
+  handlePhrasebookTokens(@Payload() payload: any) {
+    const value = this.extractKafkaValue(payload);
+    if (!value) return;
+    return this.service.handlePhrasebookTokens(value as PhrasebookTokensDto);
   }
 
   @EventPattern('translation.complete')
   handleTranslationComplete(@Payload() payload: any) {
-    const value =
-      payload && typeof payload === 'object' && 'value' in payload
-        ? payload.value
-        : payload;
+    const value = this.extractKafkaValue(payload);
+    if (!value) return;
 
     return this.service.handleTranslationComplete(value);
+  }
+
+  @EventPattern(KafkaTopics.PHRASEBOOK_COMMANDS)
+  async handleCommand(@Payload() payload: any) {
+    const value = this.extractKafkaValue(payload);
+    if (!value) return;
+    const cmd: PhrasebookCommand = value;
+
+    switch (cmd.action) {
+      case 'create':
+        await this.service.createPhrase(cmd.clientId, cmd.data, cmd.requestId);
+        return;
+      case 'update':
+        await this.service.updatePhrase(
+          cmd.phraseId,
+          cmd.data,
+          cmd.requestId,
+        );
+        return;
+      case 'delete':
+        await this.service.deletePhrase(cmd.phraseId, cmd.requestId);
+        return;
+      case 'translate':
+        await this.service.generateTranslation(
+          cmd.phraseId,
+          cmd.clientId,
+          cmd.requestId,
+        );
+        return;
+      default:
+        return;
+    }
   }
 }

@@ -330,6 +330,7 @@
         deleteModalOpen: false,
         statementToDelete: null,
         searchQuery: '',
+        pendingCreate: {},
 
         async init() {
           this.loading = true;
@@ -356,24 +357,44 @@
           try {
             const source = new EventSource('/phrasebook/stream');
             source.onmessage = (event) => {
-              const data = JSON.parse(event.data);
-              const idx = this.statements.findIndex((s) => s.id === data.phrase.id);
+              const msg = JSON.parse(event.data);
+              if (!msg || !msg.type) return;
+
+              if (msg.type === 'phrase.deleted') {
+                this.statements = this.statements.filter((s) => s.id !== msg.phraseId);
+                return;
+              }
+
+              if (msg.type === 'phrase.translation.requested') {
+                const idx = this.statements.findIndex((s) => s.id === msg.phraseId);
+                if (idx !== -1) this.statements[idx].loading = true;
+                return;
+              }
+
+              if (!msg.phrase) return;
+              const idx = this.statements.findIndex((s) => s.id === msg.phrase.id);
+              const tempIdx = msg.requestId
+                ? this.statements.findIndex((s) => s.pendingRequestId === msg.requestId)
+                : -1;
 
               const normalized = {
-                id: data.phrase.id,
-                text: data.phrase.text,
-                translation: data.phrase.translation ?? null,
-                tokens: data.phrase.tokens ?? [],
-                pronunciation: data.phrase.pronunciation ?? null,
-                example: data.phrase.example ?? null,
-                notes: data.phrase.notes ?? null,
+                id: msg.phrase.id,
+                text: msg.phrase.text,
+                translation: msg.phrase.translation ?? null,
+                tokens: msg.phrase.tokens ?? [],
+                pronunciation: msg.phrase.pronunciation ?? null,
+                example: msg.phrase.example ?? null,
+                notes: msg.phrase.notes ?? null,
                 loading: false,
                 showTokens: false,
-                autoTranslate: !data.phrase.translation,
+                autoTranslate: !msg.phrase.translation,
+                pendingRequestId: null,
               };
 
               if (idx !== -1) {
                 this.statements[idx] = { ...this.statements[idx], ...normalized };
+              } else if (tempIdx !== -1) {
+                this.statements[tempIdx] = { ...this.statements[tempIdx], ...normalized };
               } else {
                 this.statements.unshift(normalized);
               }
@@ -425,12 +446,11 @@
               method: 'POST',
             });
             if (!res.ok) throw new Error('Failed to generate translation');
-            // Optimistic: mark loading until SSE updates
+            const data = await res.json();
+            statement.pendingRequestId = data.requestId || null;
           } catch (err) {
             console.error(err);
             alert('Failed to generate translation');
-          } finally {
-            statement.loading = false;
           }
         },
 
@@ -450,6 +470,29 @@
               body: JSON.stringify(this.modalStatement),
             });
             if (!res.ok) throw new Error('Save failed');
+            const data = await res.json();
+
+            if (isEdit) {
+              const idx = this.statements.findIndex((s) => s.id === this.modalStatement.id);
+              if (idx !== -1) {
+                this.statements[idx].loading = true;
+                this.statements[idx].pendingRequestId = data.requestId || null;
+              }
+            } else {
+              this.statements.unshift({
+                id: `tmp-${data.requestId || Date.now()}`,
+                text: this.modalStatement.text,
+                translation: this.modalStatement.translation || null,
+                tokens: [],
+                pronunciation: this.modalStatement.pronunciation || null,
+                example: this.modalStatement.example || null,
+                notes: this.modalStatement.notes || null,
+                loading: true,
+                showTokens: false,
+                autoTranslate: !!this.modalStatement.autoTranslate,
+                pendingRequestId: data.requestId || null,
+              });
+            }
 
             this.modalOpen = false;
             // Let SSE handle updates for optimistic UI
@@ -474,8 +517,8 @@
               method: 'DELETE',
             });
             if (!res.ok) throw new Error('Delete failed');
-
-            this.statements = this.statements.filter((s) => s.id !== statement.id);
+            const data = await res.json();
+            statement.pendingRequestId = data.requestId || null;
             this.deleteModalOpen = false;
             this.statementToDelete = null;
           } catch (err) {

@@ -27,8 +27,9 @@ export class PhrasebookController {
   // ---------------- SSE ----------------
 
   @Get('/stream')
-  stream(@Res() res: Response) {
-    this.phrasebookService.registerSseClient(res);
+  async stream(@Res() res: Response, @Req() req: AuthenticatedRequest) {
+    const user = await this.authService.getUserFromSession(req);
+    this.phrasebookService.registerSseClient(user.clientId, res);
   }
 
   /**
@@ -99,8 +100,9 @@ export class PhrasebookController {
   // ---------------- Delete ----------------
 
   @Delete('/:id')
-  async deletePhrase(@Param('id') id: string) {
-    return this.phrasebookService.deletePhrase(id);
+  async deletePhrase(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const user = await this.authService.getUserFromSession(req);
+    return this.phrasebookService.deletePhrase(id, user.clientId);
   }
 
   // ---------------- Translation ----------------

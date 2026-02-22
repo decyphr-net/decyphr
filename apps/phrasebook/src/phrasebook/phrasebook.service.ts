@@ -9,6 +9,7 @@ import {
   StatementEventProducer,
   KafkaTopics,
   PhrasebookTokensDto,
+  KafkaProducer,
 } from '@decyphr/messaging';
 
 import { UpdatePhraseDto, PhrasebookStatementDto } from './phrasebook.dto';
@@ -22,11 +23,27 @@ export class PhrasebookService {
     private readonly phraseRepo: Repository<Phrase>,
     @InjectRepository(PhraseToken)
     private readonly tokenRepo: Repository<PhraseToken>,
-  private readonly translationProducer: TranslationProducer,
-  private readonly statementEventProducer: StatementEventProducer,
-) {}
+    private readonly translationProducer: TranslationProducer,
+    private readonly statementEventProducer: StatementEventProducer,
+    private readonly kafkaProducer: KafkaProducer,
+  ) {}
 
   private readonly logger = new Logger(PhrasebookService.name);
+
+  private async emitPhrasebookEvent(event: {
+    type: string;
+    requestId?: string;
+    clientId: string;
+    phraseId?: number;
+    phrase?: PhrasebookStatementDto;
+    status?: 'accepted' | 'completed' | 'failed';
+    error?: string;
+  }) {
+    await this.kafkaProducer.request(KafkaTopics.PHRASEBOOK_EVENTS, {
+      ...event,
+      timestamp: Date.now(),
+    });
+  }
 
   private async emitTranslationRequest(params: {
     clientId: string;
@@ -76,16 +93,17 @@ export class PhrasebookService {
   async createPhrase(
     clientId: string,
     dto: UpdatePhraseDto,
+    requestId?: string,
   ): Promise<PhrasebookStatementDto> {
     const fingerprint = createHash('sha256').update(dto.text).digest('hex');
 
-    const phrase = this.phraseRepo.create({
+    const phraseEntity = this.phraseRepo.create({
       clientId,
       fingerprint,
       createdAt: new Date(),
       ...dto,
     });
-    const saved = await this.phraseRepo.save(phrase);
+    const saved = await this.phraseRepo.save(phraseEntity);
 
     if (dto.tokens?.length) {
       const tokens = dto.tokens.map((t) =>
@@ -105,7 +123,7 @@ export class PhrasebookService {
     if (shouldAutoTranslate && !saved.translation) {
       const translationClientId = saved.clientId || clientId;
       await this.translationProducer.requestTranslation({
-        requestId: randomUUID(),
+        requestId: requestId ?? randomUUID(),
         clientId: translationClientId,
         text: saved.text,
         sourceLanguage: saved.language,
@@ -118,12 +136,22 @@ export class PhrasebookService {
       });
     }
 
-    return this.getPhrase(saved.id);
+    const phraseDto = await this.getPhrase(saved.id);
+    await this.emitPhrasebookEvent({
+      type: 'phrase.created',
+      requestId,
+      clientId,
+      phraseId: saved.id,
+      phrase: phraseDto,
+      status: 'completed',
+    });
+    return phraseDto;
   }
 
   async updatePhrase(
     id: number,
     dto: UpdatePhraseDto,
+    requestId?: string,
   ): Promise<PhrasebookStatementDto> {
     const phrase = await this.phraseRepo.findOne({
       where: { id },
@@ -150,35 +178,66 @@ export class PhrasebookService {
       await this.tokenRepo.save(tokens);
     }
 
-    return this.getPhrase(id);
+    const updated = await this.getPhrase(id);
+    await this.emitPhrasebookEvent({
+      type: 'phrase.updated',
+      requestId,
+      clientId: phrase.clientId,
+      phraseId: id,
+      phrase: updated,
+      status: 'completed',
+    });
+    return updated;
   }
 
-  async deletePhrase(id: number): Promise<{ success: boolean }> {
+  async deletePhrase(
+    id: number,
+    requestId?: string,
+  ): Promise<{ success: boolean }> {
+    const phrase = await this.phraseRepo.findOne({ where: { id } });
     const res = await this.phraseRepo.delete(id);
+    if (res.affected && phrase) {
+      await this.emitPhrasebookEvent({
+        type: 'phrase.deleted',
+        requestId,
+        clientId: phrase.clientId,
+        phraseId: id,
+        status: 'completed',
+      });
+    }
     return { success: res.affected > 0 };
   }
 
   async generateTranslation(
     id: number,
     clientId: string,
+    requestId?: string,
   ): Promise<PhrasebookStatementDto> {
     const where = clientId ? { id, clientId } : { id };
     const phrase = await this.phraseRepo.findOne({ where });
     if (!phrase) throw new NotFoundException(`Phrase ${id} not found`);
 
-    const requestId = randomUUID();
-    phrase.requestId = requestId;
+    const translationRequestId = requestId ?? randomUUID();
+    phrase.requestId = translationRequestId;
     await this.phraseRepo.save(phrase);
 
     const effectiveClientId = clientId || phrase.clientId;
 
     await this.emitTranslationRequest({
-      requestId,
+      requestId: translationRequestId,
       clientId: effectiveClientId,
       text: phrase.text,
       sourceLanguage: phrase.language,
       targetLanguage: 'en',
       statementId: phrase.id,
+    });
+
+    await this.emitPhrasebookEvent({
+      type: 'phrase.translation.requested',
+      requestId: translationRequestId,
+      clientId: phrase.clientId,
+      phraseId: phrase.id,
+      status: 'accepted',
     });
 
     return this.getPhrase(id);
@@ -239,6 +298,15 @@ export class PhrasebookService {
       }),
     );
     await this.tokenRepo.save(tokens);
+
+    await this.emitPhrasebookEvent({
+      type: 'phrase.analyzed',
+      requestId: payload.requestId,
+      clientId: phrase.clientId,
+      phraseId: phrase.id,
+      phrase: await this.getPhrase(phrase.id),
+      status: 'completed',
+    });
   }
 
   async handleTranslationComplete(payload: {
@@ -271,6 +339,15 @@ export class PhrasebookService {
     phrase.translation = payload.translated ?? phrase.translation;
     phrase.translationLanguage = payload.targetLanguage ?? phrase.translationLanguage;
     await this.phraseRepo.save(phrase);
+
+    await this.emitPhrasebookEvent({
+      type: 'phrase.translated',
+      requestId: payload.requestId,
+      clientId: phrase.clientId,
+      phraseId: phrase.id,
+      phrase: await this.getPhrase(phrase.id),
+      status: 'completed',
+    });
   }
 
   private toDto(p: Phrase): PhrasebookStatementDto {
