@@ -13,6 +13,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { I18nController } from './i18n/i18n.controller';
 import { I18nModule } from './i18n/i18n.module';
 import { LexiconModule } from './lexicon/lexicon.module';
+import { CoursesModule } from './courses/courses.module';
 import { PomodoroModule } from './pomodoro/pomodoro.module';
 import { LanguageSetting } from './settings/entities/LanguageSetting';
 import { SettingsModule } from './settings/settings.module';
@@ -57,6 +58,7 @@ import { PracticeModule } from './practice/practice.module';
     PhrasebookModule,
     FocusModule,
     PracticeModule,
+    CoursesModule,
   ],
   controllers: [AppController, I18nController],
 })

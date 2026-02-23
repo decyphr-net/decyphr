@@ -10,7 +10,8 @@
     "libs/*"
   ],
   "scripts": {
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "sync:courses": "node scripts/sync-courses.mjs"
   },
   "devDependencies": {
     "@bufbuild/buf": "^1.64.0",

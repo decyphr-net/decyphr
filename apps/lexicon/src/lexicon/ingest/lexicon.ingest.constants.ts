@@ -4,6 +4,7 @@ export const INTERACTION_WEIGHTS: Record<string, number> = {
   chat_message: 0.6,
   chat_message_bot: 0.3,
   passive_read: 0.1,
+  course_hover_lookup: 0.25,
   flashcard_guess_correct: 0.8,
   flashcard_guess_incorrect: -0.3,
   default: 0.3,

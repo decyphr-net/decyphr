@@ -162,6 +162,17 @@ services:
       - kafka
       - phrasebook
 
+  courses:
+    build:
+      context: .
+      dockerfile: ./apps/courses/Dockerfile
+    expose:
+      - "3015"
+    restart: always
+    depends_on:
+      - mariadb
+      - kafka
+
   client:
     build:
       context: ./apps/client
@@ -175,6 +186,7 @@ services:
       - flashcards
       - focus
       - practice
+      - courses
     environment:
       AUTH_TRUSTED_HEADERS_ENABLED: "true"
       AUTH_TRUSTED_PROXY_IPS: "web,127.0.0.1,localhost"
@@ -186,6 +198,7 @@ services:
       DB_NAME: ${DB_NAME:-user}
       FOCUS_SERVICE_URL: http://focus:3013
       PRACTICE_SERVICE_URL: http://practice:3014
+      COURSES_SERVICE_URL: http://courses:3015
 
   web:
     build:
