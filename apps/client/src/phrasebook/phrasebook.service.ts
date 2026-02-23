@@ -110,7 +110,7 @@ export class PhrasebookService {
   async createPhrase(req: AuthenticatedRequest, body: UpdatePhraseDto) {
     const clientId = await this.authService.getClientIdFromSession(req);
     const user = await this.authService.findUserByClientId(clientId);
-    const language = user.languageSettings?.[0]?.targetLanguage;
+    const language = user?.languageSettings?.[0]?.targetLanguage ?? 'ga';
     const requestId = randomUUID();
 
     const payload: any = {

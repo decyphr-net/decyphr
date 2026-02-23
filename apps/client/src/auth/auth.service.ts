@@ -15,6 +15,7 @@ import { join } from 'path';
 import { Resend } from 'resend';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { SettingsService } from 'src/settings/settings.service';
 import { MagicLink } from './entities/MagicLink';
 import { User } from './entities/User';
 import { AuthenticatedRequest } from './types/request';
@@ -58,8 +59,48 @@ export class AuthService {
     private readonly magicLinkRepo: Repository<MagicLink>,
 
     private readonly config: ConfigService,
+    private readonly settingsService: SettingsService,
   ) {
     this.resend = new Resend(this.config.get<string>('RESEND_API_KEY'));
+  }
+
+  private getHeader(req: AuthenticatedRequest, key: string): string | undefined {
+    const value = req.headers[key];
+    if (typeof value === 'string') return value;
+    if (Array.isArray(value) && value.length > 0) return value[0];
+    return undefined;
+  }
+
+  private parseHeaderUserId(req: AuthenticatedRequest): number | null {
+    const raw = this.getHeader(req, 'x-user-id');
+    if (!raw) return null;
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  private resolveHeaderAuth(req: AuthenticatedRequest) {
+    const clientId = this.getHeader(req, 'x-client-id');
+    const userId = this.parseHeaderUserId(req);
+
+    if (!clientId && !userId) return null;
+
+    return {
+      clientId: clientId ?? null,
+      userId,
+      sessionId: this.getHeader(req, 'x-session-id'),
+      email: this.getHeader(req, 'x-user-email'),
+    };
+  }
+
+  async ensureDefaultLanguageSettings(user: User): Promise<void> {
+    const settings = await this.settingsService.getUserLanguageSettings(user.id);
+    if (settings.length > 0) return;
+    await this.settingsService.createUserLanguageSetting(
+      user,
+      'en',
+      'ga',
+      'normal',
+    );
   }
 
   async loadLoginPage(): Promise<string> {
@@ -152,12 +193,7 @@ export class AuthService {
     return { message: 'Magic link sent!' };
   }
 
-  async verifyMagicLink(token: string, email: string, res: Response) {
-    const dbUser = await this.userRepo.findOne({
-      where: { email },
-      relations: ['languageSettings'],
-    });
-
+  async verifyMagicLinkToken(token: string, email: string): Promise<User> {
     if (!token || !email) {
       throw new BadRequestException('Invalid request');
     }
@@ -178,9 +214,21 @@ export class AuthService {
     const isValid = await bcrypt.compare(token, magicLink.token);
     if (!isValid) throw new UnauthorizedException('Invalid token');
 
-    const user = await this.userRepo.findOne({ where: { email } });
-    if (!user?.clientId)
+    const user = await this.userRepo.findOne({
+      where: { email },
+      relations: ['languageSettings'],
+    });
+    if (!user?.clientId) {
       throw new InternalServerErrorException('Client ID missing');
+    }
+
+    await this.ensureDefaultLanguageSettings(user);
+
+    return user;
+  }
+
+  async verifyMagicLink(token: string, email: string, res: Response) {
+    const user = await this.verifyMagicLinkToken(token, email);
 
     res.cookie('session', user.clientId, {
       httpOnly: true,
@@ -190,16 +238,7 @@ export class AuthService {
       sameSite: 'lax',
     });
 
-    if (!dbUser) throw new Error('User not found');
-
-    res.cookie('session', dbUser.clientId, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      path: '/',
-    });
-
-    return dbUser;
+    return user;
   }
 
   async findUserByClientId(clientId: string): Promise<User | null> {
@@ -207,37 +246,46 @@ export class AuthService {
   }
 
   async getClientIdFromSession(req: AuthenticatedRequest): Promise<string> {
-    const sessionUser = req.session?.user;
-    if (!sessionUser) {
-      throw new Error('User session not found');
+    const headerAuth = this.resolveHeaderAuth(req);
+    if (headerAuth?.clientId) {
+      return headerAuth.clientId;
     }
 
-    const dbUser = await this.userRepo.findOne({
-      where: { id: sessionUser.id },
-    });
-
-    if (!dbUser) {
-      throw new Error('User not found');
-    }
-
-    return dbUser.clientId;
+    const user = await this.getUserFromSession(req);
+    return user.clientId;
   }
 
   async getUserFromSession(req: AuthenticatedRequest): Promise<User> {
-    const sessionUser = req.session?.user;
-    if (!sessionUser) {
-      throw new Error('User session not found');
+    const headerAuth = this.resolveHeaderAuth(req);
+    if (headerAuth?.userId) {
+      const fromHeader = await this.userRepo.findOne({
+        where: { id: headerAuth.userId },
+        relations: ['languageSettings'],
+      });
+      if (fromHeader) return fromHeader;
+    }
+    if (headerAuth?.clientId) {
+      const fromHeader = await this.userRepo.findOne({
+        where: { clientId: headerAuth.clientId },
+        relations: ['languageSettings'],
+      });
+      if (fromHeader) return fromHeader;
     }
 
-    const dbUser = await this.userRepo.findOne({
+    const sessionUser = req.session?.user;
+    if (!sessionUser?.id) {
+      throw new UnauthorizedException('User not authenticated');
+    }
+
+    const fromSession = await this.userRepo.findOne({
       where: { id: sessionUser.id },
       relations: ['languageSettings'],
     });
 
-    if (!dbUser) {
-      throw new Error('User not found');
+    if (!fromSession) {
+      throw new UnauthorizedException('User not found');
     }
 
-    return dbUser;
+    return fromSession;
   }
 }

@@ -140,6 +140,28 @@ services:
     env_file:
       - ./apps/flashcards/.env
 
+  focus:
+    build:
+      context: .
+      dockerfile: ./apps/focus/Dockerfile
+    expose:
+      - "3013"
+    restart: always
+    depends_on:
+      - mariadb
+
+  practice:
+    build:
+      context: .
+      dockerfile: ./apps/practice/Dockerfile
+    expose:
+      - "3014"
+    restart: always
+    depends_on:
+      - mariadb
+      - kafka
+      - phrasebook
+
   client:
     build:
       context: ./apps/client
@@ -151,6 +173,42 @@ services:
       - mariadb
       - kafka
       - flashcards
+      - focus
+      - practice
+    environment:
+      AUTH_TRUSTED_HEADERS_ENABLED: "true"
+      AUTH_TRUSTED_PROXY_IPS: "web,127.0.0.1,localhost"
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:-dev-internal-secret}
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-user}
+      FOCUS_SERVICE_URL: http://focus:3013
+      PRACTICE_SERVICE_URL: http://practice:3014
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: ./Dockerfile
+    ports:
+      - "5173:5173"
+    restart: always
+    depends_on:
+      - client
+    environment:
+      NEST_INTERNAL_URL: http://client:8000
+      WEB_SESSION_SECRET: ${WEB_SESSION_SECRET:-dev-web-session-secret}
+      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:-dev-internal-secret}
+      WEB_APP_URL: ${WEB_APP_URL:-http://localhost:5173}
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-password}
+      DB_NAME: ${DB_NAME:-user}
+      EMAIL_DELIVERY: ${EMAIL_DELIVERY:-log}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-no-reply@example.com}
 
 volumes:
   mariadb_data:

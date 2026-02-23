@@ -21,6 +21,8 @@ import { UtilsModule } from './utils/utils.module';
 import { VaultModule } from './vault/vault.module';
 import { FlashcardsModule } from './flashcards/flashcards.module';
 import { PhrasebookModule } from './phrasebook/phrasebook.module';
+import { FocusModule } from './focus/focus.module';
+import { PracticeModule } from './practice/practice.module';
 
 @Module({
   imports: [
@@ -53,6 +55,8 @@ import { PhrasebookModule } from './phrasebook/phrasebook.module';
     PomodoroModule,
     FlashcardsModule,
     PhrasebookModule,
+    FocusModule,
+    PracticeModule,
   ],
   controllers: [AppController, I18nController],
 })

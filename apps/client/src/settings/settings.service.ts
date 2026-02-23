@@ -21,6 +21,17 @@ export class SettingsService {
     targetLanguage: string,
     immersionLevel: 'normal' | 'full',
   ): Promise<LanguageSetting> {
+    const existing = await this.settingRepo.findOne({
+      where: { user: { id: user.id } },
+      relations: ['user'],
+    });
+    if (existing) {
+      existing.firstLanguage = firstLanguage;
+      existing.targetLanguage = targetLanguage;
+      existing.immersionLevel = immersionLevel;
+      return this.settingRepo.save(existing);
+    }
+
     const setting = this.settingRepo.create({
       user,
       firstLanguage,
@@ -41,5 +52,9 @@ export class SettingsService {
     });
 
     return setting?.targetLanguage ?? null;
+  }
+
+  async ensureDefaultLanguageSetting(user: User): Promise<LanguageSetting> {
+    return this.createUserLanguageSetting(user, 'en', 'ga', 'normal');
   }
 }

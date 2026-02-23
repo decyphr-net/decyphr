@@ -1,4 +1,3 @@
-import { HttpService } from '@nestjs/axios';
 import {
   Body,
   Controller,
@@ -13,7 +12,6 @@ import { Response } from 'express';
 import { readFile } from 'fs/promises';
 import { EachMessagePayload } from 'kafkajs';
 import { join } from 'path';
-import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthenticatedRequest } from 'src/auth/types/request';
 import { KafkaService } from 'src/utils/kafka/kafka.service';
@@ -29,7 +27,6 @@ export class ChatController implements OnModuleInit {
     private gateway: ChatGateway,
     private readonly kafkaService: KafkaService,
     private readonly authService: AuthService,
-    private readonly httpService: HttpService,
   ) { }
 
   /**
@@ -102,7 +99,7 @@ export class ChatController implements OnModuleInit {
       type: 'start',
       clientId: user.clientId,
       botId: body.botId,
-      language: user.languageSettings?.[0]?.targetLanguage,
+      language: user.languageSettings?.[0]?.targetLanguage ?? 'ga',
     };
 
     this.logger.debug(`Producing chat.start for clientId=${user.clientId}`);
@@ -140,7 +137,7 @@ export class ChatController implements OnModuleInit {
       clientId: user.clientId,
       messages: body.messages,
       interaction,
-      langToTranslateTo: user.languageSettings?.[0]?.firstLanguage,
+      langToTranslateTo: user.languageSettings?.[0]?.firstLanguage ?? 'en',
     };
 
     this.logger.debug(
@@ -163,13 +160,12 @@ export class ChatController implements OnModuleInit {
     const clientId = await this.authService.getClientIdFromSession(req);
 
     try {
-      const response = await firstValueFrom(
-        this.httpService.get(`http://chat:3008/chat/history`, {
-          params: { clientId },
-        }),
+      const response = await fetch(
+        `http://chat:3008/chat/history?clientId=${encodeURIComponent(clientId)}`,
       );
+      const data = await response.json();
       this.logger.debug(`Fetched chat history for clientId=${clientId}`);
-      return response.data;
+      return data;
     } catch (err) {
       this.logger.error(
         `Failed to fetch chat history for clientId=${clientId}`,

@@ -28,8 +28,8 @@ export class PhrasebookController {
 
   @Get('/stream')
   async stream(@Res() res: Response, @Req() req: AuthenticatedRequest) {
-    const user = await this.authService.getUserFromSession(req);
-    this.phrasebookService.registerSseClient(user.clientId, res);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    this.phrasebookService.registerSseClient(clientId, res);
   }
 
   /**
@@ -66,8 +66,8 @@ export class PhrasebookController {
 
   @Get('/list')
   async getPhrasebook(@Req() req: AuthenticatedRequest) {
-    const user = await this.authService.getUserFromSession(req);
-    return this.phrasebookService.getPhrasebook(user.clientId);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    return this.phrasebookService.getPhrasebook(clientId);
   }
 
   @Get('/:id')
@@ -93,16 +93,16 @@ export class PhrasebookController {
     @Body() body: UpdatePhraseDto,
     @Req() req: AuthenticatedRequest,
   ) {
-    const user = await this.authService.getUserFromSession(req);
-    return this.phrasebookService.updatePhrase(id, user.clientId, body);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    return this.phrasebookService.updatePhrase(id, clientId, body);
   }
 
   // ---------------- Delete ----------------
 
   @Delete('/:id')
   async deletePhrase(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
-    const user = await this.authService.getUserFromSession(req);
-    return this.phrasebookService.deletePhrase(id, user.clientId);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    return this.phrasebookService.deletePhrase(id, clientId);
   }
 
   // ---------------- Translation ----------------
@@ -112,7 +112,7 @@ export class PhrasebookController {
     @Param('id') id: string,
     @Req() req: AuthenticatedRequest,
   ) {
-    const user = await this.authService.getUserFromSession(req);
-    return this.phrasebookService.generateTranslation(id, user.clientId);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    return this.phrasebookService.generateTranslation(id, clientId);
   }
 }

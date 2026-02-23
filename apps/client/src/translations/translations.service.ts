@@ -1,9 +1,8 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { Response } from 'express';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { firstValueFrom, lastValueFrom, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ulid } from 'ulid';
 
 import { AuthService } from 'src/auth/auth.service';
@@ -32,10 +31,8 @@ export class TranslationsService {
 
   constructor(
     private readonly ktableService: KTableService,
-    private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly kafkaService: KafkaService,
-    private readonly http: HttpService,
   ) { }
 
   async initKTableWatchers() {
@@ -68,11 +65,8 @@ export class TranslationsService {
   }
 
   async getClientTranslations(clientId: string) {
-    const response$ = this.httpService.get(
-      `http://translator:3009/translations/${clientId}`,
-    );
-    const response = await lastValueFrom(response$);
-    return response.data;
+    const response = await fetch(`http://translator:3009/translations/${clientId}`);
+    return response.json();
   }
 
   getSSEStream(clientId: string): Observable<MessageEvent> {
@@ -147,8 +141,8 @@ export class TranslationsService {
 
   async emitTranslationRequest(dto: TranslationDto): Promise<void> {
     const user = await this.authService.findUserByClientId(dto.clientId);
-    const sourceLanguage = user.languageSettings?.[0]?.targetLanguage;
-    const targetLanguage = user.languageSettings?.[0]?.firstLanguage;
+    const sourceLanguage = user?.languageSettings?.[0]?.targetLanguage ?? 'ga';
+    const targetLanguage = user?.languageSettings?.[0]?.firstLanguage ?? 'en';
 
     const event = {
       requestId: dto.requestId,
@@ -191,12 +185,9 @@ export class TranslationsService {
   }
 
   async getVaultList(clientId: string) {
-    const res = await firstValueFrom(
-      this.http.get(process.env.TRANSLATOR_URL + '/vault/list', {
-        params: { clientId },
-      }),
-    );
-
-    return res.data;
+    const url = new URL(process.env.TRANSLATOR_URL + '/vault/list');
+    url.searchParams.set('clientId', clientId);
+    const res = await fetch(url.toString());
+    return res.json();
   }
 }

@@ -78,7 +78,7 @@ export class LexiconController {
     try {
       // Call your existing endpoint (assuming same server)
       const response = await fetch(
-        `http://lexicon:3010/snapshot/${clientId}/${user.languageSettings?.[0]?.targetLanguage}`,
+        `http://lexicon:3010/snapshot/${clientId}/${user?.languageSettings?.[0]?.targetLanguage ?? 'ga'}`,
       );
       const data = await response.json();
 
@@ -91,10 +91,11 @@ export class LexiconController {
 
   @Get('/lexicon/user')
   async getUserLexicon(@Req() req: AuthenticatedRequest) {
-    const user = await this.authService.getUserFromSession(req);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    const user = await this.authService.findUserByClientId(clientId);
     return this.lexiconService.getUserLexicon(
-      user.clientId,
-      user.languageSettings?.[0]?.targetLanguage,
+      clientId,
+      user?.languageSettings?.[0]?.targetLanguage ?? 'ga',
     );
   }
 
@@ -104,7 +105,8 @@ export class LexiconController {
     @Req() req: AuthenticatedRequest,
     @Res() res: Response,
   ) {
-    const user = await this.authService.getUserFromSession(req);
+    const clientId = await this.authService.getClientIdFromSession(req);
+    const user = await this.authService.findUserByClientId(clientId);
 
     if (!body.words?.length) {
       return res.status(400).json({ error: 'No words provided' });
@@ -117,8 +119,8 @@ export class LexiconController {
 
     try {
       await this.lexiconService.importWords({
-        clientId: user.clientId,
-        targetLanguage: user.languageSettings?.[0]?.targetLanguage,
+        clientId,
+        targetLanguage: user?.languageSettings?.[0]?.targetLanguage ?? 'ga',
         words: body.words,
         interaction,
       });

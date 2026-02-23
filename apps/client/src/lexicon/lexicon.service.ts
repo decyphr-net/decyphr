@@ -109,7 +109,7 @@ export class LexiconService {
         statementId: input.statementId || ulid(),
         clientId: input.clientId,
         changes: input.changes,
-        language: user.languageSettings?.[0]?.targetLanguage,
+        language: user.languageSettings?.[0]?.targetLanguage ?? 'ga',
         interaction: input.interaction,
         type: isNew ? 'statement_created' : 'statement_updated',
         autoTranslate: input.autoTranslate ?? false,
@@ -124,8 +124,8 @@ export class LexiconService {
       await this.translationsService.emitTranslationRequest({
         clientId: input.clientId,
         text: input.changes.text,
-        sourceLanguage: user.languageSettings?.[0]?.firstLanguage,
-        targetLanguage: user.languageSettings?.[0]?.targetLanguage,
+        sourceLanguage: user.languageSettings?.[0]?.firstLanguage ?? 'en',
+        targetLanguage: user.languageSettings?.[0]?.targetLanguage ?? 'ga',
         statementId: input.statementId || null,
         requestId,
       });
