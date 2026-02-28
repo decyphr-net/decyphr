@@ -1,0 +1,143 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-3-breakdown-part-2",
+  "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 2",
+  "order": 3,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "is",
+    "muire",
+    "duit",
+    "cupán",
+    "tae",
+    "le",
+    "do",
+    "thoil",
+    "sin",
+    "trí",
+    "euro",
+    "cárta",
+    "nó",
+    "airgead",
+    "tirim",
+    "seo",
+    "tá",
+    "an",
+    "bainne",
+    "agus",
+    "siúcra",
+    "ar",
+    "mbord"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# The Smallest, Easiest Conversation - Breakdown Part 2\nNow, let's move on to the next 3 lines, which are nice and straight forward:\n\n- Customer\n> Dia is Muire duit. Cupán tae, le do thoil  \n> DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull  \n> Hi, a cup of tea, please  \n\n- Barista\n> Sin trí euro. Cárta nó airgead tirim?  \n> Shin tree YUR-oh. KAR-tuh noh AR-gid TIR-im?  \n> That's three euro. Card or cash?  \n\n- Customer\n> Cárta  \n> KAR-tuh.  \n> Card  \n\n- Barista\n> Seo duit! Tá an bainne agus siúcra ar an mbord sin  \n> Sho gwich! Taw un BAN-yuh ah-gus SHOOK-ruh er un moard shin.  \n> Here you are! The milk and sugar are on that table  \n\nFirst we have `sin trí euro`. `Sin` means “that”. Here it works like “that’s”, so \"that's three euro\".\n\nAnother small note here is `airgead tirim`. `Tirim` means \"dry\", and `airgead` is money/silver, so literally it would be \"dry money\", but it means \"cash\". Again, this is a fixed phrase that you'll likely come across regularly, so don't worry about the literal translation, unless it helps you to remember.\n\nThe customer then replies simply stating that they intend to pay with card.\n\nWhen the tea is ready, the barista lets them know where they can find the milk and sugar.\n\n`Seo duit` means \"here you are\". `Seo` is the Irish word for \"this\", and we've seen `duit` before, so we know it means \"to/for you\", so \"this is for you\", is a literal translation here.\n\nThe next sentence informs the customer of where the `bainne agus siúcra` (milk and sugar) are. They \"are on that table\".\n\n`An` means “the”.  Irish also uses `an` when pointing to something specific - for `an bord sin` (“that table”). The `ar` simply means \"on\". So, with that, `ar an mbord sin` then simply means \"on that table\".\n",
+  "blocks": [
+    {
+      "id": "the-smallest-easiest-conversation-breakdown-part-2-1",
+      "type": "heading",
+      "level": 1,
+      "text": "The Smallest, Easiest Conversation - Breakdown Part 2"
+    },
+    {
+      "id": "now-let-s-move-on-to-the-next-3-lines-which-are-nice-and-straigh-2",
+      "type": "paragraph",
+      "text": "Now, let's move on to the next 3 lines, which are nice and straight forward:"
+    },
+    {
+      "id": "dia-is-muire-duit-cupan-tae-le-do-thoil-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Dia is Muire duit. Cupán tae, le do thoil",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull",
+          "translation": "Hi, a cup of tea, please"
+        }
+      ]
+    },
+    {
+      "id": "sin-tri-euro-carta-no-airgead-tirim-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Sin trí euro. Cárta nó airgead tirim?",
+          "pronunciation": "Shin tree YUR-oh. KAR-tuh noh AR-gid TIR-im?",
+          "translation": "That's three euro. Card or cash?"
+        }
+      ]
+    },
+    {
+      "id": "carta-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Cárta",
+          "pronunciation": "KAR-tuh.",
+          "translation": "Card"
+        }
+      ]
+    },
+    {
+      "id": "seo-duit-ta-an-bainne-agus-siucra-ar-an-mbord-sin-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Seo duit! Tá an bainne agus siúcra ar an mbord sin",
+          "pronunciation": "Sho gwich! Taw un BAN-yuh ah-gus SHOOK-ruh er un moard shin.",
+          "translation": "Here you are! The milk and sugar are on that table"
+        }
+      ]
+    },
+    {
+      "id": "first-we-have-sin-tri-euro-sin-means-that-here-it-works-like-tha-7",
+      "type": "paragraph",
+      "text": "First we have `sin trí euro`. `Sin` means “that”. Here it works like “that’s”, so \"that's three euro\"."
+    },
+    {
+      "id": "another-small-note-here-is-airgead-tirim-tirim-means-dry-and-air-8",
+      "type": "paragraph",
+      "text": "Another small note here is `airgead tirim`. `Tirim` means \"dry\", and `airgead` is money/silver, so literally it would be \"dry money\", but it means \"cash\". Again, this is a fixed phrase that you'll likely come across regularly, so don't worry about the literal translation, unless it helps you to remember."
+    },
+    {
+      "id": "the-customer-then-replies-simply-stating-that-they-intend-to-pay-9",
+      "type": "paragraph",
+      "text": "The customer then replies simply stating that they intend to pay with card."
+    },
+    {
+      "id": "when-the-tea-is-ready-the-barista-lets-them-know-where-they-can--10",
+      "type": "paragraph",
+      "text": "When the tea is ready, the barista lets them know where they can find the milk and sugar."
+    },
+    {
+      "id": "seo-duit-means-here-you-are-seo-is-the-irish-word-for-this-and-w-11",
+      "type": "paragraph",
+      "text": "`Seo duit` means \"here you are\". `Seo` is the Irish word for \"this\", and we've seen `duit` before, so we know it means \"to/for you\", so \"this is for you\", is a literal translation here."
+    },
+    {
+      "id": "the-next-sentence-informs-the-customer-of-where-the-bainne-agus--12",
+      "type": "paragraph",
+      "text": "The next sentence informs the customer of where the `bainne agus siúcra` (milk and sugar) are. They \"are on that table\"."
+    },
+    {
+      "id": "an-means-the-irish-also-uses-an-when-pointing-to-something-speci-13",
+      "type": "paragraph",
+      "text": "`An` means “the”.  Irish also uses `an` when pointing to something specific - for `an bord sin` (“that table”). The `ar` simply means \"on\". So, with that, `ar an mbord sin` then simply means \"on that table\"."
+    }
+  ],
+  "contentVersion": "b83f1e3389f6eda9"
+}

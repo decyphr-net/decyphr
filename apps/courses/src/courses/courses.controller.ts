@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { CourseLexiconExposureDto, CourseProgressUpdateDto } from './courses.dto';
+import { CourseGlossLookupDto, CourseLexiconExposureDto, CourseProgressUpdateDto } from './courses.dto';
 import { CoursesService } from './courses.service';
 
 @Controller('courses')
@@ -50,5 +50,15 @@ export class CoursesController {
       lessonSlug,
       body,
     );
+  }
+
+  @Post(':courseSlug/lessons/:lessonSlug/gloss')
+  lookupGloss(
+    @Query('clientId') clientId: string,
+    @Param('courseSlug') courseSlug: string,
+    @Param('lessonSlug') lessonSlug: string,
+    @Body() body: CourseGlossLookupDto,
+  ) {
+    return this.coursesService.lookupGloss(this.requireClientId(clientId), courseSlug, lessonSlug, body);
   }
 }

@@ -473,10 +473,10 @@ export class LexiconIngestService implements OnModuleInit {
   }
 
   private interactionCorrectness(type: string): number | undefined {
-    if (type === 'flashcard_guess_correct') {
+    if (type === 'flashcard_guess_correct' || type === 'course_swap_correct') {
       return 1;
     }
-    if (type === 'flashcard_guess_incorrect') {
+    if (type === 'flashcard_guess_incorrect' || type === 'course_swap_incorrect') {
       return 0;
     }
     return undefined;

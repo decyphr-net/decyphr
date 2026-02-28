@@ -1,5 +1,15 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+  import AppModal from '$lib/components/ui/AppModal.svelte';
+  import {
+    incrementPracticeProgress,
+    loadStudySession,
+    saveStudySession,
+    studyFlashcardsHref,
+    studyCoordinatorHref,
+    type StudySession,
+  } from '$lib/study-session';
 
   type ExerciseType = 'typed_translation' | 'sentence_builder' | 'cloze';
   const SESSION_SIZE = 15;
@@ -39,6 +49,20 @@
     expectedAnswerHtml: string;
   } | null = null;
   let feedbackMessage = '';
+  let sessionLimit = SESSION_SIZE;
+  let studySessionId = '';
+  let studySession: StudySession | null = null;
+  let studyReturnTo = '';
+  let studyAutoStartDue = false;
+  let studyProgressSavedForRun = false;
+  let studyProgressPersistedForRun = 0;
+  let showContinueStudy = false;
+  let studyMode = false;
+  let authClientId = '';
+  let showInfoModal = false;
+  let infoModalTitle = '';
+  let infoModalMessage = '';
+  let showNoDueChoiceModal = false;
 
   const successMessages = [
     'Great job. That was spot on.',
@@ -167,6 +191,83 @@
     .sort((a, b) => Number(a.selectedAt) - Number(b.selectedAt))
     .map((token) => token.value);
   $: progress = totalPlanned > 0 ? Math.min(100, Math.round((completedCount / totalPlanned) * 100)) : 0;
+  $: studyMode = Boolean(studySessionId);
+
+  function parseSessionLimit(raw: string | null) {
+    const parsed = Number(raw || SESSION_SIZE);
+    if (!Number.isFinite(parsed)) return SESSION_SIZE;
+    return Math.max(1, Math.min(100, Math.round(parsed)));
+  }
+
+  async function loadAuthContext() {
+    authClientId = '';
+    try {
+      const res = await fetch('/api/auth/session', { cache: 'no-store' });
+      if (!res.ok) return;
+      const payload = await res.json();
+      authClientId = String(payload?.clientId || '').trim();
+    } catch {
+      authClientId = '';
+    }
+  }
+
+  function openInfoModal(title: string, message: string) {
+    infoModalTitle = title;
+    infoModalMessage = message;
+    showInfoModal = true;
+  }
+
+  function closeInfoModal() {
+    showInfoModal = false;
+  }
+
+  async function fetchDueCount() {
+    try {
+      const res = await fetch('/api/proxy/practice/progress', { cache: 'no-store' });
+      if (!res.ok) return null;
+      const payload = await res.json();
+      const rawCount = Number(payload?.dueCount);
+      if (!Number.isFinite(rawCount)) return null;
+      return Math.max(0, Math.round(rawCount));
+    } catch {
+      return null;
+    }
+  }
+
+  function loadStudyQueryConfig() {
+    const params = new URLSearchParams(window.location.search);
+    studySessionId = params.get('studySession') || '';
+    sessionLimit = parseSessionLimit(params.get('sessionLimit'));
+    studyAutoStartDue = params.get('autoStart') === 'due';
+    studyReturnTo = params.get('returnTo') || (studySessionId ? studyCoordinatorHref(studySessionId) : '');
+    if (!authClientId) {
+      studySessionId = '';
+      studySession = null;
+      studyReturnTo = '';
+      studyAutoStartDue = false;
+      sessionLimit = SESSION_SIZE;
+      return;
+    }
+
+    studySession = studySessionId ? loadStudySession(studySessionId, authClientId || null) : null;
+
+    // If session storage is missing/corrupt, drop back to normal page behavior.
+    if (studySessionId && !studySession) {
+      studySessionId = '';
+      studyReturnTo = '';
+      studyAutoStartDue = false;
+      sessionLimit = SESSION_SIZE;
+    }
+  }
+
+  function persistStudyPracticeProgress(delta: number) {
+    if (!studySessionId || delta <= 0) return;
+    const currentSession = loadStudySession(studySessionId, authClientId || null);
+    if (!currentSession) return;
+    incrementPracticeProgress(currentSession, delta);
+    saveStudySession(currentSession);
+    studySession = currentSession;
+  }
 
   async function readError(res: Response, fallback: string) {
     try {
@@ -212,56 +313,90 @@
     queue = (items || [])
       .map((item) => ({ ...item, source: 'main' as const }))
       .filter((item) => !isInvalidExercise(item))
-      .slice(0, SESSION_SIZE);
+      .slice(0, sessionLimit);
 
     index = 0;
     completedCount = 0;
     totalPlanned = queue.length;
     masteredKeys = new Set<string>();
     sessionMode = queue.length > 0 ? mode : 'idle';
+    studyProgressSavedForRun = false;
+    studyProgressPersistedForRun = 0;
+    showContinueStudy = false;
 
     skipInvalidExercises();
 
     if (queue.length === 0) {
-      alert(
+      openInfoModal(
+        mode === 'lesson' ? 'No practice phrases yet' : 'No recent mistakes',
         mode === 'lesson'
-          ? 'No practice items are available right now.'
-          : 'No recent mistakes found. Great work.',
+          ? 'Continue with course material to unlock new phrases, then come back to practice.'
+          : 'Great work. You have no recent mistakes to review right now.',
       );
     }
   }
 
-  async function startLesson() {
+  async function startLesson(skipNoDueDecision = false) {
+    if (loading) return;
     loading = true;
     try {
-      const res = await fetch(`/api/proxy/practice/due?limit=${SESSION_SIZE}`, { cache: 'no-store' });
+      if (!skipNoDueDecision) {
+        const dueCount = await fetchDueCount();
+        if (dueCount === 0) {
+          showNoDueChoiceModal = true;
+          return;
+        }
+      }
+
+      const res = await fetch(`/api/proxy/practice/due?limit=${sessionLimit}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(await readError(res, 'Failed to load practice session'));
       const payload = await res.json();
       beginSession(payload?.items || [], 'lesson');
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : 'Failed to start practice session');
+      openInfoModal(
+        'Unable to start practice',
+        error instanceof Error ? error.message : 'Failed to start practice session',
+      );
     } finally {
       loading = false;
     }
   }
 
   async function startFixMistakes() {
+    if (loading) return;
     loading = true;
     try {
-      const res = await fetch(`/api/proxy/practice/mistakes?limit=${SESSION_SIZE}`, { cache: 'no-store' });
+      const res = await fetch(`/api/proxy/practice/mistakes?limit=${sessionLimit}`, { cache: 'no-store' });
       if (!res.ok) throw new Error(await readError(res, 'Failed to load mistakes session'));
       const payload = await res.json();
       beginSession(payload?.items || [], 'fix_mistakes');
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : 'Failed to start mistakes session');
+      openInfoModal(
+        'Unable to start mistakes review',
+        error instanceof Error ? error.message : 'Failed to start mistakes session',
+      );
     } finally {
       loading = false;
     }
   }
 
+  function continueWithSavedPhrases() {
+    showNoDueChoiceModal = false;
+    startLesson(true).catch(() => undefined);
+  }
+
+  function continueWithCourse() {
+    showNoDueChoiceModal = false;
+    goto('/dashboard/courses?view=all');
+  }
+
   function startFlashcardReview() {
+    if (studySession) {
+      goto(studyFlashcardsHref(studySession, studyReturnTo || studyCoordinatorHref(studySession.id)));
+      return;
+    }
     goto('/dashboard/flashcards/study');
   }
 
@@ -345,6 +480,10 @@
         if (!masteredKeys.has(key)) {
           masteredKeys.add(key);
           completedCount = masteredKeys.size;
+          if (studyMode) {
+            persistStudyPracticeProgress(1);
+            studyProgressPersistedForRun += 1;
+          }
         }
       } else {
         // Retry wrong prompts, but do not change total/progress denominator.
@@ -352,7 +491,10 @@
       }
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : 'Failed to submit answer');
+      openInfoModal(
+        'Unable to submit answer',
+        error instanceof Error ? error.message : 'Failed to submit answer',
+      );
     } finally {
       submitting = false;
     }
@@ -374,7 +516,35 @@
     showAnswer = false;
     freeTextAnswer = '';
     sentenceChoices = [];
+    studyProgressSavedForRun = false;
+    studyProgressPersistedForRun = 0;
+    showContinueStudy = false;
   }
+
+  $: if (sessionMode === 'complete' && studyMode && !studyProgressSavedForRun) {
+    studyProgressSavedForRun = true;
+    const remaining = Math.max(0, completedCount - studyProgressPersistedForRun);
+    if (remaining > 0) {
+      persistStudyPracticeProgress(remaining);
+      studyProgressPersistedForRun += remaining;
+    }
+    showContinueStudy = true;
+    if (studyReturnTo) {
+      const redirectTo = studyReturnTo;
+      setTimeout(() => {
+        goto(redirectTo).catch(() => undefined);
+      }, 1200);
+    }
+  }
+
+  onMount(() => {
+    loadAuthContext().finally(() => {
+      loadStudyQueryConfig();
+      if (studyAutoStartDue) {
+        startLesson(true).catch(() => undefined);
+      }
+    });
+  });
 </script>
 
 <section class="max-w-5xl mx-auto space-y-6">
@@ -383,6 +553,22 @@
     <p class="mt-2 text-sky-50">Complete a focused run. Mistakes get repeated at the end.</p>
   </header>
 
+  {#if studyMode}
+    <section class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-900">
+      <p class="text-sm font-semibold">Study session mode</p>
+      {#if studySession}
+        <p class="text-sm mt-1">
+          Practice target: {studySession.progress.practiceCompleted} / {studySession.targets.practice}
+        </p>
+      {/if}
+      {#if studyReturnTo}
+        <p class="text-sm mt-1">
+          You will return to your guided session after completion.
+        </p>
+      {/if}
+    </section>
+  {/if}
+
   {#if sessionMode === 'idle'}
     <div class="grid md:grid-cols-3 gap-4">
       <button
@@ -390,9 +576,11 @@
         disabled={loading}
         class="rounded-2xl border bg-white p-6 text-left shadow-sm hover:shadow-md transition disabled:opacity-60"
       >
-        <p class="text-sm uppercase tracking-wide text-emerald-600 font-semibold">Main Session</p>
+        <p class="text-sm uppercase tracking-wide text-emerald-600 font-semibold">Anytime Session</p>
         <h2 class="mt-1 text-2xl font-bold text-gray-900">Start Practice</h2>
-        <p class="mt-2 text-sm text-gray-600">Mixed exercises from your phrasebook.</p>
+        <p class="mt-2 text-sm text-gray-600">
+          Uses due prompts first, then reuses saved phrases so you can keep practicing anytime.
+        </p>
       </button>
 
       <button
@@ -422,6 +610,14 @@
       <button onclick={restart} class="mt-2 rounded-lg bg-emerald-600 text-white px-5 py-2.5 font-semibold">
         Back to Practice
       </button>
+      {#if showContinueStudy && studyReturnTo}
+        <button
+          onclick={() => goto(studyReturnTo)}
+          class="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 px-5 py-2.5 font-semibold text-emerald-700"
+        >
+          Continue Study Session
+        </button>
+      {/if}
     </div>
   {:else}
     <div class="rounded-2xl border bg-white p-6 shadow-sm space-y-5">
@@ -536,3 +732,54 @@
     </div>
   {/if}
 </section>
+
+<AppModal
+  open={showNoDueChoiceModal}
+  title="Daily due complete"
+  description="You have finished today’s due prompts. Choose what to do next."
+  on:close={() => (showNoDueChoiceModal = false)}
+>
+  <p class="text-sm text-slate-700">
+    You can keep practicing saved phrases now, or continue your course to unlock new phrases.
+  </p>
+  <div slot="actions">
+    <button
+      type="button"
+      class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
+      onclick={() => (showNoDueChoiceModal = false)}
+    >
+      Cancel
+    </button>
+    <button
+      type="button"
+      class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700"
+      onclick={continueWithCourse}
+    >
+      Continue Course
+    </button>
+    <button
+      type="button"
+      class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+      onclick={continueWithSavedPhrases}
+    >
+      Practice Saved Phrases
+    </button>
+  </div>
+</AppModal>
+
+<AppModal
+  open={showInfoModal}
+  title={infoModalTitle}
+  description={infoModalMessage}
+  on:close={closeInfoModal}
+>
+  <div slot="actions">
+    <button
+      type="button"
+      class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+      onclick={closeInfoModal}
+    >
+      OK
+    </button>
+  </div>
+</AppModal>

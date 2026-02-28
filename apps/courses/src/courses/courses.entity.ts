@@ -40,6 +40,18 @@ export class CourseProgress {
   @Column({ type: 'int', unsigned: true, default: 0 })
   timeSpentSec!: number;
 
+  @Column({ type: 'text', nullable: true })
+  microCompletedChunkIds!: string | null;
+
+  @Column({ type: 'varchar', length: 64, nullable: true })
+  microLastChunkId!: string | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  microUpdatedAt!: Date | null;
+
+  @Column({ type: 'longtext', nullable: true })
+  swapQuizState!: string | null;
+
   @Column({ type: 'datetime', nullable: true })
   startedAt!: Date | null;
 
@@ -74,8 +86,8 @@ export class CourseLexiconEvent {
   @Column({ type: 'varchar', length: 128 })
   lessonSlug!: string;
 
-  @Column({ type: 'enum', enum: ['render', 'hover'] })
-  source!: 'render' | 'hover';
+  @Column({ type: 'enum', enum: ['render', 'hover', 'gloss', 'swap_correct', 'swap_incorrect'] })
+  source!: 'render' | 'hover' | 'gloss' | 'swap_correct' | 'swap_incorrect';
 
   @Column({ type: 'varchar', length: 128 })
   eventId!: string;

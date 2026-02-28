@@ -2,22 +2,27 @@
   import { onMount } from 'svelte';
   import FocusWidget from '$lib/components/focus/FocusWidget.svelte';
   let { children } = $props();
-  let theme: 'light' | 'dark' = 'light';
+  const themeModes: Record<string, 'light' | 'dark'> = {
+    light: 'light',
+    dark: 'dark',
+  };
+  let theme = 'light';
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
     location.href = '/auth/login';
   }
 
-  function setTheme(next: 'light' | 'dark') {
+  function setTheme(next: string) {
     theme = next;
-    document.documentElement.classList.toggle('dark', next === 'dark');
+    document.documentElement.setAttribute('data-theme', next);
+    document.documentElement.classList.toggle('dark', (themeModes[next] || 'light') === 'dark');
     localStorage.setItem('theme', next);
   }
 
   onMount(() => {
     const stored = localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') {
+    if (stored && themeModes[stored]) {
       setTheme(stored);
     } else {
       setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -36,10 +41,6 @@
 
     <nav class="flex-1 overflow-y-auto px-2 py-4 space-y-2">
       <a href="/dashboard" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="layout-dashboard" class="w-5 h-5"></i><span>Dashboard</span></a>
-      <a href="/dashboard/chat" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="message-circle" class="w-5 h-5"></i><span>Chat</span></a>
-      <a href="/dashboard/translations" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="languages" class="w-5 h-5"></i><span>Translations</span></a>
-      <a href="/dashboard/lexicon" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="book-open" class="w-5 h-5"></i><span>Lexicon</span></a>
-      <a href="/dashboard/vault" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="archive" class="w-5 h-5"></i><span>Vault</span></a>
       <a href="/dashboard/pomodoro" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="timer" class="w-5 h-5"></i><span>Pomodoro</span></a>
       <a href="/dashboard/goals" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="target" class="w-5 h-5"></i><span>Goals</span></a>
       <a href="/dashboard/practice" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition"><i data-lucide="brain" class="w-5 h-5"></i><span>Practice</span></a>
@@ -51,25 +52,13 @@
       <div class="grid grid-cols-2 gap-2">
         <button
           onclick={() => setTheme('light')}
-          class="rounded-lg px-3 py-2 text-sm border transition"
-          class:bg-white={theme === 'light'}
-          class:text-slate-900={theme === 'light'}
-          class:border-white={theme === 'light'}
-          class:bg-white/10={theme !== 'light'}
-          class:text-white={theme !== 'light'}
-          class:border-white/20={theme !== 'light'}
+          class={`rounded-lg px-3 py-2 text-sm border transition ${theme === 'light' ? 'bg-white text-slate-900 border-white' : 'bg-white/10 text-white border-white/20'}`}
         >
           Light
         </button>
         <button
           onclick={() => setTheme('dark')}
-          class="rounded-lg px-3 py-2 text-sm border transition"
-          class:bg-white={theme === 'dark'}
-          class:text-slate-900={theme === 'dark'}
-          class:border-white={theme === 'dark'}
-          class:bg-white/10={theme !== 'dark'}
-          class:text-white={theme !== 'dark'}
-          class:border-white/20={theme !== 'dark'}
+          class={`rounded-lg px-3 py-2 text-sm border transition ${theme === 'dark' ? 'bg-white text-slate-900 border-white' : 'bg-white/10 text-white border-white/20'}`}
         >
           Dark
         </button>

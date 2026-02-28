@@ -1,0 +1,97 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-11-bonus-order",
+  "lessonTitle": "Bonus Order - Hot Chocolate",
+  "order": 11,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Bonus Order - Hot Chocolate\n\nRight — time to put this together. No prompts. No subtitles. No safety net.\n\nWalk into the coffee shop and order a hot chocolate, from start to finish, entirely in Irish.\n\nBuild the whole interaction:\nGreeting → Order → Clarifications → Payment → Goodbye.\n\nOut loud.\n\nDo it from both perspectives, one where the customer requests various forms:\n- With marshmallows, without cream\n- With cream, without marshmallows\n\nDo it twice:\n1. Where the customer volunteers the add-ons.\n2. Where the barista has to ask for the extra information.\n\nIf that felt comfortable, level it up:\n- With a non-dairy milk\n- With a non-dairy cream\n- With vegan marshmallows\n\nAdd anything else you think might come up for a single-item order.\n\nIf you can do this, you’re ready for the real world.\n\nNext lesson — you’re taking it outside.\n",
+  "blocks": [
+    {
+      "id": "bonus-order-hot-chocolate-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Bonus Order - Hot Chocolate"
+    },
+    {
+      "id": "right-time-to-put-this-together-no-prompts-no-subtitles-no-safet-2",
+      "type": "paragraph",
+      "text": "Right — time to put this together. No prompts. No subtitles. No safety net."
+    },
+    {
+      "id": "walk-into-the-coffee-shop-and-order-a-hot-chocolate-from-start-t-3",
+      "type": "paragraph",
+      "text": "Walk into the coffee shop and order a hot chocolate, from start to finish, entirely in Irish."
+    },
+    {
+      "id": "build-the-whole-interaction-greeting-order-clarifications-paymen-4",
+      "type": "paragraph",
+      "text": "Build the whole interaction: Greeting → Order → Clarifications → Payment → Goodbye."
+    },
+    {
+      "id": "out-loud-5",
+      "type": "paragraph",
+      "text": "Out loud."
+    },
+    {
+      "id": "do-it-from-both-perspectives-one-where-the-customer-requests-var-6",
+      "type": "paragraph",
+      "text": "Do it from both perspectives, one where the customer requests various forms:"
+    },
+    {
+      "id": "with-marshmallows-without-cream-7",
+      "type": "list",
+      "items": [
+        "With marshmallows, without cream",
+        "With cream, without marshmallows"
+      ]
+    },
+    {
+      "id": "do-it-twice-1-where-the-customer-volunteers-the-add-ons-2-where--8",
+      "type": "paragraph",
+      "text": "Do it twice: 1. Where the customer volunteers the add-ons. 2. Where the barista has to ask for the extra information."
+    },
+    {
+      "id": "if-that-felt-comfortable-level-it-up-9",
+      "type": "paragraph",
+      "text": "If that felt comfortable, level it up:"
+    },
+    {
+      "id": "with-a-non-dairy-milk-10",
+      "type": "list",
+      "items": [
+        "With a non-dairy milk",
+        "With a non-dairy cream",
+        "With vegan marshmallows"
+      ]
+    },
+    {
+      "id": "add-anything-else-you-think-might-come-up-for-a-single-item-orde-11",
+      "type": "paragraph",
+      "text": "Add anything else you think might come up for a single-item order."
+    },
+    {
+      "id": "if-you-can-do-this-you-re-ready-for-the-real-world-12",
+      "type": "paragraph",
+      "text": "If you can do this, you’re ready for the real world."
+    },
+    {
+      "id": "next-lesson-you-re-taking-it-outside-13",
+      "type": "paragraph",
+      "text": "Next lesson — you’re taking it outside."
+    }
+  ],
+  "contentVersion": "5dcbb7d7d2f8b768"
+}

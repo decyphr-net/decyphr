@@ -1,0 +1,419 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-10-vocabulary",
+  "lessonTitle": "Vocabulary",
+  "order": 10,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Vocabulary\n\nWe've looked at quite reusable structures so far, so lets take a look at some ways that we can switch out some words for other items:\n\n## Drinks\n\n### Teas\n\nTae dubh  \nTeh duv  \nBlack tea  \n\nTae glas  \nTeh gloss  \nGreen tea  \n\nTae luibhe  \nTeh LIV-eh  \nHerbal tea  \n\nTae le líomóid  \nTeh leh LEE-oh-mohd  \nTea with lemon  \n\nTae le bainne  \nTeh leh BAN-yuh  \nTea with milk  \n\n\n### Coffees\n\nCaife dubh  \nKAH-feh duv  \nBlack coffee  \n\nCaife bán  \nKAH-feh bawn  \nWhite coffee  \n\nMeiriceánach  \nmeh-rih-KAWN-akh  \nAmericano  \n\nCaifé latte  \nkah-FAY LAH-teh  \nLatte  \n\nCappuccino  \nkah-poo-CHEE-no  \nCappuccino  \n\nMaicéató  \nmah-KAY-oh-toh  \nMacchiato  \n\nMócha  \nMOH-khah  \nMocha  \n\nSeacláid the  \nSHAK-lawd heh  \nHot chocolate  \n\n---\n\n## Milks & Alternatives\n\nBainne  \nBAN-yuh  \nMilk  \n\nBainne leathbhearrtha  \nBAN-yuh lah-VYAR-huh  \nSemi-skimmed milk  \n\nBainne lánbhearrtha  \nBAN-yuh lawn-VYAR-huh  \nWhole milk  \n\nBainne coirce  \nBAN-yuh KIR-keh  \nOat milk  \n\nBainne soighe  \nBAN-yuh SOY-eh  \nSoy milk  \n\nBainne almóinní  \nBAN-yuh al-MOAN-ee  \nAlmond milk  \n\nBainne cnó cócó  \nBAN-yuh knoh KOH-koh  \nCoconut milk  \n\n---\n\n## Add-ons\n\nUachtar  \nOO-akh-tur  \nCream  \n\nGan uachtar  \nGon OO-akh-tur  \nWithout cream  \n\nLe huachtar  \nLeh HOO-akh-tur  \nWith cream  \n\nLe leamhacháin  \nLeh LAV-uh-khawn  \nWith marshmallows  \n\nGan leamhacháin  \nGon LAV-uh-khawn  \nWithout marshmallows  \n\nLe siúcra  \nLeh SHOO-kruh  \nWith sugar  \n\nGan siúcra  \nGon SHOO-kruh  \nWithout sugar  \n\nMil  \nMil  \nHoney  \n\n---\n\n## Dietary Options\n\nVéagánach  \nVAY-gawn-akh  \nVegan  \n\nBainne véagánach  \nBAN-yuh VAY-gawn-akh  \nVegan milk  \n\nUachtar véagánach  \nOO-akh-tur VAY-gawn-akh  \nVegan cream  \n\nLeamhacháin véagánacha  \nLAV-uh-khawn VAY-gawn-uh-khuh  \nVegan marshmallows  \n\nGan lachtós  \nGon LAKH-tohs  \nLactose-free  \n\n---\n\n## Prices\n\nSwap these into:\n\nSin ___ euro.  \nDhá euro  \nGhaw YUR-oh  \n\n€2  \nDhá euro caoga  \nGhaw YUR-oh KWAY-guh  \n\n€2.50  \nTrí euro  \nTree YUR-oh  \n\n€3  \nTrí euro fiche  \nTree YUR-oh FI-heh  \n\n€3.20  \n\nTrí euro caoga  \nTree YUR-oh KWAY-guh  \n€3.50  \n\nCeithre euro  \nKEH-hruh YUR-oh  \n€4  \n\nCeithre euro caoga  \nKEH-hruh YUR-oh KWAY-guh  \n€4.50  \n\nCúig euro  \nKoo-ig YUR-oh  \n€5  \n\nFor extra charges:\n\nDeich cent breise  \nJeh sent BRESH-eh  \n10 cent extra  \n\nFiche cent breise  \nFI-heh sent BRESH-eh  \n20 cent extra  \n\nCaoga cent breise  \nKWAY-guh sent BRESH-eh  \n50 cent extra  \n\nEuro breise  \nYUR-oh BRESH-eh  \n€1 extra  \n\n---\n\n## Useful Swaps\n\nInstead of:\n\nCupán tae, le do thoil.  \n\nTry:\n\nCaifé latte, le bainne coirce, le do thoil.  \nkah-FAY LAH-teh, leh BAN-yuh KIR-keh, leh duh hull  \nLatte with oat milk, please.  \n\nSeacláid the, gan uachtar, le do thoil.  \nSHAK-lawd heh, gon OO-akh-tur, leh duh hull  \nHot chocolate without cream, please.  \n\nCappuccino, le bainne almóinní, le do thoil.  \nkah-poo-CHEE-no, leh BAN-yuh al-MOAN-ee, leh duh hull  \nCappuccino with almond milk, please.  \n\nTae glas, gan siúcra, le do thoil.  \nTeh gloss, gon SHOO-kruh, leh duh hull  \nGreen tea without sugar, please.  \n\n---\n\n## Clarification Questions (Barista)\n\nAn bhfuil bainne coirce uait?  \nUn will BAN-yuh KIR-keh oo-it?  \nWould you like oat milk?  \n\nLe huachtar?  \nLeh HOO-akh-tur?  \nWith cream?  \n\nAr mhaith leat siúcra?  \nEr wah lyat SHOO-kruh?  \nWould you like sugar?  \n\nRud ar bith eile?  \nRud er bih EL-eh?  \nAnything else?  \n\nBeag nó mór?  \nByug noh mohr?  \nSmall or large?\n",
+  "blocks": [
+    {
+      "id": "vocabulary-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Vocabulary"
+    },
+    {
+      "id": "we-ve-looked-at-quite-reusable-structures-so-far-so-lets-take-a--2",
+      "type": "paragraph",
+      "text": "We've looked at quite reusable structures so far, so lets take a look at some ways that we can switch out some words for other items:"
+    },
+    {
+      "id": "drinks-3",
+      "type": "heading",
+      "level": 2,
+      "text": "Drinks"
+    },
+    {
+      "id": "teas-4",
+      "type": "heading",
+      "level": 3,
+      "text": "Teas"
+    },
+    {
+      "id": "tae-dubh-teh-duv-black-tea-5",
+      "type": "paragraph",
+      "text": "Tae dubh Teh duv Black tea"
+    },
+    {
+      "id": "tae-glas-teh-gloss-green-tea-6",
+      "type": "paragraph",
+      "text": "Tae glas Teh gloss Green tea"
+    },
+    {
+      "id": "tae-luibhe-teh-liv-eh-herbal-tea-7",
+      "type": "paragraph",
+      "text": "Tae luibhe Teh LIV-eh Herbal tea"
+    },
+    {
+      "id": "tae-le-liomoid-teh-leh-lee-oh-mohd-tea-with-lemon-8",
+      "type": "paragraph",
+      "text": "Tae le líomóid Teh leh LEE-oh-mohd Tea with lemon"
+    },
+    {
+      "id": "tae-le-bainne-teh-leh-ban-yuh-tea-with-milk-9",
+      "type": "paragraph",
+      "text": "Tae le bainne Teh leh BAN-yuh Tea with milk"
+    },
+    {
+      "id": "coffees-10",
+      "type": "heading",
+      "level": 3,
+      "text": "Coffees"
+    },
+    {
+      "id": "caife-dubh-kah-feh-duv-black-coffee-11",
+      "type": "paragraph",
+      "text": "Caife dubh KAH-feh duv Black coffee"
+    },
+    {
+      "id": "caife-ban-kah-feh-bawn-white-coffee-12",
+      "type": "paragraph",
+      "text": "Caife bán KAH-feh bawn White coffee"
+    },
+    {
+      "id": "meiriceanach-meh-rih-kawn-akh-americano-13",
+      "type": "paragraph",
+      "text": "Meiriceánach meh-rih-KAWN-akh Americano"
+    },
+    {
+      "id": "caife-latte-kah-fay-lah-teh-latte-14",
+      "type": "paragraph",
+      "text": "Caifé latte kah-FAY LAH-teh Latte"
+    },
+    {
+      "id": "cappuccino-kah-poo-chee-no-cappuccino-15",
+      "type": "paragraph",
+      "text": "Cappuccino kah-poo-CHEE-no Cappuccino"
+    },
+    {
+      "id": "maiceato-mah-kay-oh-toh-macchiato-16",
+      "type": "paragraph",
+      "text": "Maicéató mah-KAY-oh-toh Macchiato"
+    },
+    {
+      "id": "mocha-moh-khah-mocha-17",
+      "type": "paragraph",
+      "text": "Mócha MOH-khah Mocha"
+    },
+    {
+      "id": "seaclaid-the-shak-lawd-heh-hot-chocolate-18",
+      "type": "paragraph",
+      "text": "Seacláid the SHAK-lawd heh Hot chocolate"
+    },
+    {
+      "id": "paragraph-19-19",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "milks-alternatives-20",
+      "type": "heading",
+      "level": 2,
+      "text": "Milks & Alternatives"
+    },
+    {
+      "id": "bainne-ban-yuh-milk-21",
+      "type": "paragraph",
+      "text": "Bainne BAN-yuh Milk"
+    },
+    {
+      "id": "bainne-leathbhearrtha-ban-yuh-lah-vyar-huh-semi-skimmed-milk-22",
+      "type": "paragraph",
+      "text": "Bainne leathbhearrtha BAN-yuh lah-VYAR-huh Semi-skimmed milk"
+    },
+    {
+      "id": "bainne-lanbhearrtha-ban-yuh-lawn-vyar-huh-whole-milk-23",
+      "type": "paragraph",
+      "text": "Bainne lánbhearrtha BAN-yuh lawn-VYAR-huh Whole milk"
+    },
+    {
+      "id": "bainne-coirce-ban-yuh-kir-keh-oat-milk-24",
+      "type": "paragraph",
+      "text": "Bainne coirce BAN-yuh KIR-keh Oat milk"
+    },
+    {
+      "id": "bainne-soighe-ban-yuh-soy-eh-soy-milk-25",
+      "type": "paragraph",
+      "text": "Bainne soighe BAN-yuh SOY-eh Soy milk"
+    },
+    {
+      "id": "bainne-almoinni-ban-yuh-al-moan-ee-almond-milk-26",
+      "type": "paragraph",
+      "text": "Bainne almóinní BAN-yuh al-MOAN-ee Almond milk"
+    },
+    {
+      "id": "bainne-cno-coco-ban-yuh-knoh-koh-koh-coconut-milk-27",
+      "type": "paragraph",
+      "text": "Bainne cnó cócó BAN-yuh knoh KOH-koh Coconut milk"
+    },
+    {
+      "id": "paragraph-28-28",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "add-ons-29",
+      "type": "heading",
+      "level": 2,
+      "text": "Add-ons"
+    },
+    {
+      "id": "uachtar-oo-akh-tur-cream-30",
+      "type": "paragraph",
+      "text": "Uachtar OO-akh-tur Cream"
+    },
+    {
+      "id": "gan-uachtar-gon-oo-akh-tur-without-cream-31",
+      "type": "paragraph",
+      "text": "Gan uachtar Gon OO-akh-tur Without cream"
+    },
+    {
+      "id": "le-huachtar-leh-hoo-akh-tur-with-cream-32",
+      "type": "paragraph",
+      "text": "Le huachtar Leh HOO-akh-tur With cream"
+    },
+    {
+      "id": "le-leamhachain-leh-lav-uh-khawn-with-marshmallows-33",
+      "type": "paragraph",
+      "text": "Le leamhacháin Leh LAV-uh-khawn With marshmallows"
+    },
+    {
+      "id": "gan-leamhachain-gon-lav-uh-khawn-without-marshmallows-34",
+      "type": "paragraph",
+      "text": "Gan leamhacháin Gon LAV-uh-khawn Without marshmallows"
+    },
+    {
+      "id": "le-siucra-leh-shoo-kruh-with-sugar-35",
+      "type": "paragraph",
+      "text": "Le siúcra Leh SHOO-kruh With sugar"
+    },
+    {
+      "id": "gan-siucra-gon-shoo-kruh-without-sugar-36",
+      "type": "paragraph",
+      "text": "Gan siúcra Gon SHOO-kruh Without sugar"
+    },
+    {
+      "id": "mil-mil-honey-37",
+      "type": "paragraph",
+      "text": "Mil Mil Honey"
+    },
+    {
+      "id": "paragraph-38-38",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "dietary-options-39",
+      "type": "heading",
+      "level": 2,
+      "text": "Dietary Options"
+    },
+    {
+      "id": "veaganach-vay-gawn-akh-vegan-40",
+      "type": "paragraph",
+      "text": "Véagánach VAY-gawn-akh Vegan"
+    },
+    {
+      "id": "bainne-veaganach-ban-yuh-vay-gawn-akh-vegan-milk-41",
+      "type": "paragraph",
+      "text": "Bainne véagánach BAN-yuh VAY-gawn-akh Vegan milk"
+    },
+    {
+      "id": "uachtar-veaganach-oo-akh-tur-vay-gawn-akh-vegan-cream-42",
+      "type": "paragraph",
+      "text": "Uachtar véagánach OO-akh-tur VAY-gawn-akh Vegan cream"
+    },
+    {
+      "id": "leamhachain-veaganacha-lav-uh-khawn-vay-gawn-uh-khuh-vegan-marsh-43",
+      "type": "paragraph",
+      "text": "Leamhacháin véagánacha LAV-uh-khawn VAY-gawn-uh-khuh Vegan marshmallows"
+    },
+    {
+      "id": "gan-lachtos-gon-lakh-tohs-lactose-free-44",
+      "type": "paragraph",
+      "text": "Gan lachtós Gon LAKH-tohs Lactose-free"
+    },
+    {
+      "id": "paragraph-45-45",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "prices-46",
+      "type": "heading",
+      "level": 2,
+      "text": "Prices"
+    },
+    {
+      "id": "swap-these-into-47",
+      "type": "paragraph",
+      "text": "Swap these into:"
+    },
+    {
+      "id": "sin-euro-dha-euro-ghaw-yur-oh-48",
+      "type": "paragraph",
+      "text": "Sin ___ euro. Dhá euro Ghaw YUR-oh"
+    },
+    {
+      "id": "2-dha-euro-caoga-ghaw-yur-oh-kway-guh-49",
+      "type": "paragraph",
+      "text": "€2 Dhá euro caoga Ghaw YUR-oh KWAY-guh"
+    },
+    {
+      "id": "2-50-tri-euro-tree-yur-oh-50",
+      "type": "paragraph",
+      "text": "€2.50 Trí euro Tree YUR-oh"
+    },
+    {
+      "id": "3-tri-euro-fiche-tree-yur-oh-fi-heh-51",
+      "type": "paragraph",
+      "text": "€3 Trí euro fiche Tree YUR-oh FI-heh"
+    },
+    {
+      "id": "3-20-52",
+      "type": "paragraph",
+      "text": "€3.20"
+    },
+    {
+      "id": "tri-euro-caoga-tree-yur-oh-kway-guh-3-50-53",
+      "type": "paragraph",
+      "text": "Trí euro caoga Tree YUR-oh KWAY-guh €3.50"
+    },
+    {
+      "id": "ceithre-euro-keh-hruh-yur-oh-4-54",
+      "type": "paragraph",
+      "text": "Ceithre euro KEH-hruh YUR-oh €4"
+    },
+    {
+      "id": "ceithre-euro-caoga-keh-hruh-yur-oh-kway-guh-4-50-55",
+      "type": "paragraph",
+      "text": "Ceithre euro caoga KEH-hruh YUR-oh KWAY-guh €4.50"
+    },
+    {
+      "id": "cuig-euro-koo-ig-yur-oh-5-56",
+      "type": "paragraph",
+      "text": "Cúig euro Koo-ig YUR-oh €5"
+    },
+    {
+      "id": "for-extra-charges-57",
+      "type": "paragraph",
+      "text": "For extra charges:"
+    },
+    {
+      "id": "deich-cent-breise-jeh-sent-bresh-eh-10-cent-extra-58",
+      "type": "paragraph",
+      "text": "Deich cent breise Jeh sent BRESH-eh 10 cent extra"
+    },
+    {
+      "id": "fiche-cent-breise-fi-heh-sent-bresh-eh-20-cent-extra-59",
+      "type": "paragraph",
+      "text": "Fiche cent breise FI-heh sent BRESH-eh 20 cent extra"
+    },
+    {
+      "id": "caoga-cent-breise-kway-guh-sent-bresh-eh-50-cent-extra-60",
+      "type": "paragraph",
+      "text": "Caoga cent breise KWAY-guh sent BRESH-eh 50 cent extra"
+    },
+    {
+      "id": "euro-breise-yur-oh-bresh-eh-1-extra-61",
+      "type": "paragraph",
+      "text": "Euro breise YUR-oh BRESH-eh €1 extra"
+    },
+    {
+      "id": "paragraph-62-62",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "useful-swaps-63",
+      "type": "heading",
+      "level": 2,
+      "text": "Useful Swaps"
+    },
+    {
+      "id": "instead-of-64",
+      "type": "paragraph",
+      "text": "Instead of:"
+    },
+    {
+      "id": "cupan-tae-le-do-thoil-65",
+      "type": "paragraph",
+      "text": "Cupán tae, le do thoil."
+    },
+    {
+      "id": "try-66",
+      "type": "paragraph",
+      "text": "Try:"
+    },
+    {
+      "id": "caife-latte-le-bainne-coirce-le-do-thoil-kah-fay-lah-teh-leh-ban-67",
+      "type": "paragraph",
+      "text": "Caifé latte, le bainne coirce, le do thoil. kah-FAY LAH-teh, leh BAN-yuh KIR-keh, leh duh hull Latte with oat milk, please."
+    },
+    {
+      "id": "seaclaid-the-gan-uachtar-le-do-thoil-shak-lawd-heh-gon-oo-akh-tu-68",
+      "type": "paragraph",
+      "text": "Seacláid the, gan uachtar, le do thoil. SHAK-lawd heh, gon OO-akh-tur, leh duh hull Hot chocolate without cream, please."
+    },
+    {
+      "id": "cappuccino-le-bainne-almoinni-le-do-thoil-kah-poo-chee-no-leh-ba-69",
+      "type": "paragraph",
+      "text": "Cappuccino, le bainne almóinní, le do thoil. kah-poo-CHEE-no, leh BAN-yuh al-MOAN-ee, leh duh hull Cappuccino with almond milk, please."
+    },
+    {
+      "id": "tae-glas-gan-siucra-le-do-thoil-teh-gloss-gon-shoo-kruh-leh-duh--70",
+      "type": "paragraph",
+      "text": "Tae glas, gan siúcra, le do thoil. Teh gloss, gon SHOO-kruh, leh duh hull Green tea without sugar, please."
+    },
+    {
+      "id": "paragraph-71-71",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "clarification-questions-barista-72",
+      "type": "heading",
+      "level": 2,
+      "text": "Clarification Questions (Barista)"
+    },
+    {
+      "id": "an-bhfuil-bainne-coirce-uait-un-will-ban-yuh-kir-keh-oo-it-would-73",
+      "type": "paragraph",
+      "text": "An bhfuil bainne coirce uait? Un will BAN-yuh KIR-keh oo-it? Would you like oat milk?"
+    },
+    {
+      "id": "le-huachtar-leh-hoo-akh-tur-with-cream-74",
+      "type": "paragraph",
+      "text": "Le huachtar? Leh HOO-akh-tur? With cream?"
+    },
+    {
+      "id": "ar-mhaith-leat-siucra-er-wah-lyat-shoo-kruh-would-you-like-sugar-75",
+      "type": "paragraph",
+      "text": "Ar mhaith leat siúcra? Er wah lyat SHOO-kruh? Would you like sugar?"
+    },
+    {
+      "id": "rud-ar-bith-eile-rud-er-bih-el-eh-anything-else-76",
+      "type": "paragraph",
+      "text": "Rud ar bith eile? Rud er bih EL-eh? Anything else?"
+    },
+    {
+      "id": "beag-no-mor-byug-noh-mohr-small-or-large-77",
+      "type": "paragraph",
+      "text": "Beag nó mór? Byug noh mohr? Small or large?"
+    }
+  ],
+  "contentVersion": "87836cf864d8ae67"
+}

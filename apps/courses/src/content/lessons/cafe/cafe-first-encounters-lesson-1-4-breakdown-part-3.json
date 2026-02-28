@@ -1,0 +1,84 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-4-breakdown-part-3",
+  "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 3",
+  "order": 4,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "go",
+    "raibh",
+    "maith",
+    "agat",
+    "slán",
+    "tá",
+    "fáilte",
+    "romhat",
+    "fóill"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# The Smallest, Easiest Conversation - Breakdown Part 3\nThe last chunk of the conversation is mostly an exchange of pleasantries that will be useful in a large amount of exchanges, so let's take a look:\n\n- Customer\n> Go raibh maith agat! Slán  \n> Guh rev mah ah-gut! Slawn.  \n> Thank you! Goodbye  \n\n- Barista\n> Tá fáilte romhat, slán go fóill!  \n> Taw FAWL-chuh ruh-ut, slawn guh foh-ill!  \n> You're welcome, goodbye!  \n\nThis is a simple conversation wrap up. `Go raibh maith agat` means `thank you`. If we were to translate this literally it would be something along the lines of \"may you have goodness\", but we just mean it as \"thank you\". In text speak, you will likely see this abbreviated to `grma`.\n\n`Slán` simply means \"goodbye\". You can see that there are 2 different forms here that both basically mean the same thing. In Irish, we don't like using the same words back to people, so we often try to find slightly different ways, so the way that's done here `slán go fóill`. Another form that's very common, and you may be familiar with is `slán abhaile`. `Slán` comes from the word `sláinte` which means \"health\", so `slán abhaile` means \"safe home\", which you may have heard Irish people saying in Irish English as well.\n\n`Tá fáilte romhat` means \"you're welcome\". There are other ways of replying to `go raibh maith agat`, but this is by far the most common and easiest to use and understand. You may also use an abbreviated form of this which is just `fáilte`.\n",
+  "blocks": [
+    {
+      "id": "the-smallest-easiest-conversation-breakdown-part-3-1",
+      "type": "heading",
+      "level": 1,
+      "text": "The Smallest, Easiest Conversation - Breakdown Part 3"
+    },
+    {
+      "id": "the-last-chunk-of-the-conversation-is-mostly-an-exchange-of-plea-2",
+      "type": "paragraph",
+      "text": "The last chunk of the conversation is mostly an exchange of pleasantries that will be useful in a large amount of exchanges, so let's take a look:"
+    },
+    {
+      "id": "go-raibh-maith-agat-slan-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Go raibh maith agat! Slán",
+          "pronunciation": "Guh rev mah ah-gut! Slawn.",
+          "translation": "Thank you! Goodbye"
+        }
+      ]
+    },
+    {
+      "id": "ta-failte-romhat-slan-go-foill-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Tá fáilte romhat, slán go fóill!",
+          "pronunciation": "Taw FAWL-chuh ruh-ut, slawn guh foh-ill!",
+          "translation": "You're welcome, goodbye!"
+        }
+      ]
+    },
+    {
+      "id": "this-is-a-simple-conversation-wrap-up-go-raibh-maith-agat-means--5",
+      "type": "paragraph",
+      "text": "This is a simple conversation wrap up. `Go raibh maith agat` means `thank you`. If we were to translate this literally it would be something along the lines of \"may you have goodness\", but we just mean it as \"thank you\". In text speak, you will likely see this abbreviated to `grma`."
+    },
+    {
+      "id": "slan-simply-means-goodbye-you-can-see-that-there-are-2-different-6",
+      "type": "paragraph",
+      "text": "`Slán` simply means \"goodbye\". You can see that there are 2 different forms here that both basically mean the same thing. In Irish, we don't like using the same words back to people, so we often try to find slightly different ways, so the way that's done here `slán go fóill`. Another form that's very common, and you may be familiar with is `slán abhaile`. `Slán` comes from the word `sláinte` which means \"health\", so `slán abhaile` means \"safe home\", which you may have heard Irish people saying in Irish English as well."
+    },
+    {
+      "id": "ta-failte-romhat-means-you-re-welcome-there-are-other-ways-of-re-7",
+      "type": "paragraph",
+      "text": "`Tá fáilte romhat` means \"you're welcome\". There are other ways of replying to `go raibh maith agat`, but this is by far the most common and easiest to use and understand. You may also use an abbreviated form of this which is just `fáilte`."
+    }
+  ],
+  "contentVersion": "f7ce3189d6691b22"
+}

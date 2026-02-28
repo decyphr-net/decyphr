@@ -1,0 +1,45 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-5-recap",
+  "lessonTitle": "The Smallest, Easiest Conversation - Recap",
+  "order": 5,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# The Smallest, Easiest Conversation - Recap\nSo, there we have it! Your first conversation in a coffee shop! You've now learned the most common greetings and pleasantries that are used all the time in Irish, so in the next lesson we'll cover some additional conversations and look at expanding the vocabulary of items to order.\n\nOf course, you may not feel fluent, but you've just completed a full real-world interaction in Irish.\n\nThat’s not small.\n",
+  "blocks": [
+    {
+      "id": "the-smallest-easiest-conversation-recap-1",
+      "type": "heading",
+      "level": 1,
+      "text": "The Smallest, Easiest Conversation - Recap"
+    },
+    {
+      "id": "so-there-we-have-it-your-first-conversation-in-a-coffee-shop-you-2",
+      "type": "paragraph",
+      "text": "So, there we have it! Your first conversation in a coffee shop! You've now learned the most common greetings and pleasantries that are used all the time in Irish, so in the next lesson we'll cover some additional conversations and look at expanding the vocabulary of items to order."
+    },
+    {
+      "id": "of-course-you-may-not-feel-fluent-but-you-ve-just-completed-a-fu-3",
+      "type": "paragraph",
+      "text": "Of course, you may not feel fluent, but you've just completed a full real-world interaction in Irish."
+    },
+    {
+      "id": "that-s-not-small-4",
+      "type": "paragraph",
+      "text": "That’s not small."
+    }
+  ],
+  "contentVersion": "d664b2e33f31cbac"
+}

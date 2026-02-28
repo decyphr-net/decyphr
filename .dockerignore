@@ -1,5 +1,58 @@
+# Version control and editor metadata
+.git
+.github
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Dependencies
 node_modules
-apps/phrasebook/node_modules
-apps/phrasebook/dist
-libs/messaging/node_modules
-libs/messaging/dist
+**/node_modules
+
+# Build output and caches
+build
+dist
+coverage
+.nyc_output
+.cache
+.tmp
+.temp
+**/build
+**/dist
+**/coverage
+**/.cache
+**/.next
+**/.nuxt
+**/.svelte-kit
+**/.turbo
+**/__pycache__
+**/.pytest_cache
+
+# Logs
+logs
+*.log
+*.out
+*.trace
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+docker/env
+
+# Local virtual environments
+.venv
+venv
+**/.venv
+**/venv

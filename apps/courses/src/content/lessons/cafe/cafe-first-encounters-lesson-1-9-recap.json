@@ -1,0 +1,54 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-9-recap",
+  "lessonTitle": "Recap",
+  "order": 9,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Recap\n\nOK, let's stop for a second and take stock of what we've covered here so far. In just one coffee shop scenario, you’ve covered:\n- Greeting\n- Ordering\n- Payment\n- Add-ons\n- Extra charge\n- Unavailability\n- Alternatives\n- Polite refusal\n\nThere's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it.!\n",
+  "blocks": [
+    {
+      "id": "recap-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Recap"
+    },
+    {
+      "id": "ok-let-s-stop-for-a-second-and-take-stock-of-what-we-ve-covered--2",
+      "type": "paragraph",
+      "text": "OK, let's stop for a second and take stock of what we've covered here so far. In just one coffee shop scenario, you’ve covered:"
+    },
+    {
+      "id": "greeting-3",
+      "type": "list",
+      "items": [
+        "Greeting",
+        "Ordering",
+        "Payment",
+        "Add-ons",
+        "Extra charge",
+        "Unavailability",
+        "Alternatives",
+        "Polite refusal"
+      ]
+    },
+    {
+      "id": "there-s-a-lot-here-and-keep-in-mind-that-much-of-what-we-ve-gone-4",
+      "type": "paragraph",
+      "text": "There's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it.!"
+    }
+  ],
+  "contentVersion": "1f75a5023e61a53a"
+}

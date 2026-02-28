@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createHash, randomUUID } from 'crypto';
@@ -29,6 +34,42 @@ export class PhrasebookService {
   ) {}
 
   private readonly logger = new Logger(PhrasebookService.name);
+
+  private normalizePhraseText(text: string | undefined | null) {
+    return String(text || '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // Fingerprint must be scoped by client to avoid cross-user collisions.
+  private phraseFingerprint(clientId: string, normalizedText: string) {
+    return createHash('sha256')
+      .update(`${clientId}:${normalizedText.toLowerCase()}`)
+      .digest('hex');
+  }
+
+  private isDuplicateEntryError(error: unknown) {
+    const candidate = error as
+      | { code?: string; driverError?: { code?: string } }
+      | undefined;
+    return (
+      candidate?.code === 'ER_DUP_ENTRY' ||
+      candidate?.driverError?.code === 'ER_DUP_ENTRY'
+    );
+  }
+
+  private async findExistingPhraseForClientText(
+    clientId: string,
+    normalizedText: string,
+  ) {
+    const normalized = normalizedText.toLowerCase();
+    return this.phraseRepo
+      .createQueryBuilder('phrase')
+      .where('phrase.clientId = :clientId', { clientId })
+      .andWhere('LOWER(TRIM(phrase.text)) = :normalized', { normalized })
+      .orderBy('phrase.id', 'ASC')
+      .getOne();
+  }
 
   private async emitPhrasebookEvent(event: {
     type: string;
@@ -95,15 +136,49 @@ export class PhrasebookService {
     dto: UpdatePhraseDto,
     requestId?: string,
   ): Promise<PhrasebookStatementDto> {
-    const fingerprint = createHash('sha256').update(dto.text).digest('hex');
+    const normalizedText = this.normalizePhraseText(dto.text);
+    if (!normalizedText) {
+      throw new BadRequestException('Phrase text is required');
+    }
+
+    // Idempotency: if this client already has this phrase text, return it.
+    const existing = await this.findExistingPhraseForClientText(
+      clientId,
+      normalizedText,
+    );
+    if (existing) {
+      return this.getPhrase(existing.id);
+    }
+
+    const fingerprint = this.phraseFingerprint(clientId, normalizedText);
 
     const phraseEntity = this.phraseRepo.create({
       clientId,
       fingerprint,
       createdAt: new Date(),
       ...dto,
+      text: normalizedText,
     });
-    const saved = await this.phraseRepo.save(phraseEntity);
+
+    let saved: Phrase;
+    try {
+      saved = await this.phraseRepo.save(phraseEntity);
+    } catch (error) {
+      if (!this.isDuplicateEntryError(error)) {
+        throw error;
+      }
+
+      // Handle replay/race duplicates by returning existing phrase instead of failing the consumer.
+      const duplicate =
+        (await this.phraseRepo.findOne({ where: { fingerprint } })) ||
+        (await this.findExistingPhraseForClientText(clientId, normalizedText));
+
+      if (duplicate) {
+        return this.getPhrase(duplicate.id);
+      }
+
+      throw error;
+    }
 
     if (dto.tokens?.length) {
       const tokens = dto.tokens.map((t) =>

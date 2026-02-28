@@ -1,0 +1,98 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-2-breakdown-part-1",
+  "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 1",
+  "order": 2,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "cupán",
+    "tae",
+    "le",
+    "do",
+    "thoil"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# The Smallest, Easiest Conversation - Breakdown Part 1\nLet's take a look at the first 2 lines of conversation here.\n\n- Barista\n> Dia duit! Cad is féidir liom a fháil duit?  \n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?  \n> Hello! What can I get for you?  \n\n- Customer\n> Dia is Muire duit. Cupán tae, le do thoil  \n> DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull  \n> Hi, a cup of tea, please  \n\n`Dia duit` means \"hello\", as does `Dia is Muire duit`, however this is only used as a response. The literal translation here is `God to you` and `God and Mary to you`. In classic Irish fashion, we often reply with a slightly fuller greeting. While there is a religious connotation here, just like the English word `goodbye`, it's not very relevant, we just treat it as one person saying hello, and the other responding by saying hello back.\n\nThe barista also asks, `Cad is féidir liom a fháil duit?` which simply means \"what can I get for you?\". The word `cad` simply means \"what\". You might notice that `duit` is used again here, but this context it means \"for you\" rather than \"to you\".\n\nThe other structure here worth mentioning here is `is féidir liom`. This literally translates into \"is possible with me\" in English. If you studied Irish in school you may remember `is maith liom` which means \"is good with me\", so this structure is very similar and very common. The last piece of this is `a fháil` which means \"to get\", so the full thing becomes \"what is possible with me to get to you\".\n\nNext, we have the customer's order. After greeting, they simply say `cupán tae`. This means \"a cup of tea\". There are a couple of things that might feel “missing” from an English perspective. Irish doesn’t use a separate word for “a”. The noun stands on its own. So “cupán” can mean “cup” or “a cup” depending on context. Again, you'll get the hang of this, especially with small set phrases like this. Also, in Irish, “cup of tea” is just said as “cup tea”. The “of” is built in. Just use the phrase as it is.\n\nLastly, in order to say please in Irish, we say `le do thoil`. This literally means \"with your will\", but as with other statements, we treat it as \"please\".\n",
+  "blocks": [
+    {
+      "id": "the-smallest-easiest-conversation-breakdown-part-1-1",
+      "type": "heading",
+      "level": 1,
+      "text": "The Smallest, Easiest Conversation - Breakdown Part 1"
+    },
+    {
+      "id": "let-s-take-a-look-at-the-first-2-lines-of-conversation-here-2",
+      "type": "paragraph",
+      "text": "Let's take a look at the first 2 lines of conversation here."
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "Hello! What can I get for you?"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-cupan-tae-le-do-thoil-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Dia is Muire duit. Cupán tae, le do thoil",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull",
+          "translation": "Hi, a cup of tea, please"
+        }
+      ]
+    },
+    {
+      "id": "dia-duit-means-hello-as-does-dia-is-muire-duit-however-this-is-o-5",
+      "type": "paragraph",
+      "text": "`Dia duit` means \"hello\", as does `Dia is Muire duit`, however this is only used as a response. The literal translation here is `God to you` and `God and Mary to you`. In classic Irish fashion, we often reply with a slightly fuller greeting. While there is a religious connotation here, just like the English word `goodbye`, it's not very relevant, we just treat it as one person saying hello, and the other responding by saying hello back."
+    },
+    {
+      "id": "the-barista-also-asks-cad-is-feidir-liom-a-fhail-duit-which-simp-6",
+      "type": "paragraph",
+      "text": "The barista also asks, `Cad is féidir liom a fháil duit?` which simply means \"what can I get for you?\". The word `cad` simply means \"what\". You might notice that `duit` is used again here, but this context it means \"for you\" rather than \"to you\"."
+    },
+    {
+      "id": "the-other-structure-here-worth-mentioning-here-is-is-feidir-liom-7",
+      "type": "paragraph",
+      "text": "The other structure here worth mentioning here is `is féidir liom`. This literally translates into \"is possible with me\" in English. If you studied Irish in school you may remember `is maith liom` which means \"is good with me\", so this structure is very similar and very common. The last piece of this is `a fháil` which means \"to get\", so the full thing becomes \"what is possible with me to get to you\"."
+    },
+    {
+      "id": "next-we-have-the-customer-s-order-after-greeting-they-simply-say-8",
+      "type": "paragraph",
+      "text": "Next, we have the customer's order. After greeting, they simply say `cupán tae`. This means \"a cup of tea\". There are a couple of things that might feel “missing” from an English perspective. Irish doesn’t use a separate word for “a”. The noun stands on its own. So “cupán” can mean “cup” or “a cup” depending on context. Again, you'll get the hang of this, especially with small set phrases like this. Also, in Irish, “cup of tea” is just said as “cup tea”. The “of” is built in. Just use the phrase as it is."
+    },
+    {
+      "id": "lastly-in-order-to-say-please-in-irish-we-say-le-do-thoil-this-l-9",
+      "type": "paragraph",
+      "text": "Lastly, in order to say please in Irish, we say `le do thoil`. This literally means \"with your will\", but as with other statements, we treat it as \"please\"."
+    }
+  ],
+  "contentVersion": "df6cfebdea9efb01"
+}

@@ -5,6 +5,7 @@ describe('courses.lexicon', () => {
     const out = sanitizeExposureTokens([
       ' Dia ',
       'dia',
+      'hello',
       '---',
       '12',
       'go',
@@ -25,5 +26,8 @@ describe('courses.lexicon', () => {
   it('maps exposure source to interaction type', () => {
     expect(interactionTypeForExposure('render')).toBe('passive_read');
     expect(interactionTypeForExposure('hover')).toBe('course_hover_lookup');
+    expect(interactionTypeForExposure('gloss')).toBe('course_gloss_lookup');
+    expect(interactionTypeForExposure('swap_correct')).toBe('course_swap_correct');
+    expect(interactionTypeForExposure('swap_incorrect')).toBe('course_swap_incorrect');
   });
 });

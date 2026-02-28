@@ -1,0 +1,50 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-6-challenge",
+  "lessonTitle": "Challenge",
+  "order": 6,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Challenge\n\nBelow are some additional words and/or swaps that could be used in this conversation. Take a look and try these out!\n\nInstead of `cupán tae`:\n> caife  \n> KAH-feh  \n> coffee  \n> seaclaid the  \n> SHAK-lawd heh  \n> hot chocolate  \n> bainín  \n> BAN-een  \n> flat white  \n\nInstead of `trí`:\n\n> dhá  \n> ghaw  \n> two  \n> ceithre  \n> KEH-hruh  \n> four  \n> cúig  \n> koo-ig  \n> five  \n> sé  \n> shay  \n> six  \n> seacht  \n> shokht  \n> seven  \n> ocht  \n> okht  \n> eight  \n> naoi  \n> nee  \n> nine  \n> deich  \n> jeh  \n> ten\n",
+  "blocks": [
+    {
+      "id": "challenge-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Challenge"
+    },
+    {
+      "id": "below-are-some-additional-words-and-or-swaps-that-could-be-used--2",
+      "type": "paragraph",
+      "text": "Below are some additional words and/or swaps that could be used in this conversation. Take a look and try these out!"
+    },
+    {
+      "id": "instead-of-cupan-tae-caife-kah-feh-coffee-seaclaid-the-shak-lawd-3",
+      "type": "paragraph",
+      "text": "Instead of `cupán tae`: > caife > KAH-feh > coffee > seaclaid the > SHAK-lawd heh > hot chocolate > bainín > BAN-een > flat white"
+    },
+    {
+      "id": "instead-of-tri-4",
+      "type": "paragraph",
+      "text": "Instead of `trí`:"
+    },
+    {
+      "id": "dha-ghaw-two-ceithre-keh-hruh-four-cuig-koo-ig-five-se-shay-six--5",
+      "type": "paragraph",
+      "text": "> dhá > ghaw > two > ceithre > KEH-hruh > four > cúig > koo-ig > five > sé > shay > six > seacht > shokht > seven > ocht > okht > eight > naoi > nee > nine > deich > jeh > ten"
+    }
+  ],
+  "contentVersion": "208b558b2b686cbe"
+}

@@ -51,4 +51,15 @@ export class CoursesController {
       body,
     );
   }
+
+  @Post(':courseSlug/lessons/:lessonSlug/gloss')
+  async lookupGloss(
+    @Req() req: AuthenticatedRequest,
+    @Param('courseSlug') courseSlug: string,
+    @Param('lessonSlug') lessonSlug: string,
+    @Body() body: any,
+  ) {
+    const clientId = await this.authService.getClientIdFromSession(req);
+    return this.coursesService.post(`/courses/${courseSlug}/lessons/${lessonSlug}/gloss`, clientId, body);
+  }
 }

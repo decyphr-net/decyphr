@@ -4,12 +4,14 @@ import { rm, mkdir, readdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
 
 const repoRoot = process.cwd();
-const sourceRepo = process.env.COURSE_CONTENT_REPO_PATH
+const sourceRoot = process.env.COURSE_CONTENT_REPO_PATH
   ? path.resolve(process.env.COURSE_CONTENT_REPO_PATH)
-  : path.resolve(repoRoot, '..', 'irish-week', 'src', 'content', 'ga');
-const sourceRoot = path.join(sourceRepo, 'courses');
+  : path.resolve(repoRoot, '..', 'irish-week', 'src', 'content', 'ga', 'courses');
 const outRoot = path.join(repoRoot, 'apps', 'courses', 'src', 'content');
 const outLessons = path.join(outRoot, 'lessons');
+const defaultCourseSlug = slugify(path.basename(sourceRoot)) || 'course';
+const sourceRootBase = path.basename(sourceRoot).toLowerCase();
+const sourceRootIsCollection = sourceRootBase === 'course' || sourceRootBase === 'courses';
 
 const REQUIRED_FIELDS = [
   'courseSlug',
@@ -105,12 +107,26 @@ function blockId(type, text, index) {
   return `${base}-${index + 1}`;
 }
 
+function humanizeSlug(input) {
+  return String(input)
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function defaultLessonSlug(relativePath, fallback) {
+  const normalized = relativePath.replace(/\.md$/i, '').split(path.sep).join('-');
+  return slugify(normalized) || slugify(fallback) || 'lesson';
+}
+
 function buildBlocks(markdown) {
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
   const blocks = [];
 
   let paragraph = [];
   let list = [];
+  let dialogueTurns = [];
 
   const flushParagraph = () => {
     const text = paragraph.join(' ').trim();
@@ -127,11 +143,20 @@ function buildBlocks(markdown) {
     list = [];
   };
 
-  for (const line of lines) {
+  const flushDialogue = () => {
+    if (!dialogueTurns.length) return;
+    const id = blockId('dialogue', dialogueTurns[0].text || dialogueTurns[0].speaker, blocks.length);
+    blocks.push({ id, type: 'dialogue', turns: [...dialogueTurns] });
+    dialogueTurns = [];
+  };
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i];
     const heading = line.match(/^(#{1,6})\s+(.*)$/);
     if (heading) {
       flushParagraph();
       flushList();
+      flushDialogue();
       blocks.push({
         id: blockId('heading', heading[2], blocks.length),
         type: 'heading',
@@ -143,7 +168,33 @@ function buildBlocks(markdown) {
 
     const listItem = line.match(/^\s*-\s+(.*)$/);
     if (listItem) {
+      const speaker = listItem[1].trim();
+      const quoteLines = [];
+      let j = i + 1;
+      while (j < lines.length) {
+        const quote = lines[j].match(/^\s*>\s?(.*)$/);
+        if (!quote) break;
+        quoteLines.push(quote[1].trim());
+        j += 1;
+      }
+
+      if (speaker && quoteLines.length > 0) {
+        flushParagraph();
+        flushList();
+        const [text = '', pronunciation, translation, ...rest] = quoteLines;
+        const translationText = [translation, ...rest].filter(Boolean).join(' ').trim() || undefined;
+        dialogueTurns.push({
+          speaker,
+          text,
+          pronunciation: pronunciation || undefined,
+          translation: translationText,
+        });
+        i = j - 1;
+        continue;
+      }
+
       flushParagraph();
+      flushDialogue();
       list.push(listItem[1].trim());
       continue;
     }
@@ -151,15 +202,18 @@ function buildBlocks(markdown) {
     if (line.trim() === '') {
       flushParagraph();
       flushList();
+      flushDialogue();
       continue;
     }
 
     flushList();
+    flushDialogue();
     paragraph.push(line.trim());
   }
 
   flushParagraph();
   flushList();
+  flushDialogue();
   return blocks;
 }
 
@@ -195,6 +249,131 @@ function ensureStringArray(value) {
   return value.map((item) => String(item).trim()).filter(Boolean);
 }
 
+function parseTokenGlossEntry(entry) {
+  if (entry && typeof entry === 'object' && !Array.isArray(entry)) {
+    const token = String(entry.token || '').trim();
+    if (!token) return null;
+    return {
+      token,
+      baseWord: entry.baseWord ? String(entry.baseWord).trim() : undefined,
+      translation: entry.translation ? String(entry.translation).trim() : undefined,
+      pronunciation: entry.pronunciation ? String(entry.pronunciation).trim() : undefined,
+      usage: entry.usage ? String(entry.usage).trim() : undefined,
+      examples: ensureStringArray(entry.examples),
+    };
+  }
+
+  const raw = String(entry || '').trim();
+  if (!raw) return null;
+
+  if (raw.includes('=>')) {
+    const [tokenPart, translationPart] = raw.split('=>').map((item) => item.trim());
+    if (!tokenPart) return null;
+    return {
+      token: tokenPart,
+      translation: translationPart || undefined,
+    };
+  }
+
+  const [token, translation, pronunciation, usage, baseWord] = raw.split('|').map((item) => item.trim());
+  if (!token) return null;
+
+  return {
+    token,
+    baseWord: baseWord || undefined,
+    translation: translation || undefined,
+    pronunciation: pronunciation || undefined,
+    usage: usage || undefined,
+  };
+}
+
+function parseTokenGlosses(rawValue) {
+  const out = [];
+  const seen = new Set();
+
+  const pushEntry = (candidate) => {
+    const entry = parseTokenGlossEntry(candidate);
+    if (!entry) return;
+    const key = entry.token.toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(entry);
+  };
+
+  if (rawValue == null) return out;
+
+  if (typeof rawValue === 'string') {
+    const trimmed = rawValue.trim();
+    if (!trimmed) return out;
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) {
+          for (const item of parsed) pushEntry(item);
+        } else {
+          for (const [token, details] of Object.entries(parsed || {})) {
+            if (details && typeof details === 'object' && !Array.isArray(details)) {
+              pushEntry({ token, ...details });
+            } else {
+              pushEntry({ token, translation: String(details || '') });
+            }
+          }
+        }
+        return out;
+      } catch {
+        // Fall back to pipe/arrow parsing.
+      }
+    }
+    pushEntry(trimmed);
+    return out;
+  }
+
+  if (Array.isArray(rawValue)) {
+    for (const item of rawValue) {
+      pushEntry(item);
+    }
+    return out;
+  }
+
+  if (typeof rawValue === 'object') {
+    for (const [token, details] of Object.entries(rawValue)) {
+      if (details && typeof details === 'object' && !Array.isArray(details)) {
+        pushEntry({ token, ...details });
+      } else {
+        pushEntry({ token, translation: String(details || '') });
+      }
+    }
+  }
+
+  return out;
+}
+
+function lexiconTokensFromBlocks(blocks) {
+  const seen = new Set();
+  const tokens = [];
+
+  for (const block of blocks) {
+    if (block.type !== 'dialogue' || !Array.isArray(block.turns)) continue;
+    for (const turn of block.turns) {
+      const words = String(turn.text || '')
+        .toLowerCase()
+        .split(/[^\p{L}\p{N}'’-]+/u)
+        .map((token) => token.trim())
+        .filter((token) => token.length > 1)
+        .filter((token) => !/^\d+$/.test(token));
+
+      for (const token of words) {
+        if (seen.has(token)) continue;
+        seen.add(token);
+        tokens.push(token);
+        if (tokens.length >= 120) return tokens;
+      }
+    }
+  }
+
+  return tokens;
+}
+
 function ensureRequired(meta, filePath) {
   for (const field of REQUIRED_FIELDS) {
     if (meta[field] === undefined || meta[field] === null || meta[field] === '') {
@@ -216,23 +395,52 @@ async function main() {
     }
   }
 
+  // Ensure module/course overview docs seed metadata before lesson files.
+  files.sort((a, b) => {
+    const aBase = path.basename(a, '.md').toLowerCase();
+    const bBase = path.basename(b, '.md').toLowerCase();
+    const aIsOverview = aBase === 'overview' ? 0 : 1;
+    const bIsOverview = bBase === 'overview' ? 0 : 1;
+    if (aIsOverview !== bIsOverview) return aIsOverview - bIsOverview;
+    return a.localeCompare(b);
+  });
+
   await rm(outLessons, { recursive: true, force: true });
   await mkdir(outLessons, { recursive: true });
 
   const courseMap = new Map();
+  const courseDefaults = new Map();
   const lessonVersions = [];
+  let lessonCount = 0;
 
   for (const filePath of files) {
     const relativeToCourses = path.relative(sourceRoot, filePath);
+    const pathSegments = relativeToCourses.split(path.sep).filter(Boolean);
     const raw = await readFile(filePath, 'utf-8');
     const { meta, body } = parseFrontmatter(raw);
 
     const parentSlug = relativeToCourses.split(path.sep)[0] || '';
     const fileBase = path.basename(filePath, '.md');
     const fileOrderMatch = fileBase.match(/^(\d+)-/);
+    const isOverviewDoc = String(meta.type || '').toLowerCase() === 'overview' || fileBase.toLowerCase() === 'overview';
+    const inferredModuleSlug = sourceRootIsCollection
+      ? (pathSegments[0] || defaultCourseSlug)
+      : defaultCourseSlug;
+    const inferredCourseSlug = String(meta.courseSlug || inferredModuleSlug || parentSlug || defaultCourseSlug);
 
-    meta.courseSlug = String(meta.courseSlug || parentSlug);
-    meta.lessonSlug = String(meta.lessonSlug || fileBase.replace(/^\d+-/, ''));
+    if (isOverviewDoc) {
+      courseDefaults.set(inferredCourseSlug, {
+        courseTitle: String(meta.courseTitle || meta.title || humanizeSlug(inferredCourseSlug)),
+        courseSummary: meta.courseSummary ? String(meta.courseSummary) : undefined,
+      });
+      continue;
+    }
+
+    const defaultCourse = courseDefaults.get(inferredCourseSlug);
+    meta.courseSlug = inferredCourseSlug;
+    meta.courseTitle = String(meta.courseTitle || defaultCourse?.courseTitle || humanizeSlug(meta.courseSlug));
+    meta.lessonSlug = String(meta.lessonSlug || defaultLessonSlug(relativeToCourses, fileBase));
+    meta.lessonTitle = String(meta.lessonTitle || meta.title || humanizeSlug(meta.lessonSlug));
     meta.order = Number(meta.order || (fileOrderMatch ? Number(fileOrderMatch[1]) : 1));
     meta.lang = String(meta.lang || 'ga');
     meta.estimatedMinutes = Number(meta.estimatedMinutes || 10);
@@ -242,7 +450,9 @@ async function main() {
     const blocks = buildBlocks(body);
     const version = lessonVersion(meta, body);
     lessonVersions.push(version);
+    lessonCount += 1;
 
+    const derivedLexiconInclude = lexiconTokensFromBlocks(blocks);
     const lessonJson = {
       courseSlug: String(meta.courseSlug),
       courseTitle: String(meta.courseTitle),
@@ -254,8 +464,18 @@ async function main() {
       summary: meta.summary ? String(meta.summary) : undefined,
       tags: ensureStringArray(meta.tags),
       resumeBlocks: ensureStringArray(meta.resumeBlocks),
-      lexicon_include: ensureStringArray(meta.lexicon_include),
+      lexicon_include: ensureStringArray(meta.lexicon_include).length
+        ? ensureStringArray(meta.lexicon_include)
+        : derivedLexiconInclude,
       lexicon_exclude: ensureStringArray(meta.lexicon_exclude),
+      tokenGlosses: parseTokenGlosses(meta.tokenGlosses),
+      pedagogy: {
+        defaultMode: String(meta.defaultMode || 'full'),
+        pedagogyFocus: String(meta.pedagogyFocus || 'spoken_survival'),
+        unitDeckSlug: meta.unitDeckSlug ? String(meta.unitDeckSlug) : undefined,
+        autoTrackPhrasebook: meta.autoTrackPhrasebook !== false,
+        autoTrackLexicon: meta.autoTrackLexicon !== false,
+      },
       markdown: body,
       blocks,
       contentVersion: version,
@@ -272,7 +492,7 @@ async function main() {
         courseSlug: lessonJson.courseSlug,
         courseTitle: lessonJson.courseTitle,
         lang: lessonJson.lang,
-        summary: meta.courseSummary ? String(meta.courseSummary) : undefined,
+        summary: meta.courseSummary ? String(meta.courseSummary) : defaultCourse?.courseSummary,
         lessons: [],
       });
     }
@@ -307,7 +527,7 @@ async function main() {
 
   await writeFile(path.join(outRoot, 'manifest.json'), JSON.stringify(manifest, null, 2), 'utf-8');
 
-  console.log(`Synced ${files.length} markdown lesson(s) into ${outRoot}`);
+  console.log(`Synced ${lessonCount} markdown lesson(s) into ${outRoot}`);
 }
 
 main().catch((error) => {

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
   type LessonItem = {
@@ -10,6 +11,7 @@
       status: 'not_started' | 'in_progress' | 'completed';
       progressPercent: number;
       lastBlockId: string | null;
+      lastSeenAt?: string | null;
     };
   };
 
@@ -35,6 +37,34 @@
   let error = '';
   let courses: CourseItem[] = [];
 
+  function latestStartedLessonHref(items: CourseItem[]) {
+    const candidates = items
+      .flatMap((course) =>
+        course.lessons.map((lesson) => {
+          const started =
+            lesson.progress.status !== 'not_started' ||
+            lesson.progress.progressPercent > 0 ||
+            Boolean(lesson.progress.lastSeenAt);
+          if (!started) return null;
+
+          const seenAt = lesson.progress.lastSeenAt ? Date.parse(lesson.progress.lastSeenAt) : 0;
+          return {
+            href: (() => {
+              const base = `/dashboard/courses/${course.courseSlug}/${lesson.lessonSlug}`;
+              return lesson.progress.lastBlockId ? `${base}#${lesson.progress.lastBlockId}` : base;
+            })(),
+            seenAt: Number.isFinite(seenAt) ? seenAt : 0,
+            progressPercent: lesson.progress.progressPercent,
+          };
+        }),
+      )
+      .filter(Boolean) as Array<{ href: string; seenAt: number; progressPercent: number }>;
+
+    if (!candidates.length) return '';
+    candidates.sort((a, b) => b.seenAt - a.seenAt || b.progressPercent - a.progressPercent);
+    return candidates[0].href;
+  }
+
   async function loadCatalog() {
     loading = true;
     error = '';
@@ -46,6 +76,15 @@
       }
       const payload = await res.json();
       courses = payload?.courses ?? [];
+
+      const forceAllModulesView = new URLSearchParams(window.location.search).get('view') === 'all';
+      if (!forceAllModulesView) {
+        const resumeHref = latestStartedLessonHref(courses);
+        if (resumeHref) {
+          await goto(resumeHref, { replaceState: true });
+          return;
+        }
+      }
     } catch (err) {
       error = err instanceof Error ? err.message : 'Failed to load courses';
       courses = [];
@@ -55,11 +94,41 @@
   }
 
   function resumeHref(course: CourseItem) {
-    const target = course.resumeTarget;
-    if (!target) return '#';
+    const latest = course.lessons
+      .filter((lesson) => lessonStarted(lesson))
+      .sort((a, b) => {
+        const seenA = a.progress.lastSeenAt ? Date.parse(a.progress.lastSeenAt) : 0;
+        const seenB = b.progress.lastSeenAt ? Date.parse(b.progress.lastSeenAt) : 0;
+        const safeSeenA = Number.isFinite(seenA) ? seenA : 0;
+        const safeSeenB = Number.isFinite(seenB) ? seenB : 0;
+        if (safeSeenB !== safeSeenA) return safeSeenB - safeSeenA;
+        if (b.progress.progressPercent !== a.progress.progressPercent) {
+          return b.progress.progressPercent - a.progress.progressPercent;
+        }
+        return a.order - b.order;
+      })[0];
 
-    const base = `/dashboard/courses/${target.courseSlug}/${target.lessonSlug}`;
-    return target.lastBlockId ? `${base}#${target.lastBlockId}` : base;
+    if (!latest) return startHref(course);
+    const base = `/dashboard/courses/${course.courseSlug}/${latest.lessonSlug}`;
+    return latest.progress.lastBlockId ? `${base}#${latest.progress.lastBlockId}` : base;
+  }
+
+  function lessonStarted(lesson: LessonItem) {
+    return (
+      lesson.progress.status !== 'not_started' ||
+      lesson.progress.progressPercent > 0 ||
+      Boolean(lesson.progress.lastSeenAt)
+    );
+  }
+
+  function courseStarted(course: CourseItem) {
+    return course.lessons.some((lesson) => lessonStarted(lesson));
+  }
+
+  function startHref(course: CourseItem) {
+    const firstLesson = course.lessons.slice().sort((a, b) => a.order - b.order)[0];
+    if (!firstLesson) return '/dashboard/courses?view=all';
+    return `/dashboard/courses/${course.courseSlug}/${firstLesson.lessonSlug}`;
   }
 
   onMount(() => {
@@ -103,22 +172,18 @@
               <div class="h-2 bg-emerald-500 transition-all" style={`width: ${course.summaryProgress.percent}%`}></div>
             </div>
 
-            <ul class="mt-5 space-y-2">
-              {#each course.lessons as lesson}
-                <li class="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2">
-                  <a href={`/dashboard/courses/${course.courseSlug}/${lesson.lessonSlug}`} class="font-medium text-slate-800 hover:text-emerald-700">
-                    {lesson.order}. {lesson.lessonTitle}
-                  </a>
-                  <span class="text-xs text-slate-500">{lesson.progress.progressPercent}%</span>
-                </li>
-              {/each}
-            </ul>
+            <div class="mt-5 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+              {course.summaryProgress.totalLessons} lesson{course.summaryProgress.totalLessons === 1 ? '' : 's'} in this module
+            </div>
 
-            {#if course.resumeTarget}
-              <a href={resumeHref(course)} class="mt-5 inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
-                Resume learning
+            <div class="mt-5 flex flex-wrap gap-2">
+              <a
+                href={courseStarted(course) ? resumeHref(course) : startHref(course)}
+                class="inline-flex rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700"
+              >
+                {courseStarted(course) ? 'Resume lesson' : 'Start lesson'}
               </a>
-            {/if}
+            </div>
           </article>
         {/each}
       </div>

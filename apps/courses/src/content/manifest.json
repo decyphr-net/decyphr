@@ -1,5 +1,137 @@
 {
-  "generatedAt": "2026-02-23T20:29:30.819Z",
-  "contentVersion": "e3b0c44298fc1c14",
-  "courses": []
+  "generatedAt": "2026-02-24T18:05:22.937Z",
+  "contentVersion": "35d96ec8429b16bd",
+  "courses": [
+    {
+      "courseSlug": "cafe",
+      "courseTitle": "Coffee Shop Encounters",
+      "lang": "ga",
+      "lessons": [
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-1-conversation",
+          "lessonTitle": "The Smallest, Easiest Interaction - Full Conversation",
+          "order": 1,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "11ec4be90245f452",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-1-conversation.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-2-breakdown-part-1",
+          "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 1",
+          "order": 2,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "df6cfebdea9efb01",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-2-breakdown-part-1.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-3-breakdown-part-2",
+          "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 2",
+          "order": 3,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "b83f1e3389f6eda9",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-3-breakdown-part-2.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-4-breakdown-part-3",
+          "lessonTitle": "The Smallest, Easiest Conversation - Breakdown Part 3",
+          "order": 4,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "f7ce3189d6691b22",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-4-breakdown-part-3.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-5-recap",
+          "lessonTitle": "The Smallest, Easiest Conversation - Recap",
+          "order": 5,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "d664b2e33f31cbac",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-5-recap.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-6-challenge",
+          "lessonTitle": "Challenge",
+          "order": 6,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "208b558b2b686cbe",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-6-challenge.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-7-modifying-the-order-part-1",
+          "lessonTitle": "Modifying The Order Part 1",
+          "order": 7,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "491200c181c140fc",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-7-modifying-the-order-part-1.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-8-modifying-the-order-part-2",
+          "lessonTitle": "Modifying The Order Part 2",
+          "order": 8,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "91657188d322fa96",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-8-modifying-the-order-part-2.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-9-recap",
+          "lessonTitle": "Recap",
+          "order": 9,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "1f75a5023e61a53a",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-9-recap.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-10-vocabulary",
+          "lessonTitle": "Vocabulary",
+          "order": 10,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "87836cf864d8ae67",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-10-vocabulary.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-11-bonus-order",
+          "lessonTitle": "Bonus Order - Hot Chocolate",
+          "order": 11,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "5dcbb7d7d2f8b768",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-11-bonus-order.json"
+        },
+        {
+          "lessonSlug": "cafe-first-encounters-lesson-1-12-real-world-challenge",
+          "lessonTitle": "Real World Challenge",
+          "order": 12,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "647d6001f0902524",
+          "file": "lessons/cafe/cafe-first-encounters-lesson-1-12-real-world-challenge.json"
+        }
+      ]
+    },
+    {
+      "courseSlug": "statement.md",
+      "courseTitle": "Statement.Md",
+      "lang": "ga",
+      "lessons": [
+        {
+          "lessonSlug": "statement",
+          "lessonTitle": "Statement",
+          "order": 1,
+          "estimatedMinutes": 10,
+          "tags": [],
+          "contentVersion": "b56449e361a8495f",
+          "file": "lessons/statement.md/statement.json"
+        }
+      ]
+    }
+  ]
 }

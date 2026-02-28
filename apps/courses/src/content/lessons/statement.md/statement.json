@@ -1,0 +1,211 @@
+{
+  "courseSlug": "statement.md",
+  "courseTitle": "Statement.Md",
+  "lessonSlug": "statement",
+  "lessonTitle": "Statement",
+  "order": 1,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "# Overview\n\n## 1. Many of Us Had a Complicated Experience\n\nIrish people have a complicated history with our native language — shaped by colonial policy, penal laws, chronic underfunding, and an exam system that often didn’t teach us how to actually use it..\n\nAt the same time, we’re told we should be doing more. That using our _cúpla focal_ is as simple as walking into a café and ordering a coffee _as Gaeilge_. But the reality has changed.\n\nIn many places today, the person serving you may not even have English as a first language. Yet there’s still an expectation that we should confidently use a language many of us never fully understood ourselves.\n\nFor some learners — especially those who think or process differently — traditional classroom Irish felt overwhelming or inaccessible. Some students were granted exemptions. Others fought for them. And many struggled without support, labelled as difficult rather than different.\n\nOn top of that, motivation was hard to find. In large parts of the country, Irish simply wasn’t used outside school. It’s difficult to commit to something that feels disconnected from daily life — especially when you’re growing up and focused on friends, sport, music, family, and everything else that feels immediate and real.\n\n---\n\n## 2. Guilt Isn’t a Strategy\n\nWhen Irish comes up, people tend to reach for familiar explanations:\n“I didn’t like how it was taught.”\n“There’s nowhere to use it.”\n\nThere are calls to overhaul how it’s taught — to treat it like any other foreign language. But Irish isn’t foreign. It’s ours.\n\nAnd while we’re often told it’s “culturally important,” cultural importance alone doesn’t pay bills, provide job security, or ease the daily pressures people already carry.\n\nMost adults are already being told they’re not doing enough — not successful enough, not organised enough, not productive enough. Adding linguistic guilt to that list doesn’t create motivation. It creates resistance.\n\n---\n\n## 3. Real-World Spaces Matter\n\nIf we want Irish to be used daily, teaching it isn’t enough. It needs to be welcomed.\n\nWhen local businesses actively make space for Irish, the impact becomes multi-generational:\n\n- Adults have real spaces to use whatever Irish they have — without pressure.\n\n- Teens and students gain a practical reason to include Irish on their CVs, giving them a genuine edge.\n\n- Children grow up hearing Irish in everyday public life — the way we hear English now.\n\n\nLanguages survive in living spaces, not just classrooms.\n\n---\n\n## 4. Start Small\n\nOrdering coffee. Asking how someone is. Simple exchanges.\n\nNone of that requires an understanding of the genitive case.\n\nWe learned to communicate in English long before we understood grammar. The human brain is capable of acquiring language naturally.\n\nFor adults, it may take more conscious effort. But for children growing up hearing and using Irish in real spaces, it becomes normal. And when it’s normal, school learning becomes reinforcement — not the first and only exposure.\n\n---\n\n## 5. What This Course Will (And Won’t) Do\n\nThis course isn’t about exam preparation.\n\nIt won’t overwhelm you with grammar tables or technical terminology.\n\nInstead, you’ll learn usable phrases. Expandable vocabulary. Practical language you can actually bring into daily life.\n\nFor those who want to go deeper, we’ll include small grammar insights — clear and optional. Enough to help you understand when words change, without drowning you in rules.\n\nYou decide if and when you want to dive deeper.\n\n[Go to Cafe Interactions](./modules/cafe/overview.md)",
+  "blocks": [
+    {
+      "id": "overview-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Overview"
+    },
+    {
+      "id": "1-many-of-us-had-a-complicated-experience-2",
+      "type": "heading",
+      "level": 2,
+      "text": "1. Many of Us Had a Complicated Experience"
+    },
+    {
+      "id": "irish-people-have-a-complicated-history-with-our-native-language-3",
+      "type": "paragraph",
+      "text": "Irish people have a complicated history with our native language — shaped by colonial policy, penal laws, chronic underfunding, and an exam system that often didn’t teach us how to actually use it.."
+    },
+    {
+      "id": "at-the-same-time-we-re-told-we-should-be-doing-more-that-using-o-4",
+      "type": "paragraph",
+      "text": "At the same time, we’re told we should be doing more. That using our _cúpla focal_ is as simple as walking into a café and ordering a coffee _as Gaeilge_. But the reality has changed."
+    },
+    {
+      "id": "in-many-places-today-the-person-serving-you-may-not-even-have-en-5",
+      "type": "paragraph",
+      "text": "In many places today, the person serving you may not even have English as a first language. Yet there’s still an expectation that we should confidently use a language many of us never fully understood ourselves."
+    },
+    {
+      "id": "for-some-learners-especially-those-who-think-or-process-differen-6",
+      "type": "paragraph",
+      "text": "For some learners — especially those who think or process differently — traditional classroom Irish felt overwhelming or inaccessible. Some students were granted exemptions. Others fought for them. And many struggled without support, labelled as difficult rather than different."
+    },
+    {
+      "id": "on-top-of-that-motivation-was-hard-to-find-in-large-parts-of-the-7",
+      "type": "paragraph",
+      "text": "On top of that, motivation was hard to find. In large parts of the country, Irish simply wasn’t used outside school. It’s difficult to commit to something that feels disconnected from daily life — especially when you’re growing up and focused on friends, sport, music, family, and everything else that feels immediate and real."
+    },
+    {
+      "id": "paragraph-8-8",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "2-guilt-isn-t-a-strategy-9",
+      "type": "heading",
+      "level": 2,
+      "text": "2. Guilt Isn’t a Strategy"
+    },
+    {
+      "id": "when-irish-comes-up-people-tend-to-reach-for-familiar-explanatio-10",
+      "type": "paragraph",
+      "text": "When Irish comes up, people tend to reach for familiar explanations: “I didn’t like how it was taught.” “There’s nowhere to use it.”"
+    },
+    {
+      "id": "there-are-calls-to-overhaul-how-it-s-taught-to-treat-it-like-any-11",
+      "type": "paragraph",
+      "text": "There are calls to overhaul how it’s taught — to treat it like any other foreign language. But Irish isn’t foreign. It’s ours."
+    },
+    {
+      "id": "and-while-we-re-often-told-it-s-culturally-important-cultural-im-12",
+      "type": "paragraph",
+      "text": "And while we’re often told it’s “culturally important,” cultural importance alone doesn’t pay bills, provide job security, or ease the daily pressures people already carry."
+    },
+    {
+      "id": "most-adults-are-already-being-told-they-re-not-doing-enough-not--13",
+      "type": "paragraph",
+      "text": "Most adults are already being told they’re not doing enough — not successful enough, not organised enough, not productive enough. Adding linguistic guilt to that list doesn’t create motivation. It creates resistance."
+    },
+    {
+      "id": "paragraph-14-14",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "3-real-world-spaces-matter-15",
+      "type": "heading",
+      "level": 2,
+      "text": "3. Real-World Spaces Matter"
+    },
+    {
+      "id": "if-we-want-irish-to-be-used-daily-teaching-it-isn-t-enough-it-ne-16",
+      "type": "paragraph",
+      "text": "If we want Irish to be used daily, teaching it isn’t enough. It needs to be welcomed."
+    },
+    {
+      "id": "when-local-businesses-actively-make-space-for-irish-the-impact-b-17",
+      "type": "paragraph",
+      "text": "When local businesses actively make space for Irish, the impact becomes multi-generational:"
+    },
+    {
+      "id": "adults-have-real-spaces-to-use-whatever-irish-they-have-without--18",
+      "type": "list",
+      "items": [
+        "Adults have real spaces to use whatever Irish they have — without pressure."
+      ]
+    },
+    {
+      "id": "teens-and-students-gain-a-practical-reason-to-include-irish-on-t-19",
+      "type": "list",
+      "items": [
+        "Teens and students gain a practical reason to include Irish on their CVs, giving them a genuine edge."
+      ]
+    },
+    {
+      "id": "children-grow-up-hearing-irish-in-everyday-public-life-the-way-w-20",
+      "type": "list",
+      "items": [
+        "Children grow up hearing Irish in everyday public life — the way we hear English now."
+      ]
+    },
+    {
+      "id": "languages-survive-in-living-spaces-not-just-classrooms-21",
+      "type": "paragraph",
+      "text": "Languages survive in living spaces, not just classrooms."
+    },
+    {
+      "id": "paragraph-22-22",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "4-start-small-23",
+      "type": "heading",
+      "level": 2,
+      "text": "4. Start Small"
+    },
+    {
+      "id": "ordering-coffee-asking-how-someone-is-simple-exchanges-24",
+      "type": "paragraph",
+      "text": "Ordering coffee. Asking how someone is. Simple exchanges."
+    },
+    {
+      "id": "none-of-that-requires-an-understanding-of-the-genitive-case-25",
+      "type": "paragraph",
+      "text": "None of that requires an understanding of the genitive case."
+    },
+    {
+      "id": "we-learned-to-communicate-in-english-long-before-we-understood-g-26",
+      "type": "paragraph",
+      "text": "We learned to communicate in English long before we understood grammar. The human brain is capable of acquiring language naturally."
+    },
+    {
+      "id": "for-adults-it-may-take-more-conscious-effort-but-for-children-gr-27",
+      "type": "paragraph",
+      "text": "For adults, it may take more conscious effort. But for children growing up hearing and using Irish in real spaces, it becomes normal. And when it’s normal, school learning becomes reinforcement — not the first and only exposure."
+    },
+    {
+      "id": "paragraph-28-28",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "5-what-this-course-will-and-won-t-do-29",
+      "type": "heading",
+      "level": 2,
+      "text": "5. What This Course Will (And Won’t) Do"
+    },
+    {
+      "id": "this-course-isn-t-about-exam-preparation-30",
+      "type": "paragraph",
+      "text": "This course isn’t about exam preparation."
+    },
+    {
+      "id": "it-won-t-overwhelm-you-with-grammar-tables-or-technical-terminol-31",
+      "type": "paragraph",
+      "text": "It won’t overwhelm you with grammar tables or technical terminology."
+    },
+    {
+      "id": "instead-you-ll-learn-usable-phrases-expandable-vocabulary-practi-32",
+      "type": "paragraph",
+      "text": "Instead, you’ll learn usable phrases. Expandable vocabulary. Practical language you can actually bring into daily life."
+    },
+    {
+      "id": "for-those-who-want-to-go-deeper-we-ll-include-small-grammar-insi-33",
+      "type": "paragraph",
+      "text": "For those who want to go deeper, we’ll include small grammar insights — clear and optional. Enough to help you understand when words change, without drowning you in rules."
+    },
+    {
+      "id": "you-decide-if-and-when-you-want-to-dive-deeper-34",
+      "type": "paragraph",
+      "text": "You decide if and when you want to dive deeper."
+    },
+    {
+      "id": "go-to-cafe-interactions-modules-cafe-overview-md-35",
+      "type": "paragraph",
+      "text": "[Go to Cafe Interactions](./modules/cafe/overview.md)"
+    }
+  ],
+  "contentVersion": "b56449e361a8495f"
+}

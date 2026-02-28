@@ -1,0 +1,98 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-12-real-world-challenge",
+  "lessonTitle": "Real World Challenge",
+  "order": 12,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Real World Challenge\n\nYour challenge is simple:\n\nUse one phrase from this unit in a real-world situation.\n\nThat’s it. One line.\n\nMaybe start with something easy:\n\n- \"Go raibh maith agat.\"\n- \"Slán.\"\n\nYou don’t need a full conversation.\nYou don’t need perfect pronunciation.\nYou don’t need them to reply in Irish.\n\nIf they switch to English — fine.\nIf they hesitate — fine.\nIf they don’t catch it the first time — also fine.\n\nYou’ve still used it.\n\nAnd that’s the point.\n\nMost people are expecting English.\nYou’re helping change that — one small interaction at a time.\n\nSo next time you’re at the counter, don’t think about it too much.\n\nJust say it.\n\nThe next coffee you buy is your first live test.\n",
+  "blocks": [
+    {
+      "id": "real-world-challenge-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Real World Challenge"
+    },
+    {
+      "id": "your-challenge-is-simple-2",
+      "type": "paragraph",
+      "text": "Your challenge is simple:"
+    },
+    {
+      "id": "use-one-phrase-from-this-unit-in-a-real-world-situation-3",
+      "type": "paragraph",
+      "text": "Use one phrase from this unit in a real-world situation."
+    },
+    {
+      "id": "that-s-it-one-line-4",
+      "type": "paragraph",
+      "text": "That’s it. One line."
+    },
+    {
+      "id": "maybe-start-with-something-easy-5",
+      "type": "paragraph",
+      "text": "Maybe start with something easy:"
+    },
+    {
+      "id": "go-raibh-maith-agat-6",
+      "type": "list",
+      "items": [
+        "\"Go raibh maith agat.\"",
+        "\"Slán.\""
+      ]
+    },
+    {
+      "id": "you-don-t-need-a-full-conversation-you-don-t-need-perfect-pronun-7",
+      "type": "paragraph",
+      "text": "You don’t need a full conversation. You don’t need perfect pronunciation. You don’t need them to reply in Irish."
+    },
+    {
+      "id": "if-they-switch-to-english-fine-if-they-hesitate-fine-if-they-don-8",
+      "type": "paragraph",
+      "text": "If they switch to English — fine. If they hesitate — fine. If they don’t catch it the first time — also fine."
+    },
+    {
+      "id": "you-ve-still-used-it-9",
+      "type": "paragraph",
+      "text": "You’ve still used it."
+    },
+    {
+      "id": "and-that-s-the-point-10",
+      "type": "paragraph",
+      "text": "And that’s the point."
+    },
+    {
+      "id": "most-people-are-expecting-english-you-re-helping-change-that-one-11",
+      "type": "paragraph",
+      "text": "Most people are expecting English. You’re helping change that — one small interaction at a time."
+    },
+    {
+      "id": "so-next-time-you-re-at-the-counter-don-t-think-about-it-too-much-12",
+      "type": "paragraph",
+      "text": "So next time you’re at the counter, don’t think about it too much."
+    },
+    {
+      "id": "just-say-it-13",
+      "type": "paragraph",
+      "text": "Just say it."
+    },
+    {
+      "id": "the-next-coffee-you-buy-is-your-first-live-test-14",
+      "type": "paragraph",
+      "text": "The next coffee you buy is your first live test."
+    }
+  ],
+  "contentVersion": "647d6001f0902524"
+}

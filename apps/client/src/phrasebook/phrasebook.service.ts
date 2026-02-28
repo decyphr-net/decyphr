@@ -112,6 +112,8 @@ export class PhrasebookService {
     const user = await this.authService.findUserByClientId(clientId);
     const language = user?.languageSettings?.[0]?.targetLanguage ?? 'ga';
     const requestId = randomUUID();
+    const autoTranslation =
+      typeof body?.autoTranslate === 'boolean' ? body.autoTranslate : undefined;
 
     const payload: any = {
       action: 'create',
@@ -121,6 +123,7 @@ export class PhrasebookService {
         language,
         source: 'statement_created',
         ...body,
+        ...(typeof autoTranslation === 'boolean' ? { autoTranslation } : {}),
       },
     };
 

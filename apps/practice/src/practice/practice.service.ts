@@ -414,7 +414,94 @@ export class PracticeService {
     return 2;
   }
 
-  private scoreTypedOrCloze(expected: string, user: string) {
+  private canonicalEnglishToken(token: string) {
+    if (token === 'hi' || token === 'hey' || token === 'hiya') return 'hello';
+    if (token === 'thanks') return 'thank';
+    if (token === 'ok' || token === 'okay') return 'ok';
+    return token;
+  }
+
+  private englishStructureToken(token: string) {
+    const mapped = this.canonicalEnglishToken(token);
+
+    // Keep this list intentionally small: loosen structure, not meaning.
+    if (
+      mapped === 'a' ||
+      mapped === 'an' ||
+      mapped === 'the' ||
+      mapped === 'of' ||
+      mapped === 'for' ||
+      mapped === 'to' ||
+      mapped === 'please'
+    ) {
+      return '';
+    }
+
+    if (mapped.endsWith('ies') && mapped.length > 4) {
+      return `${mapped.slice(0, -3)}y`;
+    }
+
+    if (mapped.endsWith('s') && mapped.length > 3) {
+      return mapped.slice(0, -1);
+    }
+
+    return mapped;
+  }
+
+  private looseTokenMatch(expected: string, user: string) {
+    if (expected === user) return true;
+
+    const maxLength = Math.max(expected.length, user.length);
+    if (maxLength <= 4) return false;
+
+    const distance = this.levenshteinDistance(expected, user);
+    return distance <= 1;
+  }
+
+  private looseEnglishStructureMatch(expected: string, user: string) {
+    const expectedTokens = this
+      .normalizeAscii(expected)
+      .split(/\s+/)
+      .map((value) => this.englishStructureToken(value))
+      .filter(Boolean);
+
+    const userTokens = this
+      .normalizeAscii(user)
+      .split(/\s+/)
+      .map((value) => this.englishStructureToken(value))
+      .filter(Boolean);
+
+    if (expectedTokens.length === 0 || userTokens.length === 0) {
+      return false;
+    }
+
+    const used = new Set<number>();
+    let matches = 0;
+
+    for (const expectedToken of expectedTokens) {
+      let foundIndex = -1;
+      for (let i = 0; i < userTokens.length; i += 1) {
+        if (used.has(i)) continue;
+        if (this.looseTokenMatch(expectedToken, userTokens[i])) {
+          foundIndex = i;
+          break;
+        }
+      }
+      if (foundIndex >= 0) {
+        used.add(foundIndex);
+        matches += 1;
+      }
+    }
+
+    if (expectedTokens.length <= 3) {
+      return matches === expectedTokens.length;
+    }
+
+    const coverage = matches / expectedTokens.length;
+    return coverage >= 0.8;
+  }
+
+  private scoreTypedOrCloze(expected: string, user: string, exerciseType: ExerciseType) {
     const normalizedExpected = this.normalize(expected);
     const normalizedUser = this.normalize(user);
 
@@ -452,6 +539,19 @@ export class PracticeService {
     if (distance <= threshold) {
       return {
         score: 85,
+        isCorrect: true,
+        normalizedExpected,
+        normalizedUser,
+      };
+    }
+
+    if (
+      exerciseType === 'typed_translation' &&
+      this.isLikelyEnglish(expected) &&
+      this.looseEnglishStructureMatch(expected, user)
+    ) {
+      return {
+        score: 80,
         isCorrect: true,
         normalizedExpected,
         normalizedUser,
@@ -774,7 +874,11 @@ export class PracticeService {
       userAnswer = tokens.join(' ');
       gradeResult = this.scoreSentenceBuilder(built.expectedAnswer, tokens);
     } else {
-      gradeResult = this.scoreTypedOrCloze(built.expectedAnswer, dto.userAnswer || '');
+      gradeResult = this.scoreTypedOrCloze(
+        built.expectedAnswer,
+        dto.userAnswer || '',
+        dto.exerciseType,
+      );
     }
 
     let profile = await this.profileRepo.findOne({

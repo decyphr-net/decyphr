@@ -2,9 +2,8 @@ version: "3"
 services:
   mariadb:
     image: mariadb:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: decyphr
+    env_file:
+      - ./docker/env/mariadb.env
     ports:
       - "3306:3306"
     volumes:
@@ -20,9 +19,8 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+    env_file:
+      - ./docker/env/zookeeper.env
     ports:
       - '2181:2181'
   kafka:
@@ -33,15 +31,8 @@ services:
       - 9092:9092
       - 9093:9093
       - "29092:29092"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_INTERNAL://kafka:9092,EXTERNAL://0.0.0.0:9093
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_INTERNAL://kafka:9092,EXTERNAL://127.0.0.1:9093
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9093
+    env_file:
+      - ./docker/env/kafka.env
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -49,10 +40,8 @@ services:
       - kafka
     ports:
       - "9095:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: kafka
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
-      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    env_file:
+      - ./docker/env/kafka-ui.env
 
   translator:
     build:
@@ -64,6 +53,8 @@ services:
     depends_on:
       - kafka
       - mariadb
+    env_file:
+      - ./apps/translation/translation-connector/.env
 
   ai-connector:
     build:
@@ -75,6 +66,8 @@ services:
     depends_on:
       - kafka
       - mariadb
+    env_file:
+      - ./apps/ai/ai-connector/.env
   bots:
     build:
       context: ./apps/chat/bots
@@ -85,6 +78,8 @@ services:
     depends_on:
       - mariadb
       - redis
+    env_file:
+      - ./apps/chat/bots/.env
   chat:
     build:
       context: ./apps/chat/chat
@@ -95,6 +90,8 @@ services:
     depends_on:
       - kafka
       - mariadb
+    env_file:
+      - ./apps/chat/chat/.env
   nlp:
     build:
       context: ./nlp
@@ -149,6 +146,8 @@ services:
     restart: always
     depends_on:
       - mariadb
+    env_file:
+      - ./apps/focus/.env
 
   practice:
     build:
@@ -161,6 +160,8 @@ services:
       - mariadb
       - kafka
       - phrasebook
+    env_file:
+      - ./apps/practice/.env
 
   courses:
     build:
@@ -172,6 +173,21 @@ services:
     depends_on:
       - mariadb
       - kafka
+    env_file:
+      - ./apps/courses/.env
+
+  challenges:
+    build:
+      context: .
+      dockerfile: ./apps/challenges/Dockerfile
+    expose:
+      - "3016"
+    restart: always
+    depends_on:
+      - mariadb
+      - courses
+    env_file:
+      - ./apps/challenges/.env
 
   client:
     build:
@@ -187,18 +203,10 @@ services:
       - focus
       - practice
       - courses
-    environment:
-      AUTH_TRUSTED_HEADERS_ENABLED: "true"
-      AUTH_TRUSTED_PROXY_IPS: "web,127.0.0.1,localhost"
-      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:-dev-internal-secret}
-      DB_HOST: mariadb
-      DB_PORT: 3306
-      DB_USER: ${DB_USER:-root}
-      DB_PASSWORD: ${DB_PASSWORD:-password}
-      DB_NAME: ${DB_NAME:-user}
-      FOCUS_SERVICE_URL: http://focus:3013
-      PRACTICE_SERVICE_URL: http://practice:3014
-      COURSES_SERVICE_URL: http://courses:3015
+      - challenges
+    env_file:
+      - ./apps/client/.env
+      - ./docker/env/client.env
 
   web:
     build:
@@ -209,19 +217,8 @@ services:
     restart: always
     depends_on:
       - client
-    environment:
-      NEST_INTERNAL_URL: http://client:8000
-      WEB_SESSION_SECRET: ${WEB_SESSION_SECRET:-dev-web-session-secret}
-      INTERNAL_AUTH_SECRET: ${INTERNAL_AUTH_SECRET:-dev-internal-secret}
-      WEB_APP_URL: ${WEB_APP_URL:-http://localhost:5173}
-      DB_HOST: mariadb
-      DB_PORT: 3306
-      DB_USER: ${DB_USER:-root}
-      DB_PASSWORD: ${DB_PASSWORD:-password}
-      DB_NAME: ${DB_NAME:-user}
-      EMAIL_DELIVERY: ${EMAIL_DELIVERY:-log}
-      RESEND_API_KEY: ${RESEND_API_KEY:-}
-      EMAIL_FROM: ${EMAIL_FROM:-no-reply@example.com}
+    env_file:
+      - ./docker/env/web.env
 
 volumes:
   mariadb_data:

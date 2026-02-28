@@ -1,0 +1,177 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-8-modifying-the-order-part-2",
+  "lessonTitle": "Modifying The Order Part 2",
+  "order": 8,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "ndáiríre",
+    "an",
+    "bhfuil",
+    "bainne",
+    "coirce",
+    "agaibh",
+    "faroar",
+    "níl",
+    "againn",
+    "inniu",
+    "ach",
+    "tá",
+    "almóinn",
+    "nó",
+    "soighe",
+    "le",
+    "do",
+    "thoil",
+    "sin",
+    "ceart",
+    "go",
+    "leor"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Modifying The Order Part 2\n\nOK, we looked at one deviation from the flow of the conversation, but, unfortunately there are other things that can go wrong with the order! Let's take a look at another case where a problem arises.\n\n- customer\n> I ndáiríre, an bhfuil bainne coirce agaibh?  \n> In NAW-ree-reh, un will BAN-yuh KIR-keh uh-gwiv?  \n> Actually, do you have oat milk?  \n\n- barista\n> Faroar, níl bainne coirce againn inniu. Ach, tá bainne almóinn nó bainne soighe againn  \n> FAR-oar, neel BAN-yuh KIR-keh ah-gwin in-YOO. Akh, taw BAN-yuh al-MOAN noh BAN-yuh SOY-eh ah-gwin.  \n> Unfortunately, we don't have oat milk today. But, we do have almond or soy milk  \n\nIn this case, there's no oat milk available, so the barista informs the customer. `Faroar` simply means \"unfortunately\". Another word that you might hear instead is `drochuair`. Next up we have `níl bainne coirce againn`. Earlier, we saw `tá` used to say “yes” to `an bhfuil…?`  Here, we use `níl` to say “no”.\n\nYou’ll notice the pattern again:\n- `An bhfuil X agaibh?` – Do you have X?\n- `Tá X againn` – We have X.\n- `Níl X againn` – We don’t have X.\n\nThis pattern will come up again and again in real-life situations.\n\nAnd lastly in the first sentence we have `inniu` which simply means \"today\".\n\nIn the next sentence then we inform the customer that we have `bainne almóinn` or `bainne soighe`, which are almond milk and soy milk respectively. Then `nó` is the Irish word for \"or\".\n\nFrom there, the customer has a choice to make again. They can either choose the almond or soy milk, or go ahead without one of those options.\n\n- customer\n> Bainne soighe, le do thoil  \n> BAN-yuh SOY-eh, leh duh hull.  \n> Soy milk, please  \n\n**Or**\n\n- customer\n> Bainne almóinn, le do thoil  \n> BAN-yuh al-MOAN, leh duh hull.  \n> Almond milk, please  \n\nDepending on their choice, of course!\n\nAnd if they choose to go ahead without, then, just like the last example, they can say:\n\n- customer\n> Sin ceart go leor  \n> Shin kyart guh lor.  \n> That's fine  \n\nYou've now managed to navigate your second ordering crisis! Congratulations!\n",
+  "blocks": [
+    {
+      "id": "modifying-the-order-part-2-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Modifying The Order Part 2"
+    },
+    {
+      "id": "ok-we-looked-at-one-deviation-from-the-flow-of-the-conversation--2",
+      "type": "paragraph",
+      "text": "OK, we looked at one deviation from the flow of the conversation, but, unfortunately there are other things that can go wrong with the order! Let's take a look at another case where a problem arises."
+    },
+    {
+      "id": "i-ndairire-an-bhfuil-bainne-coirce-agaibh-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "customer",
+          "text": "I ndáiríre, an bhfuil bainne coirce agaibh?",
+          "pronunciation": "In NAW-ree-reh, un will BAN-yuh KIR-keh uh-gwiv?",
+          "translation": "Actually, do you have oat milk?"
+        }
+      ]
+    },
+    {
+      "id": "faroar-nil-bainne-coirce-againn-inniu-ach-ta-bainne-almoinn-no-b-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "barista",
+          "text": "Faroar, níl bainne coirce againn inniu. Ach, tá bainne almóinn nó bainne soighe againn",
+          "pronunciation": "FAR-oar, neel BAN-yuh KIR-keh ah-gwin in-YOO. Akh, taw BAN-yuh al-MOAN noh BAN-yuh SOY-eh ah-gwin.",
+          "translation": "Unfortunately, we don't have oat milk today. But, we do have almond or soy milk"
+        }
+      ]
+    },
+    {
+      "id": "in-this-case-there-s-no-oat-milk-available-so-the-barista-inform-5",
+      "type": "paragraph",
+      "text": "In this case, there's no oat milk available, so the barista informs the customer. `Faroar` simply means \"unfortunately\". Another word that you might hear instead is `drochuair`. Next up we have `níl bainne coirce againn`. Earlier, we saw `tá` used to say “yes” to `an bhfuil…?`  Here, we use `níl` to say “no”."
+    },
+    {
+      "id": "you-ll-notice-the-pattern-again-6",
+      "type": "paragraph",
+      "text": "You’ll notice the pattern again:"
+    },
+    {
+      "id": "an-bhfuil-x-agaibh-do-you-have-x-7",
+      "type": "list",
+      "items": [
+        "`An bhfuil X agaibh?` – Do you have X?",
+        "`Tá X againn` – We have X.",
+        "`Níl X againn` – We don’t have X."
+      ]
+    },
+    {
+      "id": "this-pattern-will-come-up-again-and-again-in-real-life-situation-8",
+      "type": "paragraph",
+      "text": "This pattern will come up again and again in real-life situations."
+    },
+    {
+      "id": "and-lastly-in-the-first-sentence-we-have-inniu-which-simply-mean-9",
+      "type": "paragraph",
+      "text": "And lastly in the first sentence we have `inniu` which simply means \"today\"."
+    },
+    {
+      "id": "in-the-next-sentence-then-we-inform-the-customer-that-we-have-ba-10",
+      "type": "paragraph",
+      "text": "In the next sentence then we inform the customer that we have `bainne almóinn` or `bainne soighe`, which are almond milk and soy milk respectively. Then `nó` is the Irish word for \"or\"."
+    },
+    {
+      "id": "from-there-the-customer-has-a-choice-to-make-again-they-can-eith-11",
+      "type": "paragraph",
+      "text": "From there, the customer has a choice to make again. They can either choose the almond or soy milk, or go ahead without one of those options."
+    },
+    {
+      "id": "bainne-soighe-le-do-thoil-12",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "customer",
+          "text": "Bainne soighe, le do thoil",
+          "pronunciation": "BAN-yuh SOY-eh, leh duh hull.",
+          "translation": "Soy milk, please"
+        }
+      ]
+    },
+    {
+      "id": "or-13",
+      "type": "paragraph",
+      "text": "**Or**"
+    },
+    {
+      "id": "bainne-almoinn-le-do-thoil-14",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "customer",
+          "text": "Bainne almóinn, le do thoil",
+          "pronunciation": "BAN-yuh al-MOAN, leh duh hull.",
+          "translation": "Almond milk, please"
+        }
+      ]
+    },
+    {
+      "id": "depending-on-their-choice-of-course-15",
+      "type": "paragraph",
+      "text": "Depending on their choice, of course!"
+    },
+    {
+      "id": "and-if-they-choose-to-go-ahead-without-then-just-like-the-last-e-16",
+      "type": "paragraph",
+      "text": "And if they choose to go ahead without, then, just like the last example, they can say:"
+    },
+    {
+      "id": "sin-ceart-go-leor-17",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "customer",
+          "text": "Sin ceart go leor",
+          "pronunciation": "Shin kyart guh lor.",
+          "translation": "That's fine"
+        }
+      ]
+    },
+    {
+      "id": "you-ve-now-managed-to-navigate-your-second-ordering-crisis-congr-18",
+      "type": "paragraph",
+      "text": "You've now managed to navigate your second ordering crisis! Congratulations!"
+    }
+  ],
+  "contentVersion": "91657188d322fa96"
+}

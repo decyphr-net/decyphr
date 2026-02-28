@@ -9,6 +9,7 @@ import { MagicLink } from './auth/entities/MagicLink';
 import { User } from './auth/entities/User';
 import { BotsModule } from './bots/bots.module';
 import { ChatModule } from './chat/chat.module';
+import { ChallengesModule } from './challenges/challenges.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { I18nController } from './i18n/i18n.controller';
 import { I18nModule } from './i18n/i18n.module';
@@ -59,6 +60,7 @@ import { PracticeModule } from './practice/practice.module';
     FocusModule,
     PracticeModule,
     CoursesModule,
+    ChallengesModule,
   ],
   controllers: [AppController, I18nController],
 })

@@ -1,0 +1,272 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-1-1-conversation",
+  "lessonTitle": "The Smallest, Easiest Interaction - Full Conversation",
+  "order": 1,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "cupán",
+    "tae",
+    "le",
+    "do",
+    "thoil",
+    "sin",
+    "trí",
+    "euro",
+    "cárta",
+    "nó",
+    "airgead",
+    "tirim",
+    "seo",
+    "tá",
+    "an",
+    "bainne",
+    "agus",
+    "siúcra",
+    "ar",
+    "mbord",
+    "go",
+    "raibh",
+    "maith",
+    "agat",
+    "slán",
+    "fáilte",
+    "romhat",
+    "fóill"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "duit",
+      "translation": "to you"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a",
+      "translation": "to"
+    },
+    {
+      "token": "fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "Cupán",
+      "translation": "cup"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "sin",
+      "translation": "that"
+    },
+    {
+      "token": "trí",
+      "translation": "three"
+    },
+    {
+      "token": "euro",
+      "translation": "euro"
+    },
+    {
+      "token": "Cárta",
+      "translation": "card"
+    },
+    {
+      "token": "nó",
+      "translation": "or"
+    },
+    {
+      "token": "Seo",
+      "translation": "here / this"
+    },
+    {
+      "token": "Tá",
+      "translation": "is / are"
+    },
+    {
+      "token": "an",
+      "translation": "the"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "siúcra",
+      "translation": "sugar"
+    },
+    {
+      "token": "ar",
+      "translation": "on"
+    },
+    {
+      "token": "mbord",
+      "translation": "table"
+    },
+    {
+      "token": "Slán",
+      "translation": "goodbye"
+    },
+    {
+      "token": "fóill",
+      "translation": "still / yet"
+    },
+    {
+      "token": "go raibh maith agat",
+      "translation": "thank you"
+    },
+    {
+      "token": "airgead tirim",
+      "translation": "cash"
+    },
+    {
+      "token": "tá fáilte romhat",
+      "translation": "you're welcome"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# The Smallest, Easiest Interaction - Full Conversation\n- Barista\n> Dia duit! Cad is féidir liom a fháil duit?\n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?\n> Hello! What can I get for you?\n\n- Customer\n> Dia is Muire duit. Cupán tae, le do thoil\n> DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull\n> Hi, a cup of tea, please\n\n- Barista\n> Sin trí euro. Cárta nó airgead tirim?\n> Shin tree YUR-oh. KAR-tuh noh AR-gid TIR-im?\n> That's three euro. Card or cash?\n\n- Customer\n> Cárta\n> KAR-tuh.\n> Card\n\n- Barista\n> Seo duit! Tá an bainne agus siúcra ar an mbord sin\n> Sho gwich! Taw un BAN-yuh ah-gus SHOOK-ruh er un moard shin.\n> Here you are! The milk and sugar are on that table\n\n- Customer\n> Go raibh maith agat! Slán\n> Guh rev mah ah-gut! Slawn.\n> Thank you! Goodbye\n\n- Barista\n> Tá fáilte romhat, slán go fóill!\n> Taw FAWL-chuh ruh-ut, slawn guh foh-ill!\n> You're welcome, goodbye!\n",
+  "blocks": [
+    {
+      "id": "the-smallest-easiest-interaction-full-conversation-1",
+      "type": "heading",
+      "level": 1,
+      "text": "The Smallest, Easiest Interaction - Full Conversation"
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-2",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "Hello! What can I get for you?"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-cupan-tae-le-do-thoil-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Dia is Muire duit. Cupán tae, le do thoil",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kuh-PAWN teh, leh duh hull",
+          "translation": "Hi, a cup of tea, please"
+        }
+      ]
+    },
+    {
+      "id": "sin-tri-euro-carta-no-airgead-tirim-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Sin trí euro. Cárta nó airgead tirim?",
+          "pronunciation": "Shin tree YUR-oh. KAR-tuh noh AR-gid TIR-im?",
+          "translation": "That's three euro. Card or cash?"
+        }
+      ]
+    },
+    {
+      "id": "carta-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Cárta",
+          "pronunciation": "KAR-tuh.",
+          "translation": "Card"
+        }
+      ]
+    },
+    {
+      "id": "seo-duit-ta-an-bainne-agus-siucra-ar-an-mbord-sin-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Seo duit! Tá an bainne agus siúcra ar an mbord sin",
+          "pronunciation": "Sho gwich! Taw un BAN-yuh ah-gus SHOOK-ruh er un moard shin.",
+          "translation": "Here you are! The milk and sugar are on that table"
+        }
+      ]
+    },
+    {
+      "id": "go-raibh-maith-agat-slan-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Customer",
+          "text": "Go raibh maith agat! Slán",
+          "pronunciation": "Guh rev mah ah-gut! Slawn.",
+          "translation": "Thank you! Goodbye"
+        }
+      ]
+    },
+    {
+      "id": "ta-failte-romhat-slan-go-foill-8",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "Barista",
+          "text": "Tá fáilte romhat, slán go fóill!",
+          "pronunciation": "Taw FAWL-chuh ruh-ut, slawn guh foh-ill!",
+          "translation": "You're welcome, goodbye!"
+        }
+      ]
+    }
+  ],
+  "contentVersion": "11ec4be90245f452"
+}
