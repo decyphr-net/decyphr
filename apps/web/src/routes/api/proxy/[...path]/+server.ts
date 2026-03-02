@@ -7,7 +7,21 @@ async function forward(event: Parameters<RequestHandler>[0], method: string) {
     const path = '/' + (event.params.path || '');
 
     const headers = new Headers(event.request.headers);
-    headers.delete('host');
+    // Strip hop-by-hop headers that must not be forwarded by proxies.
+    const hopByHopHeaders = [
+      'host',
+      'connection',
+      'keep-alive',
+      'proxy-authenticate',
+      'proxy-authorization',
+      'te',
+      'trailer',
+      'transfer-encoding',
+      'upgrade',
+    ];
+    for (const header of hopByHopHeaders) {
+      headers.delete(header);
+    }
 
     const init: RequestInit = {
       method,
@@ -33,6 +47,16 @@ async function forward(event: Parameters<RequestHandler>[0], method: string) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Proxy error';
+    const cause =
+      error && typeof error === 'object' && 'cause' in error
+        ? (error as { cause?: unknown }).cause
+        : undefined;
+    console.error('API proxy forward failed', {
+      method,
+      path: event.params.path,
+      message,
+      cause,
+    });
     const status = message === 'Unauthenticated' ? 401 : 502;
     return json({ error: message }, { status });
   }
