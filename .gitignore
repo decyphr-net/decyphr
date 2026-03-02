@@ -2,3 +2,21 @@ node_modules/
 libs/messaging/dist/
 nlp/app/__pycache__/
 nlp/app/consumers/__pycache__/
+
+# Build artifacts
+dist/
+**/dist/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+*.env
+*.env.*
+!.env.example
+!**/.env.example
+!**/*.env.example
+
+# Docker runtime env files
+docker/env/*.env
+!docker/env/*.env.example

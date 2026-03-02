@@ -74,8 +74,15 @@ export class PhrasebookService {
 
   registerSseClient(clientId: string, res: any) {
     res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    if (typeof res.flushHeaders === 'function') {
+      res.flushHeaders();
+    }
+
+    res.write(': connected\n\n');
 
     const keepAlive = setInterval(() => res.write(':\n\n'), 15000);
     this.sseClients.push({ clientId, res });

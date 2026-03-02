@@ -6,17 +6,23 @@ export const GET: RequestHandler = async (event) => {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const upstream = await nestFetch(
-    event,
-    '/phrasebook/stream',
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'text/event-stream'
-      }
-    },
-    true
-  );
+  let upstream: Response;
+  try {
+    upstream = await nestFetch(
+      event,
+      '/phrasebook/stream',
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'text/event-stream',
+        },
+      },
+      true,
+    );
+  } catch (error) {
+    console.error('Phrasebook stream upstream fetch failed', error);
+    return new Response('Failed to open stream', { status: 502 });
+  }
 
   if (!upstream.ok || !upstream.body) {
     return new Response('Failed to open stream', { status: upstream.status || 502 });
@@ -27,7 +33,7 @@ export const GET: RequestHandler = async (event) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      Connection: 'keep-alive'
-    }
+      'X-Accel-Buffering': 'no',
+    },
   });
 };
