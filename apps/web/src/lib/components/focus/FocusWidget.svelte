@@ -47,7 +47,7 @@
   });
 </script>
 
-<div class="fixed bottom-5 right-5 z-50">
+<div class="fixed bottom-5 right-5 z-30">
   {#if session && (session.status === 'running' || session.status === 'paused')}
     <div class="w-80 rounded-2xl bg-white border shadow-lg p-4 space-y-3">
       <div class="flex items-center justify-between">

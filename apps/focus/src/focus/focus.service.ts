@@ -289,7 +289,12 @@ export class FocusService {
     if (to) qb.andWhere('g.periodStart <= :to', { to });
 
     const goals = await qb.getMany();
-    const withProgress = await Promise.all(goals.map((goal) => this.getGoalProgress(clientId, goal.id)));
+    const withProgress = await Promise.all(
+      goals.map(async (goal) => {
+        const progress = await this.computeGoalProgress(goal);
+        return { ...goal, progress };
+      }),
+    );
     return withProgress;
   }
 
