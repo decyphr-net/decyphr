@@ -84,8 +84,8 @@
   onMount(refreshAll);
 </script>
 
-<section class="max-w-6xl mx-auto py-6 space-y-6">
-  <header class="rounded-2xl bg-gradient-to-r from-slate-900 to-slate-700 text-white p-8 shadow">
+<section class="max-w-6xl mx-auto pb-6 pt-0 sm:py-6 space-y-6">
+  <header class="-mx-4 -mt-4 rounded-none bg-gradient-to-r from-slate-900 to-slate-700 text-white p-8 shadow sm:mx-0 sm:mt-0 sm:rounded-2xl">
     <h1 class="text-3xl font-bold">Goals</h1>
     <p class="text-slate-200 mt-2">Manage long-term learning targets separately from session flow.</p>
 

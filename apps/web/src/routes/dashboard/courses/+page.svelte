@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { compareLessonsByHierarchy } from '$lib/course-order';
   import { onMount } from 'svelte';
 
   type LessonItem = {
@@ -105,7 +106,7 @@
         if (b.progress.progressPercent !== a.progress.progressPercent) {
           return b.progress.progressPercent - a.progress.progressPercent;
         }
-        return a.order - b.order;
+        return compareLessonsByHierarchy(a, b);
       })[0];
 
     if (!latest) return startHref(course);
@@ -126,7 +127,7 @@
   }
 
   function startHref(course: CourseItem) {
-    const firstLesson = course.lessons.slice().sort((a, b) => a.order - b.order)[0];
+    const firstLesson = course.lessons.slice().sort(compareLessonsByHierarchy)[0];
     if (!firstLesson) return '/dashboard/courses?view=all';
     return `/dashboard/courses/${course.courseSlug}/${firstLesson.lessonSlug}`;
   }

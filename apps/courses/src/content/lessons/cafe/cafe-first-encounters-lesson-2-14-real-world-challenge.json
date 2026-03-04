@@ -1,0 +1,144 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-14-real-world-challenge",
+  "lessonTitle": "Real World Challenge",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "order": 14,
+  "lang": "ga",
+  "estimatedMinutes": 1,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Real World Challenge\n\nThis time, we’re raising it slightly.\n\nYour challenge:\n\nUse more than one line.\n\nPlace a simple order in Irish — and stay in it long enough to answer one follow-up question.\n\nThat’s it.\n\nIt could be:\n- Choosing a size.\n- Saying whether it’s for here or takeaway.\n- Responding to “Rud ar bith eile?”\n- Adding something small at the end.\n\nYou don’t need the full layered conversation.\n\nYou don’t need to get every detail perfect.\n\nIf they switch to English — fine.\n\nIf they repeat the question — fine.\n\nIf you answer partly in Irish and partly in English — also fine.\n\nThe goal is not fluency.\n\nThe goal is staying in the interaction just a little longer than last time.\n\nIn Unit 1, you proved you could say something.\n\nIn Unit 2, you prove you can handle a response.\n\nNext time you’re at the counter, don’t overthink it.\n\nStart in Irish.\n\nStay in it for one extra exchange.\n\nThat’s progress.\n\nNow go use it.",
+  "blocks": [
+    {
+      "id": "real-world-challenge-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Real World Challenge"
+    },
+    {
+      "id": "this-time-we-re-raising-it-slightly-2",
+      "type": "paragraph",
+      "text": "This time, we’re raising it slightly."
+    },
+    {
+      "id": "your-challenge-3",
+      "type": "paragraph",
+      "text": "Your challenge:"
+    },
+    {
+      "id": "use-more-than-one-line-4",
+      "type": "paragraph",
+      "text": "Use more than one line."
+    },
+    {
+      "id": "place-a-simple-order-in-irish-and-stay-in-it-long-enough-to-answ-5",
+      "type": "paragraph",
+      "text": "Place a simple order in Irish — and stay in it long enough to answer one follow-up question."
+    },
+    {
+      "id": "that-s-it-6",
+      "type": "paragraph",
+      "text": "That’s it."
+    },
+    {
+      "id": "it-could-be-7",
+      "type": "paragraph",
+      "text": "It could be:"
+    },
+    {
+      "id": "choosing-a-size-8",
+      "type": "list",
+      "items": [
+        "Choosing a size.",
+        "Saying whether it’s for here or takeaway.",
+        "Responding to “Rud ar bith eile?”",
+        "Adding something small at the end."
+      ]
+    },
+    {
+      "id": "you-don-t-need-the-full-layered-conversation-9",
+      "type": "paragraph",
+      "text": "You don’t need the full layered conversation."
+    },
+    {
+      "id": "you-don-t-need-to-get-every-detail-perfect-10",
+      "type": "paragraph",
+      "text": "You don’t need to get every detail perfect."
+    },
+    {
+      "id": "if-they-switch-to-english-fine-11",
+      "type": "paragraph",
+      "text": "If they switch to English — fine."
+    },
+    {
+      "id": "if-they-repeat-the-question-fine-12",
+      "type": "paragraph",
+      "text": "If they repeat the question — fine."
+    },
+    {
+      "id": "if-you-answer-partly-in-irish-and-partly-in-english-also-fine-13",
+      "type": "paragraph",
+      "text": "If you answer partly in Irish and partly in English — also fine."
+    },
+    {
+      "id": "the-goal-is-not-fluency-14",
+      "type": "paragraph",
+      "text": "The goal is not fluency."
+    },
+    {
+      "id": "the-goal-is-staying-in-the-interaction-just-a-little-longer-than-15",
+      "type": "paragraph",
+      "text": "The goal is staying in the interaction just a little longer than last time."
+    },
+    {
+      "id": "in-unit-1-you-proved-you-could-say-something-16",
+      "type": "paragraph",
+      "text": "In Unit 1, you proved you could say something."
+    },
+    {
+      "id": "in-unit-2-you-prove-you-can-handle-a-response-17",
+      "type": "paragraph",
+      "text": "In Unit 2, you prove you can handle a response."
+    },
+    {
+      "id": "next-time-you-re-at-the-counter-don-t-overthink-it-18",
+      "type": "paragraph",
+      "text": "Next time you’re at the counter, don’t overthink it."
+    },
+    {
+      "id": "start-in-irish-19",
+      "type": "paragraph",
+      "text": "Start in Irish."
+    },
+    {
+      "id": "stay-in-it-for-one-extra-exchange-20",
+      "type": "paragraph",
+      "text": "Stay in it for one extra exchange."
+    },
+    {
+      "id": "that-s-progress-21",
+      "type": "paragraph",
+      "text": "That’s progress."
+    },
+    {
+      "id": "now-go-use-it-22",
+      "type": "paragraph",
+      "text": "Now go use it."
+    }
+  ],
+  "contentVersion": "decc1ca336e54186"
+}

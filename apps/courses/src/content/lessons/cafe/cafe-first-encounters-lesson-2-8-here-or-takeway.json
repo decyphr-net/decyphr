@@ -1,0 +1,287 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-8-here-or-takeway",
+  "lessonTitle": "Here Or Takeaway",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-b",
+  "order": 8,
+  "lang": "ga",
+  "estimatedMinutes": 4,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "caifé",
+    "latte",
+    "agus",
+    "tae",
+    "glas",
+    "le",
+    "do",
+    "thoil",
+    "cén",
+    "bainne",
+    "atá",
+    "uait",
+    "sa",
+    "coirce",
+    "anseo",
+    "nó",
+    "tabhairt",
+    "leat"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "duit",
+      "translation": "to you / for you"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "caifé latte",
+      "translation": "latte"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "glas",
+      "translation": "green"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "cén",
+      "translation": "which"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "atá",
+      "translation": "that is / is"
+    },
+    {
+      "token": "uait",
+      "translation": "from you / you want"
+    },
+    {
+      "token": "sa",
+      "translation": "in the"
+    },
+    {
+      "token": "coirce",
+      "translation": "oat"
+    },
+    {
+      "token": "anseo",
+      "translation": "here"
+    },
+    {
+      "token": "nó",
+      "translation": "or"
+    },
+    {
+      "token": "le tabhairt leat",
+      "translation": "to take with you / takeaway"
+    },
+    {
+      "token": "le tabhairt liom",
+      "translation": "to take with me / takeaway"
+    },
+    {
+      "token": "tabhairt",
+      "translation": "taking / bringing"
+    },
+    {
+      "token": "leat",
+      "translation": "with you"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Here Or Takeaway\n\nNow that you've gotten through the full conversation, let's take a look at some ways that this conversation could naturally be expanded by.\n\nA staple in any conversation like this is \"for here or takeway?\"\n\nLet's take a look at where in the conversation this might occur:\n- **Barista**\n> Dia duit! Cad is féidir liom a fháil duit?\n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?\n> Hello! What can I get for you?\n\n- **Customer**\n> Dia is Muire duit. Caifé latte agus tae glas, le do thoil.\n> DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.\n> Hi, a latte and a green tea, please.\n\n- **Barista**\n> Cén bainne atá uait sa latte?\n> Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?\n> Which milk would you like in the latte?\n\n- **Customer**\n> Bainne coirce, le do thoil.\n> BAN-yuh KUR-keh, leh duh hull.\n> Oat milk, please.\n\n- **Barista**\n> Anseo nó le tabhairt leat?\n> An-SHO noh leh TOW-urt lyat?\n> For here or takeaway?\n\n`Anseo` means \"here\", and `nó` means \"or\". `Le tabhairt leat` literally means “to take with you.” From the barista’s point of view, they’re asking if you want to take it with you.\n\nLet's take a look at the more straight-forward response to this question first:\n\n- **Customer**\n> Anseo, le do thoil.\n> An-SHO, leh duh hull.\n> For here, please.\n\nSimple and direct.\n\nNow, if we wanted it for takeaway, we'd simply say:\n- **Customer**\n> Le tabhairt liom, le do thoil\n> Leh TOW-urt lum, leh duh hull\n> Takeaway, please\n\nYou’ll notice it changes slightly from `leat` to `liom`. That’s just because you’re now speaking from your own point of view - \"with me\" instead of \"with you.\"",
+  "blocks": [
+    {
+      "id": "here-or-takeaway-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Here Or Takeaway"
+    },
+    {
+      "id": "now-that-you-ve-gotten-through-the-full-conversation-let-s-take--2",
+      "type": "paragraph",
+      "text": "Now that you've gotten through the full conversation, let's take a look at some ways that this conversation could naturally be expanded by."
+    },
+    {
+      "id": "a-staple-in-any-conversation-like-this-is-for-here-or-takeway-3",
+      "type": "paragraph",
+      "text": "A staple in any conversation like this is \"for here or takeway?\""
+    },
+    {
+      "id": "let-s-take-a-look-at-where-in-the-conversation-this-might-occur-4",
+      "type": "paragraph",
+      "text": "Let's take a look at where in the conversation this might occur:"
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "Hello! What can I get for you?"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-caife-latte-agus-tae-glas-le-do-thoil-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Dia is Muire duit. Caifé latte agus tae glas, le do thoil.",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.",
+          "translation": "Hi, a latte and a green tea, please."
+        }
+      ]
+    },
+    {
+      "id": "cen-bainne-ata-uait-sa-latte-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cén bainne atá uait sa latte?",
+          "pronunciation": "Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?",
+          "translation": "Which milk would you like in the latte?"
+        }
+      ]
+    },
+    {
+      "id": "bainne-coirce-le-do-thoil-8",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Bainne coirce, le do thoil.",
+          "pronunciation": "BAN-yuh KUR-keh, leh duh hull.",
+          "translation": "Oat milk, please."
+        }
+      ]
+    },
+    {
+      "id": "anseo-no-le-tabhairt-leat-9",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Anseo nó le tabhairt leat?",
+          "pronunciation": "An-SHO noh leh TOW-urt lyat?",
+          "translation": "For here or takeaway?"
+        }
+      ]
+    },
+    {
+      "id": "anseo-means-here-and-no-means-or-le-tabhairt-leat-literally-mean-10",
+      "type": "paragraph",
+      "text": "`Anseo` means \"here\", and `nó` means \"or\". `Le tabhairt leat` literally means “to take with you.” From the barista’s point of view, they’re asking if you want to take it with you."
+    },
+    {
+      "id": "let-s-take-a-look-at-the-more-straight-forward-response-to-this--11",
+      "type": "paragraph",
+      "text": "Let's take a look at the more straight-forward response to this question first:"
+    },
+    {
+      "id": "anseo-le-do-thoil-12",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Anseo, le do thoil.",
+          "pronunciation": "An-SHO, leh duh hull.",
+          "translation": "For here, please."
+        }
+      ]
+    },
+    {
+      "id": "simple-and-direct-13",
+      "type": "paragraph",
+      "text": "Simple and direct."
+    },
+    {
+      "id": "now-if-we-wanted-it-for-takeaway-we-d-simply-say-14",
+      "type": "paragraph",
+      "text": "Now, if we wanted it for takeaway, we'd simply say:"
+    },
+    {
+      "id": "le-tabhairt-liom-le-do-thoil-15",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Le tabhairt liom, le do thoil",
+          "pronunciation": "Leh TOW-urt lum, leh duh hull",
+          "translation": "Takeaway, please"
+        }
+      ]
+    },
+    {
+      "id": "you-ll-notice-it-changes-slightly-from-leat-to-liom-that-s-just--16",
+      "type": "paragraph",
+      "text": "You’ll notice it changes slightly from `leat` to `liom`. That’s just because you’re now speaking from your own point of view - \"with me\" instead of \"with you.\""
+    }
+  ],
+  "contentVersion": "4046ee6990709aa8"
+}

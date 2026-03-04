@@ -1,0 +1,69 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-6-recap",
+  "lessonTitle": "Recap",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "order": 6,
+  "lang": "ga",
+  "estimatedMinutes": 1,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Recap\n\nIf you think back to the start of this unit, the conversation felt longer and a little less predictable than the first one — and that’s exactly the point.\n\nThis time, you weren’t just placing a single order and leaving. You handled multiple drinks, answered follow-up questions about milk, added something after the order was already placed, dealt with an updated price, paid, waited, and collected the drinks. That’s the kind of interaction that actually happens in a busy café.\n\nNothing in it was wildly complicated, but there was more movement. The conversation branched slightly. It shifted. And you stayed with it.\n\nThat’s an important step.\n\nYou’re no longer just repeating a memorised script. You’re starting to recognise patterns that can stretch and adapt depending on what happens. And once you can do that, conversations stop feeling fragile.\n\nYou’ve now completed a full café interaction with variation built in. That’s a solid foundation to build on.\n\nNext, we’ll push it a little further.",
+  "blocks": [
+    {
+      "id": "recap-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Recap"
+    },
+    {
+      "id": "if-you-think-back-to-the-start-of-this-unit-the-conversation-fel-2",
+      "type": "paragraph",
+      "text": "If you think back to the start of this unit, the conversation felt longer and a little less predictable than the first one — and that’s exactly the point."
+    },
+    {
+      "id": "this-time-you-weren-t-just-placing-a-single-order-and-leaving-yo-3",
+      "type": "paragraph",
+      "text": "This time, you weren’t just placing a single order and leaving. You handled multiple drinks, answered follow-up questions about milk, added something after the order was already placed, dealt with an updated price, paid, waited, and collected the drinks. That’s the kind of interaction that actually happens in a busy café."
+    },
+    {
+      "id": "nothing-in-it-was-wildly-complicated-but-there-was-more-movement-4",
+      "type": "paragraph",
+      "text": "Nothing in it was wildly complicated, but there was more movement. The conversation branched slightly. It shifted. And you stayed with it."
+    },
+    {
+      "id": "that-s-an-important-step-5",
+      "type": "paragraph",
+      "text": "That’s an important step."
+    },
+    {
+      "id": "you-re-no-longer-just-repeating-a-memorised-script-you-re-starti-6",
+      "type": "paragraph",
+      "text": "You’re no longer just repeating a memorised script. You’re starting to recognise patterns that can stretch and adapt depending on what happens. And once you can do that, conversations stop feeling fragile."
+    },
+    {
+      "id": "you-ve-now-completed-a-full-cafe-interaction-with-variation-buil-7",
+      "type": "paragraph",
+      "text": "You’ve now completed a full café interaction with variation built in. That’s a solid foundation to build on."
+    },
+    {
+      "id": "next-we-ll-push-it-a-little-further-8",
+      "type": "paragraph",
+      "text": "Next, we’ll push it a little further."
+    }
+  ],
+  "contentVersion": "ba08385aac1d6e1d"
+}

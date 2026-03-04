@@ -1,0 +1,315 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-5-part-4",
+  "lessonTitle": "Breakdown Part 4",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-a",
+  "order": 5,
+  "lang": "ga",
+  "estimatedMinutes": 3,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "seo",
+    "duit",
+    "is",
+    "an",
+    "latte",
+    "go",
+    "raibh",
+    "míle",
+    "maith",
+    "agat",
+    "fadhb",
+    "ar",
+    "bith"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "duit",
+      "translation": "to you / for you"
+    },
+    {
+      "token": "caifé latte",
+      "translation": "latte"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "glas",
+      "translation": "green"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "cén",
+      "translation": "which"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "atá",
+      "translation": "that is / is"
+    },
+    {
+      "token": "uait",
+      "translation": "from you / you want"
+    },
+    {
+      "token": "sa",
+      "translation": "in the"
+    },
+    {
+      "token": "coirce",
+      "translation": "oat"
+    },
+    {
+      "token": "ceart go leor",
+      "translation": "OK / alright"
+    },
+    {
+      "token": "rud",
+      "translation": "thing"
+    },
+    {
+      "token": "ar bith",
+      "translation": "any / at all"
+    },
+    {
+      "token": "eile",
+      "translation": "else / other"
+    },
+    {
+      "token": "sin",
+      "translation": "that"
+    },
+    {
+      "token": "uile",
+      "translation": "everything / all"
+    },
+    {
+      "token": "sé",
+      "translation": "six"
+    },
+    {
+      "token": "euro",
+      "translation": "euro"
+    },
+    {
+      "token": "fiche",
+      "translation": "twenty"
+    },
+    {
+      "token": "fianán",
+      "translation": "cookie"
+    },
+    {
+      "token": "freisin",
+      "translation": "also / as well"
+    },
+    {
+      "token": "ocht",
+      "translation": "eight"
+    },
+    {
+      "token": "ansin",
+      "translation": "then"
+    },
+    {
+      "token": "seo",
+      "translation": "this / here"
+    },
+    {
+      "token": "is é seo",
+      "translation": "this is"
+    },
+    {
+      "token": "an",
+      "translation": "the"
+    },
+    {
+      "token": "míle",
+      "translation": "thousand / a million (in thanks)"
+    },
+    {
+      "token": "fadhb",
+      "translation": "problem"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Let's Step It Up A Little - Breakdown Part 4\n\nOK, we've reached the last few pieces of this conversation which take place after the drinks are ready:\n\n- **Barista**\n> Seo duit! Is é seo an latte.\n> Sho gwich! Iss ay sho un LAH-teh.\n> Here you are! This is the latte.\n\n- **Customer**\n> Go raibh míle maith agat.\n> Guh rev MEE-leh mah ah-gut.\n> Thanks a million.\n\n- **Barista**\n> Fadhb ar bith.\n> Fowb er bih.\n> No problem.\n\nWhen the drinks are ready, the barista hands them over.\n\n`Seo duit` - \"Here you are.\"\nYou’ve already seen this one.\n\n`Is é seo an latte` is a clear way of identifying something - \"This is the latte.\"\n\nYou might also hear:\n- `Agus is é seo an tae glas.` – \"And this is the green tea.\"\n- `Is é seo do chaife.` – \"This is your coffee.\"\n\nYou don’t need to break this structure apart, just recognise it as a useful way of pointing something out clearly.\n\nNext, the customer says:\n\n`Go raibh míle maith agat.`\n\nYou’ve already seen `Go raibh maith agat.`  Adding `míle` (a thousand) turns it into \"Thanks a thousand\", or more naturally, \"Thanks a million.\"\n\nAnd finally:\n`Fadhb ar bith.`\n\nYou’ve seen `ar bith` before. It adds that familiar \"at all\" feeling, so this phrase means “no problem at all.”\n\nYou might also hear:\n- `Ná habair é.` – \"Don’t mention it.\"\n- `Tá fáilte romhat.` – \"You’re welcome.\" (Can also be abbreviated to `Fáilte`)\n\nAnd that brings the conversation to a natural close.",
+  "blocks": [
+    {
+      "id": "let-s-step-it-up-a-little-breakdown-part-4-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Let's Step It Up A Little - Breakdown Part 4"
+    },
+    {
+      "id": "ok-we-ve-reached-the-last-few-pieces-of-this-conversation-which--2",
+      "type": "paragraph",
+      "text": "OK, we've reached the last few pieces of this conversation which take place after the drinks are ready:"
+    },
+    {
+      "id": "seo-duit-is-e-seo-an-latte-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Seo duit! Is é seo an latte.",
+          "pronunciation": "Sho gwich! Iss ay sho un LAH-teh.",
+          "translation": "Here you are! This is the latte."
+        }
+      ]
+    },
+    {
+      "id": "go-raibh-mile-maith-agat-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Go raibh míle maith agat.",
+          "pronunciation": "Guh rev MEE-leh mah ah-gut.",
+          "translation": "Thanks a million."
+        }
+      ]
+    },
+    {
+      "id": "fadhb-ar-bith-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Fadhb ar bith.",
+          "pronunciation": "Fowb er bih.",
+          "translation": "No problem."
+        }
+      ]
+    },
+    {
+      "id": "when-the-drinks-are-ready-the-barista-hands-them-over-6",
+      "type": "paragraph",
+      "text": "When the drinks are ready, the barista hands them over."
+    },
+    {
+      "id": "seo-duit-here-you-are-you-ve-already-seen-this-one-7",
+      "type": "paragraph",
+      "text": "`Seo duit` - \"Here you are.\" You’ve already seen this one."
+    },
+    {
+      "id": "is-e-seo-an-latte-is-a-clear-way-of-identifying-something-this-i-8",
+      "type": "paragraph",
+      "text": "`Is é seo an latte` is a clear way of identifying something - \"This is the latte.\""
+    },
+    {
+      "id": "you-might-also-hear-9",
+      "type": "paragraph",
+      "text": "You might also hear:"
+    },
+    {
+      "id": "agus-is-e-seo-an-tae-glas-and-this-is-the-green-tea-10",
+      "type": "list",
+      "items": [
+        "`Agus is é seo an tae glas.` – \"And this is the green tea.\"",
+        "`Is é seo do chaife.` – \"This is your coffee.\""
+      ]
+    },
+    {
+      "id": "you-don-t-need-to-break-this-structure-apart-just-recognise-it-a-11",
+      "type": "paragraph",
+      "text": "You don’t need to break this structure apart, just recognise it as a useful way of pointing something out clearly."
+    },
+    {
+      "id": "next-the-customer-says-12",
+      "type": "paragraph",
+      "text": "Next, the customer says:"
+    },
+    {
+      "id": "go-raibh-mile-maith-agat-13",
+      "type": "paragraph",
+      "text": "`Go raibh míle maith agat.`"
+    },
+    {
+      "id": "you-ve-already-seen-go-raibh-maith-agat-adding-mile-a-thousand-t-14",
+      "type": "paragraph",
+      "text": "You’ve already seen `Go raibh maith agat.`  Adding `míle` (a thousand) turns it into \"Thanks a thousand\", or more naturally, \"Thanks a million.\""
+    },
+    {
+      "id": "and-finally-fadhb-ar-bith-15",
+      "type": "paragraph",
+      "text": "And finally: `Fadhb ar bith.`"
+    },
+    {
+      "id": "you-ve-seen-ar-bith-before-it-adds-that-familiar-at-all-feeling--16",
+      "type": "paragraph",
+      "text": "You’ve seen `ar bith` before. It adds that familiar \"at all\" feeling, so this phrase means “no problem at all.”"
+    },
+    {
+      "id": "you-might-also-hear-17",
+      "type": "paragraph",
+      "text": "You might also hear:"
+    },
+    {
+      "id": "na-habair-e-don-t-mention-it-18",
+      "type": "list",
+      "items": [
+        "`Ná habair é.` – \"Don’t mention it.\"",
+        "`Tá fáilte romhat.` – \"You’re welcome.\" (Can also be abbreviated to `Fáilte`)"
+      ]
+    },
+    {
+      "id": "and-that-brings-the-conversation-to-a-natural-close-19",
+      "type": "paragraph",
+      "text": "And that brings the conversation to a natural close."
+    }
+  ],
+  "contentVersion": "91444e1b252f32f5"
+}

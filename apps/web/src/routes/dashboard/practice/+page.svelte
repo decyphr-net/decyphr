@@ -547,8 +547,8 @@
   });
 </script>
 
-<section class="max-w-5xl mx-auto space-y-6">
-  <header class="rounded-2xl bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500 text-white p-8 shadow">
+<section class="max-w-5xl mx-auto space-y-6 pb-6 pt-0 sm:py-6">
+  <header class="-mx-4 -mt-4 rounded-none bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-500 text-white p-8 shadow sm:mx-0 sm:mt-0 sm:rounded-2xl">
     <h1 class="text-3xl font-bold">Practice</h1>
     <p class="mt-2 text-sky-50">Complete a focused run. Mistakes get repeated at the end.</p>
   </header>
@@ -586,6 +586,7 @@
       <button
         onclick={startFixMistakes}
         disabled={loading}
+        id="mistakes-hub"
         class="rounded-2xl border bg-white p-6 text-left shadow-sm hover:shadow-md transition disabled:opacity-60"
       >
         <p class="text-sm uppercase tracking-wide text-amber-600 font-semibold">Targeted Review</p>

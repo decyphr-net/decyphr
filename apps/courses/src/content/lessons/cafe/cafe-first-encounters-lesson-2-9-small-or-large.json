@@ -1,0 +1,283 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-9-small-or-large",
+  "lessonTitle": "Small Or Large",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-b",
+  "order": 9,
+  "lang": "ga",
+  "estimatedMinutes": 4,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "caifé",
+    "latte",
+    "agus",
+    "tae",
+    "glas",
+    "le",
+    "do",
+    "thoil",
+    "cén",
+    "bainne",
+    "atá",
+    "uait",
+    "sa",
+    "coirce",
+    "beag",
+    "nó",
+    "mór"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "duit",
+      "translation": "to you / for you"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "caifé latte",
+      "translation": "latte"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "glas",
+      "translation": "green"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "cén",
+      "translation": "which"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "atá",
+      "translation": "that is / is"
+    },
+    {
+      "token": "uait",
+      "translation": "from you / you want"
+    },
+    {
+      "token": "sa",
+      "translation": "in the"
+    },
+    {
+      "token": "coirce",
+      "translation": "oat"
+    },
+    {
+      "token": "beag",
+      "translation": "small"
+    },
+    {
+      "token": "mór",
+      "translation": "large"
+    },
+    {
+      "token": "nó",
+      "translation": "or"
+    },
+    {
+      "token": "latte",
+      "translation": "latte"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Small Or Large\n\nOK, let's take a look at another way that the conversation may change at this same point in the conversation:\n\n- **Barista**\n> Dia duit! Cad is féidir liom a fháil duit?\n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?\n> Hello! What can I get for you?\n\n- **Customer**\n> Dia is Muire duit. Caifé latte agus tae glas, le do thoil.\n> DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.\n> Hi, a latte and a green tea, please.\n\n- **Barista**\n> Cén bainne atá uait sa latte?\n> Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?\n> Which milk would you like in the latte?\n\n- **Customer**\n> Bainne coirce, le do thoil.\n> BAN-yuh KUR-keh, leh duh hull.\n> Oat milk, please.\n\n- **Barista**\n> Beag nó mór?\n> Byug noh moar?\n> Small or large?\n\nThere are a few different ways that this could be answered, depending on the number of drinks. For example, if you want both to be small, you could say:\n\n- **Customer:**\n> Beag, le do thoil.\n> Byug, leh duh hull.\n> Small, please.\n\nor\n\n> Mór, le do thoil.\n> Moar, leh duh hull.\n> Large, please.\n\nNow, if you want one small and one large, you just need to be slightly more specific.\n\nFor example:\n\n- **Customer**\n> Latte mór agus tae beag, le do thoil.\n> LAH-teh moar ah-gus teh byug, leh duh hull.\n> A large latte and a small tea, please.\n\nOr reversing it:\n\n> Latte beag agus tae mór, le do thoil.\n> LAH-teh byug ah-gus teh moar, leh duh hull.\n> A small latte and a large tea, please.\n\nYou’ll notice we’re simply attaching the size to the drink. Nothing complicated, just the drink followed by the size.",
+  "blocks": [
+    {
+      "id": "small-or-large-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Small Or Large"
+    },
+    {
+      "id": "ok-let-s-take-a-look-at-another-way-that-the-conversation-may-ch-2",
+      "type": "paragraph",
+      "text": "OK, let's take a look at another way that the conversation may change at this same point in the conversation:"
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "Hello! What can I get for you?"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-caife-latte-agus-tae-glas-le-do-thoil-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Dia is Muire duit. Caifé latte agus tae glas, le do thoil.",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.",
+          "translation": "Hi, a latte and a green tea, please."
+        }
+      ]
+    },
+    {
+      "id": "cen-bainne-ata-uait-sa-latte-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cén bainne atá uait sa latte?",
+          "pronunciation": "Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?",
+          "translation": "Which milk would you like in the latte?"
+        }
+      ]
+    },
+    {
+      "id": "bainne-coirce-le-do-thoil-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Bainne coirce, le do thoil.",
+          "pronunciation": "BAN-yuh KUR-keh, leh duh hull.",
+          "translation": "Oat milk, please."
+        }
+      ]
+    },
+    {
+      "id": "beag-no-mor-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Beag nó mór?",
+          "pronunciation": "Byug noh moar?",
+          "translation": "Small or large?"
+        }
+      ]
+    },
+    {
+      "id": "there-are-a-few-different-ways-that-this-could-be-answered-depen-8",
+      "type": "paragraph",
+      "text": "There are a few different ways that this could be answered, depending on the number of drinks. For example, if you want both to be small, you could say:"
+    },
+    {
+      "id": "beag-le-do-thoil-9",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer:**",
+          "text": "Beag, le do thoil.",
+          "pronunciation": "Byug, leh duh hull.",
+          "translation": "Small, please."
+        }
+      ]
+    },
+    {
+      "id": "or-10",
+      "type": "paragraph",
+      "text": "or"
+    },
+    {
+      "id": "mor-le-do-thoil-moar-leh-duh-hull-large-please-11",
+      "type": "paragraph",
+      "text": "> Mór, le do thoil. > Moar, leh duh hull. > Large, please."
+    },
+    {
+      "id": "now-if-you-want-one-small-and-one-large-you-just-need-to-be-slig-12",
+      "type": "paragraph",
+      "text": "Now, if you want one small and one large, you just need to be slightly more specific."
+    },
+    {
+      "id": "for-example-13",
+      "type": "paragraph",
+      "text": "For example:"
+    },
+    {
+      "id": "latte-mor-agus-tae-beag-le-do-thoil-14",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Latte mór agus tae beag, le do thoil.",
+          "pronunciation": "LAH-teh moar ah-gus teh byug, leh duh hull.",
+          "translation": "A large latte and a small tea, please."
+        }
+      ]
+    },
+    {
+      "id": "or-reversing-it-15",
+      "type": "paragraph",
+      "text": "Or reversing it:"
+    },
+    {
+      "id": "latte-beag-agus-tae-mor-le-do-thoil-lah-teh-byug-ah-gus-teh-moar-16",
+      "type": "paragraph",
+      "text": "> Latte beag agus tae mór, le do thoil. > LAH-teh byug ah-gus teh moar, leh duh hull. > A small latte and a large tea, please."
+    },
+    {
+      "id": "you-ll-notice-we-re-simply-attaching-the-size-to-the-drink-nothi-17",
+      "type": "paragraph",
+      "text": "You’ll notice we’re simply attaching the size to the drink. Nothing complicated, just the drink followed by the size."
+    }
+  ],
+  "contentVersion": "4a2f619fcb3d7e04"
+}

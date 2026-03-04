@@ -3,9 +3,14 @@
   "courseTitle": "Coffee Shop Encounters",
   "lessonSlug": "cafe-first-encounters-lesson-1-5-recap",
   "lessonTitle": "The Smallest, Easiest Conversation - Recap",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "the-smallest-easiest-conversation",
+  "unitName": "The Smallest, Easiest Conversation",
+  "group": "first-encounters-conversation-a",
   "order": 5,
   "lang": "ga",
-  "estimatedMinutes": 10,
+  "estimatedMinutes": 1,
   "tags": [],
   "resumeBlocks": [],
   "lexicon_include": [],
@@ -41,5 +46,5 @@
       "text": "That’s not small."
     }
   ],
-  "contentVersion": "d664b2e33f31cbac"
+  "contentVersion": "a4d3ee83ab8425fc"
 }

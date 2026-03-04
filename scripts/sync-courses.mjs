@@ -115,6 +115,12 @@ function humanizeSlug(input) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function stripOrderedPrefix(input) {
+  return String(input || '')
+    .replace(/^\d+\s*-\s*/, '')
+    .trim();
+}
+
 function defaultLessonSlug(relativePath, fallback) {
   const normalized = relativePath.replace(/\.md$/i, '').split(path.sep).join('-');
   return slugify(normalized) || slugify(fallback) || 'lesson';
@@ -423,9 +429,18 @@ async function main() {
     const fileBase = path.basename(filePath, '.md');
     const fileOrderMatch = fileBase.match(/^(\d+)-/);
     const isOverviewDoc = String(meta.type || '').toLowerCase() === 'overview' || fileBase.toLowerCase() === 'overview';
+    const hasCourseSegment = sourceRootIsCollection || (pathSegments.length >= 2 && !/^\d+/.test(pathSegments[0]));
+    const moduleSegmentIndex = hasCourseSegment ? 1 : 0;
+    const unitSegmentIndex = hasCourseSegment ? 2 : 1;
+    const rawModuleSegment = pathSegments[moduleSegmentIndex] || '';
+    const rawUnitSegment = pathSegments[unitSegmentIndex] || '';
+    const inferredModuleName = stripOrderedPrefix(rawModuleSegment) || undefined;
+    const inferredUnitName = stripOrderedPrefix(rawUnitSegment) || undefined;
+    const inferredModuleKey = inferredModuleName ? slugify(inferredModuleName) : undefined;
+    const inferredUnitKey = inferredUnitName ? slugify(inferredUnitName) : undefined;
     const inferredModuleSlug = sourceRootIsCollection
       ? (pathSegments[0] || defaultCourseSlug)
-      : defaultCourseSlug;
+      : (pathSegments.length >= 2 && !/^\d+/.test(pathSegments[0]) ? pathSegments[0] : defaultCourseSlug);
     const inferredCourseSlug = String(meta.courseSlug || inferredModuleSlug || parentSlug || defaultCourseSlug);
 
     if (isOverviewDoc) {
@@ -441,6 +456,10 @@ async function main() {
     meta.courseTitle = String(meta.courseTitle || defaultCourse?.courseTitle || humanizeSlug(meta.courseSlug));
     meta.lessonSlug = String(meta.lessonSlug || defaultLessonSlug(relativeToCourses, fileBase));
     meta.lessonTitle = String(meta.lessonTitle || meta.title || humanizeSlug(meta.lessonSlug));
+    meta.moduleKey = String(meta.moduleKey || inferredModuleKey || '').trim() || undefined;
+    meta.moduleName = String(meta.moduleName || inferredModuleName || '').trim() || undefined;
+    meta.unitKey = String(meta.unitKey || inferredUnitKey || '').trim() || undefined;
+    meta.unitName = String(meta.unitName || inferredUnitName || '').trim() || undefined;
     meta.order = Number(meta.order || (fileOrderMatch ? Number(fileOrderMatch[1]) : 1));
     meta.lang = String(meta.lang || 'ga');
     meta.estimatedMinutes = Number(meta.estimatedMinutes || 10);
@@ -458,6 +477,11 @@ async function main() {
       courseTitle: String(meta.courseTitle),
       lessonSlug: String(meta.lessonSlug),
       lessonTitle: String(meta.lessonTitle),
+      moduleKey: meta.moduleKey ? String(meta.moduleKey) : undefined,
+      moduleName: meta.moduleName ? String(meta.moduleName) : undefined,
+      unitKey: meta.unitKey ? String(meta.unitKey) : undefined,
+      unitName: meta.unitName ? String(meta.unitName) : undefined,
+      group: meta.group ? String(meta.group).trim() : undefined,
       order: Number(meta.order),
       lang: String(meta.lang),
       estimatedMinutes: Number(meta.estimatedMinutes),
@@ -500,6 +524,11 @@ async function main() {
     courseMap.get(lessonJson.courseSlug).lessons.push({
       lessonSlug: lessonJson.lessonSlug,
       lessonTitle: lessonJson.lessonTitle,
+      moduleKey: lessonJson.moduleKey,
+      moduleName: lessonJson.moduleName,
+      unitKey: lessonJson.unitKey,
+      unitName: lessonJson.unitName,
+      group: lessonJson.group,
       order: lessonJson.order,
       estimatedMinutes: lessonJson.estimatedMinutes,
       summary: lessonJson.summary,

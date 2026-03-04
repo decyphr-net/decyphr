@@ -236,6 +236,11 @@ export class CoursesService {
     return {
       lessonSlug: lesson.lessonSlug,
       lessonTitle: lesson.lessonTitle,
+      moduleKey: lesson.moduleKey,
+      moduleName: lesson.moduleName,
+      unitKey: lesson.unitKey,
+      unitName: lesson.unitName,
+      group: lesson.group,
       order: lesson.order,
       estimatedMinutes: lesson.estimatedMinutes,
       summary: lesson.summary,

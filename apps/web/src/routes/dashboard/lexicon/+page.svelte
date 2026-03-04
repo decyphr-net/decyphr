@@ -317,13 +317,17 @@
   });
 </script>
 
-<section class="py-12 flex flex-col gap-12">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-xl p-8 text-center text-white shadow-lg animate-fade-in">
-      <h1 class="text-4xl font-extrabold tracking-tight">Lexicon</h1>
-      <p class="mt-3 text-lg opacity-90">Track your active Irish vocabulary and confidence as you learn.</p>
+<section class="pt-0 pb-12 sm:py-12">
+  <div class="max-w-6xl mx-auto px-0 sm:px-6 space-y-10">
+    <div class="-mx-4 -mt-4 rounded-none bg-gradient-to-r from-emerald-500 to-teal-400 p-6 text-center text-white shadow-lg animate-fade-in sm:mx-0 sm:mt-0 sm:rounded-2xl">
+      <h1 class="text-3xl font-bold">Lexicon</h1>
+      <p class="mt-2 text-base opacity-90">Track your active Irish vocabulary and confidence as you learn.</p>
+      <div class="mt-3 inline-flex items-center rounded-full border border-white/40 bg-white/10 p-1">
+        <a href="/dashboard/lexicon" class="rounded-full bg-white px-3 py-1 text-xs font-semibold text-emerald-700">Lexicon</a>
+        <a href="/dashboard/phrasebook" class="rounded-full px-3 py-1 text-xs font-semibold text-white/90 hover:bg-white/10">Phrasebook</a>
+      </div>
       <button
-        class="mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-6 py-2 font-semibold text-white hover:bg-white/20 transition w-full sm:w-auto"
+        class="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-1.5 text-sm font-semibold text-white hover:bg-white/20 transition w-full sm:w-auto"
         onclick={() => scrollToSection('lexicon-table')}
       >
         <i data-lucide="arrow-down" class="w-5 h-5"></i>
@@ -331,109 +335,154 @@
       </button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mt-6">
-      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-          <i data-lucide="list" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">Words tracked</p>
-          <p class="text-xl font-semibold text-gray-800 truncate">{snapshot.length}</p>
-        </div>
-      </div>
-
-      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-          <i data-lucide="star" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">Avg confidence</p>
-          <p class="text-xl font-semibold text-gray-800 truncate">{avgConfidence}</p>
-        </div>
-      </div>
-
-      <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-          <i data-lucide="clock" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">Last update</p>
-          <p class="text-xl font-semibold text-gray-800 truncate">{lastUpdate}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6">
-      <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 flex-shrink-0">
-        <i data-lucide="award" class="w-6 h-6"></i>
-      </div>
-      <div class="min-w-0 flex-1">
-        <p class="text-sm font-medium text-gray-500 truncate">Estimated CEFR level</p>
-
-        <div class="relative inline-block mt-1 sm:mt-0">
-          <button onclick={() => (showCefrInfo = !showCefrInfo)} class="text-gray-400 hover:text-gray-600">
-            <i data-lucide="info" class="w-4 h-4"></i>
-          </button>
-          {#if showCefrInfo}
-            <div class="absolute z-50 mt-2 w-64 sm:w-72 rounded-lg bg-white p-4 text-sm text-gray-700 shadow-lg border">
-              <p class="font-medium mb-1">Common European Framework of Reference</p>
-              <p class="text-gray-600">A1 is beginner level and C2 is near-native proficiency.</p>
+    <details class="mt-5 rounded-xl border border-gray-200 bg-white lg:hidden">
+      <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold text-gray-700">
+        <span class="inline-flex items-center gap-2"><i data-lucide="bar-chart-3" class="h-4 w-4"></i>View stats</span>
+        <i data-lucide="chevron-down" class="h-4 w-4"></i>
+      </summary>
+      <div class="space-y-3 border-t border-gray-100 p-4">
+        <div class="grid grid-cols-1 gap-3">
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+            <p class="text-xs font-medium text-gray-500">Words tracked</p>
+            <p class="mt-1 text-lg font-semibold text-gray-900">{snapshot.length}</p>
+          </div>
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+            <p class="text-xs font-medium text-gray-500">Avg confidence</p>
+            <p class="mt-1 text-lg font-semibold text-gray-900">{avgConfidence}</p>
+          </div>
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+            <p class="text-xs font-medium text-gray-500">Last update</p>
+            <p class="mt-1 text-lg font-semibold text-gray-900">{lastUpdate}</p>
+          </div>
+          <div class="rounded-lg border border-gray-100 bg-gray-50 p-3">
+            <p class="text-xs font-medium text-gray-500">Estimated CEFR</p>
+            <p class="mt-1 text-lg font-semibold text-gray-900">
+              {cefr.level || '-'} {cefr.confidence ? `(${cefr.confidence.toFixed(2)})` : ''}
+            </p>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="rounded-lg border border-green-200 bg-green-50 p-2 text-center">
+              <p class="text-[11px] font-medium text-green-700">High</p>
+              <p class="text-base font-bold text-green-700">{highCount}</p>
             </div>
-          {/if}
+            <div class="rounded-lg border border-yellow-200 bg-yellow-50 p-2 text-center">
+              <p class="text-[11px] font-medium text-yellow-700">Medium</p>
+              <p class="text-base font-bold text-yellow-700">{mediumCount}</p>
+            </div>
+            <div class="rounded-lg border border-red-200 bg-red-50 p-2 text-center">
+              <p class="text-[11px] font-medium text-red-700">Low</p>
+              <p class="text-base font-bold text-red-700">{lowCount}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div class="mt-6 hidden lg:block">
+      <div class="grid grid-cols-3 gap-6">
+        <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
+            <i data-lucide="list" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">Words tracked</p>
+            <p class="text-xl font-semibold text-gray-800 truncate">{snapshot.length}</p>
+          </div>
         </div>
 
-        <p class="text-xl font-semibold text-gray-800 mt-2 sm:mt-1 truncate">
-          <span
-            class={`px-2 py-0.5 rounded-full text-white ${
-              cefr.level === 'C2' || cefr.level === 'C1'
-                ? 'bg-green-600'
-                : cefr.level === 'B2' || cefr.level === 'B1'
-                  ? 'bg-yellow-500'
-                  : cefr.level === 'A2'
-                    ? 'bg-orange-500'
-                    : 'bg-red-600'
-            }`}
-          >
-            {cefr.level || '-'}
-          </span>
-          <span class="ml-2 text-gray-600 text-sm truncate">{cefr.confidence ? `(${cefr.confidence.toFixed(2)})` : ''}</span>
-        </p>
+        <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
+            <i data-lucide="star" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">Avg confidence</p>
+            <p class="text-xl font-semibold text-gray-800 truncate">{avgConfidence}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-1 items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">Last update</p>
+            <p class="text-xl font-semibold text-gray-800 truncate">{lastUpdate}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition mt-6">
+        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 flex-shrink-0">
+          <i data-lucide="award" class="w-6 h-6"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-gray-500 truncate">Estimated CEFR level</p>
+
+          <div class="relative inline-block mt-1">
+            <button onclick={() => (showCefrInfo = !showCefrInfo)} class="text-gray-400 hover:text-gray-600">
+              <i data-lucide="info" class="w-4 h-4"></i>
+            </button>
+            {#if showCefrInfo}
+              <div class="absolute z-50 mt-2 w-72 rounded-lg bg-white p-4 text-sm text-gray-700 shadow-lg border">
+                <p class="font-medium mb-1">Common European Framework of Reference</p>
+                <p class="text-gray-600">A1 is beginner level and C2 is near-native proficiency.</p>
+              </div>
+            {/if}
+          </div>
+
+          <p class="text-xl font-semibold text-gray-800 mt-2 truncate">
+            <span
+              class={`px-2 py-0.5 rounded-full text-white ${
+                cefr.level === 'C2' || cefr.level === 'C1'
+                  ? 'bg-green-600'
+                  : cefr.level === 'B2' || cefr.level === 'B1'
+                    ? 'bg-yellow-500'
+                    : cefr.level === 'A2'
+                      ? 'bg-orange-500'
+                      : 'bg-red-600'
+              }`}
+            >
+              {cefr.level || '-'}
+            </span>
+            <span class="ml-2 text-gray-600 text-sm truncate">{cefr.confidence ? `(${cefr.confidence.toFixed(2)})` : ''}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-6 mt-8">
+        <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 flex-shrink-0">
+            <i data-lucide="thumbs-up" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">High confidence</p>
+            <p class="text-2xl font-bold text-green-600 truncate">{highCount}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
+            <i data-lucide="meh" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">Medium confidence</p>
+            <p class="text-2xl font-bold text-yellow-600 truncate">{mediumCount}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 flex-shrink-0">
+            <i data-lucide="thumbs-down" class="w-6 h-6"></i>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium text-gray-500 truncate">Low confidence</p>
+            <p class="text-2xl font-bold text-red-600 truncate">{lowCount}</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-8">
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 flex-shrink-0">
-          <i data-lucide="thumbs-up" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">High confidence</p>
-          <p class="text-2xl font-bold text-green-600 truncate">{highCount}</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
-          <i data-lucide="meh" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">Medium confidence</p>
-          <p class="text-2xl font-bold text-yellow-600 truncate">{mediumCount}</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition">
-        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 flex-shrink-0">
-          <i data-lucide="thumbs-down" class="w-6 h-6"></i>
-        </div>
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-500 truncate">Low confidence</p>
-          <p class="text-2xl font-bold text-red-600 truncate">{lowCount}</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="mt-5 sm:mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
       <div class="relative w-full sm:max-w-sm">
         <input
           type="text"
@@ -454,7 +503,8 @@
       </button>
     </div>
 
-    <div id="lexicon-table" class="mt-8 overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
+    <div id="lexicon-table" class="mt-6 sm:mt-8">
+    <div class="hidden lg:block overflow-x-auto rounded-xl bg-emerald-50 shadow-sm border border-gray-200">
       <table class="min-w-full divide-y divide-gray-200 table-auto sm:table-fixed">
         <thead class="bg-emerald-100">
           <tr>
@@ -547,8 +597,55 @@
       </table>
     </div>
 
+    <div class="mt-6 space-y-3 lg:hidden">
+      {#if loading}
+        <div class="rounded-xl border border-gray-200 bg-white p-6 text-center">
+          <svg class="animate-spin h-7 w-7 text-emerald-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+          </svg>
+        </div>
+      {:else if filteredData.length === 0}
+        <div class="rounded-xl border border-gray-200 bg-white p-6 text-center text-gray-500">
+          <i data-lucide="folder-search" class="w-10 h-10 mx-auto mb-3 text-emerald-400"></i>
+          <p class="font-medium">No lexicon entries found</p>
+        </div>
+      {:else}
+        {#each paginatedData as item, index (`mobile-${item.id || item.lemma || item.word || 'row'}-${index}`)}
+          <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="text-base font-semibold text-gray-900 truncate">{item.word || '-'}</p>
+                <p class="mt-1 text-sm text-gray-600 truncate">{item.lemma || '-'}</p>
+              </div>
+              <span
+                class={`inline-block rounded-full px-2 py-0.5 text-xs font-semibold text-white ${
+                  Number(item.stats?.score ?? 0) > 0.8
+                    ? 'bg-green-600'
+                    : Number(item.stats?.score ?? 0) > 0.5
+                      ? 'bg-yellow-500'
+                      : 'bg-red-600'
+                }`}
+              >
+                {Number(item.stats?.score ?? 0).toFixed(2)}
+              </span>
+            </div>
+            <p class="mt-2 text-xs uppercase tracking-wide text-gray-500">{item.pos || '-'}</p>
+            <button
+              onclick={() => openCreateFlashcardModal(item)}
+              class="mt-3 inline-flex items-center gap-1 rounded border border-emerald-200 px-2 py-1 text-xs font-medium text-emerald-700 hover:bg-emerald-50"
+            >
+              <i data-lucide="square-plus" class="w-3 h-3"></i>
+              <span>Create flashcard</span>
+            </button>
+          </article>
+        {/each}
+      {/if}
+    </div>
+    </div>
+
     {#if !loading && totalPages > 1}
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 text-sm text-gray-600 gap-2 sm:gap-0">
+      <div class="hidden lg:flex flex-col sm:flex-row items-start sm:items-center justify-between py-4 text-sm text-gray-600 gap-2 sm:gap-0">
         <div>{rangeLabel}</div>
 
         <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap">
@@ -580,12 +677,30 @@
           </button>
         </div>
       </div>
+
+      <div class="lg:hidden flex items-center justify-between py-4 text-sm text-gray-600">
+        <button
+          onclick={prevPage}
+          disabled={currentPage === 1}
+          class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+        >
+          Prev
+        </button>
+        <span>{rangeLabel}</span>
+        <button
+          onclick={nextPage}
+          disabled={currentPage === totalPages}
+          class="px-3 py-1 rounded bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition"
+        >
+          Next
+        </button>
+      </div>
     {/if}
   </div>
 
   {#if flashcardModalOpen}
-    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onclick={(e) => e.target === e.currentTarget && closeFlashcardModal()}>
-      <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4" onclick={(e) => e.target === e.currentTarget && closeFlashcardModal()}>
+      <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-4 shadow-xl sm:p-6">
         <h2 class="text-xl font-semibold mb-2">Create flashcard</h2>
 
         <div class="space-y-3">
@@ -638,8 +753,8 @@
   {/if}
 
   {#if showImport}
-    <div class="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onclick={(e) => e.target === e.currentTarget && (showImport = false)}>
-      <div class="bg-white rounded-xl w-full max-w-lg p-6 shadow-xl">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4" onclick={(e) => e.target === e.currentTarget && (showImport = false)}>
+      <div class="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl bg-white p-4 shadow-xl sm:p-6">
         <h2 class="text-xl font-semibold mb-2">Import words</h2>
 
         <p class="text-sm text-gray-600 mb-4">Paste words separated by commas or new lines.</p>

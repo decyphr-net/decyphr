@@ -3,9 +3,13 @@
   "courseTitle": "Coffee Shop Encounters",
   "lessonSlug": "cafe-first-encounters-lesson-1-12-real-world-challenge",
   "lessonTitle": "Real World Challenge",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "the-smallest-easiest-conversation",
+  "unitName": "The Smallest, Easiest Conversation",
   "order": 12,
   "lang": "ga",
-  "estimatedMinutes": 10,
+  "estimatedMinutes": 1,
   "tags": [],
   "resumeBlocks": [],
   "lexicon_include": [],
@@ -94,5 +98,5 @@
       "text": "The next coffee you buy is your first live test."
     }
   ],
-  "contentVersion": "647d6001f0902524"
+  "contentVersion": "fd471d33fa235883"
 }

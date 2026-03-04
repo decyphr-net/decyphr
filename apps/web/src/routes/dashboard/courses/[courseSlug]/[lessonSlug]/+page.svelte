@@ -16,6 +16,7 @@
     type StudyCatalogCourse,
     type StudySession,
   } from '$lib/study-session';
+  import { compareLessonsByHierarchy } from '$lib/course-order';
   export let data;
 
   type LessonPayload = {
@@ -113,6 +114,7 @@
   };
   type DetailedNoteBlock =
     | { kind: 'paragraph'; id: string; text: string }
+    | { kind: 'html'; id: string; html: string }
     | { kind: 'section'; id: string; text: string; level: number }
     | { kind: 'swap'; id: string; target: string; options: SwapOption[] }
     | { kind: 'vocab'; id: string; row: VocabRow };
@@ -129,6 +131,7 @@
   let payload: LessonPayload | null = null;
   let previousLessonHref = '';
   let nextLessonHref = '';
+  let finishUnitHref = '/dashboard';
   let courseProgressPercent = 0;
   let courseProgressReady = false;
   const animatedProgress = tweened(0, { duration: 700, easing: cubicOut });
@@ -179,6 +182,7 @@
   let swapOptionsByKey: Record<string, SwapOption[]> = {};
   let pendingSwapOptionCount = 0;
   let lessonAdvanceBlockedBySwaps = false;
+  let nextLessonLoading = false;
 
   function normalizeText(value: string) {
     return value.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -247,6 +251,63 @@
 
   function pluralize(count: number, singular: string, plural = `${singular}s`) {
     return count === 1 ? singular : plural;
+  }
+
+  function formatDateInput(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function addDays(date: Date, days: number): Date {
+    const next = new Date(date);
+    next.setDate(next.getDate() + days);
+    return next;
+  }
+
+  function isRealWorldChallengeLesson(lessonTitle: string) {
+    return /\breal\s*world\s*challenge\b/i.test(String(lessonTitle || ''));
+  }
+
+  async function ensureRealWorldChallengeGoal() {
+    if (!payload) return;
+    if (!isRealWorldChallengeLesson(payload.lesson.lessonTitle)) return;
+
+    const marker = `[real-world-challenge:${payload.lesson.courseSlug}:${payload.lesson.lessonSlug}]`;
+
+    try {
+      const goalsRes = await fetch('/api/proxy/goals', { cache: 'no-store' });
+      if (!goalsRes.ok) return;
+      const goals = await goalsRes.json();
+      const allGoals = Array.isArray(goals) ? goals : [];
+      const normalizedTitle = String(payload.lesson.lessonTitle || '').trim().toLowerCase();
+      const alreadyExists = allGoals.some((goal) => {
+        const goalTitle = String(goal?.title || '').trim().toLowerCase();
+        const goalDescription = String(goal?.description || '');
+        return goalTitle === normalizedTitle || goalDescription.includes(marker);
+      });
+      if (alreadyExists) return;
+
+      const startDate = new Date();
+      const dueDate = addDays(startDate, 27);
+      await fetch('/api/proxy/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: payload.lesson.lessonTitle,
+          description: `Complete this real world challenge in context. ${marker}`,
+          periodType: 'custom',
+          periodStart: `${formatDateInput(startDate)}T00:00:00`,
+          periodEnd: `${formatDateInput(dueDate)}T23:59:59`,
+          targetType: 'unit_count',
+          targetValue: 1,
+          activityType: 'course_material',
+        }),
+      });
+    } catch (error) {
+      console.warn('Failed to auto-create real world challenge goal', error);
+    }
   }
 
   async function loadAuthContext() {
@@ -604,6 +665,10 @@
       .trim();
     if (!text || text.length < 4 || text.endsWith(':')) return null;
     if (text.includes('`') || text.includes('>')) return null;
+    // Only parse structured glossary-style lines, not regular prose/list text.
+    const hasPronunciationHint = /\([^)\n]{2,}\)/.test(text);
+    const hasDefinitionDelimiter = /:\s*[\p{L}\p{N}€$£]/u.test(text);
+    if (!hasPronunciationHint && !hasDefinitionDelimiter) return null;
 
     const tokens = text.split(' ').filter(Boolean);
     if (tokens.length < 3) return null;
@@ -749,6 +814,12 @@
     return options;
   }
 
+  function looksLikeHtmlSnippet(value: string) {
+    const trimmed = String(value || '').trim();
+    if (!trimmed) return false;
+    return /^<\/?[a-z][^>]*>/i.test(trimmed) || /^<details[\s>]/i.test(trimmed);
+  }
+
   function buildDetailedNoteBlocks(
     notes: Array<{ id: string; text: string }>,
   ): DetailedNoteBlock[] {
@@ -756,6 +827,22 @@
 
     for (let i = 0; i < notes.length; i += 1) {
       const note = notes[i];
+      if (looksLikeHtmlSnippet(note?.text || '')) {
+        const htmlParts = [String(note.text || '').trim()];
+        let j = i + 1;
+        while (j < notes.length && looksLikeHtmlSnippet(notes[j]?.text || '')) {
+          htmlParts.push(String(notes[j].text || '').trim());
+          j += 1;
+        }
+        blocks.push({
+          kind: 'html',
+          id: `${note.id}::html`,
+          html: htmlParts.join('\n'),
+        });
+        i = j - 1;
+        continue;
+      }
+
       const heading = parseNoteHeading(note?.text || '');
       if (heading) {
         blocks.push({
@@ -833,6 +920,15 @@
     params.set('completeCourse', payload.lesson.courseSlug);
     params.set('completeLesson', payload.lesson.lessonSlug);
     return `${baseHref}${baseHref.includes('?') ? '&' : '?'}${params.toString()}`;
+  }
+
+  function unitScopeKeyFromLessonSlug(lessonSlug: string) {
+    const slug = String(lessonSlug || '').toLowerCase();
+    const lessonMatch = slug.match(/-lesson-(\d+)(?:-(\d+))?(?:-|$)/);
+    if (!lessonMatch || typeof lessonMatch.index !== 'number') return '';
+    const moduleKey = slug.slice(0, lessonMatch.index);
+    const unitOrder = lessonMatch[1] || '';
+    return moduleKey && unitOrder ? `${moduleKey}::${unitOrder}` : '';
   }
 
   function withStudySession(href: string) {
@@ -926,6 +1022,7 @@
   async function loadLessonNavigation(courseSlug: string, lessonSlug: string) {
     previousLessonHref = '';
     nextLessonHref = '';
+    finishUnitHref = '/dashboard';
     courseProgressPercent = 0;
     courseProgressReady = false;
 
@@ -936,6 +1033,7 @@
     const courses = (catalog?.courses ?? []) as CourseNavCourse[];
     const currentCourse = courses.find((item) => item.courseSlug === courseSlug);
     if (!currentCourse || !Array.isArray(currentCourse.lessons)) return;
+    const currentCourseIndex = courses.findIndex((item) => item.courseSlug === courseSlug);
 
     if (studySession) {
       applyLessonProgressFromCatalog(studySession, courses as unknown as StudyCatalogCourse[]);
@@ -945,13 +1043,18 @@
       studyCoordinatorLink = studyCoordinatorHref(studySession.id);
     }
 
-    const lessons = currentCourse.lessons.slice().sort((a, b) => a.order - b.order);
-    const completedLessons = lessons.filter((item) => item.progress?.status === 'completed').length;
-    courseProgressPercent = lessons.length ? Math.round((completedLessons / lessons.length) * 100) : 0;
-    courseProgressReady = true;
+    const lessons = currentCourse.lessons.slice().sort(compareLessonsByHierarchy);
 
     const currentIndex = lessons.findIndex((item) => item.lessonSlug === lessonSlug);
     if (currentIndex < 0) return;
+    const currentLesson = lessons[currentIndex];
+    const currentUnitScope = unitScopeKeyFromLessonSlug(currentLesson.lessonSlug);
+    const progressLessons = currentUnitScope
+      ? lessons.filter((item) => unitScopeKeyFromLessonSlug(item.lessonSlug) === currentUnitScope)
+      : lessons;
+    const completedLessons = progressLessons.filter((item) => item.progress?.status === 'completed').length;
+    courseProgressPercent = progressLessons.length ? Math.round((completedLessons / progressLessons.length) * 100) : 0;
+    courseProgressReady = true;
 
     const previous = lessons[currentIndex - 1];
     const next = lessons[currentIndex + 1];
@@ -961,6 +1064,19 @@
     }
     if (next) {
       nextLessonHref = `/dashboard/courses/${encodeURIComponent(courseSlug)}/${encodeURIComponent(next.lessonSlug)}`;
+    }
+
+    if (!nextLessonHref && currentCourseIndex >= 0) {
+      for (let i = currentCourseIndex + 1; i < courses.length; i += 1) {
+        const candidateCourse = courses[i];
+        const candidateLessons = (candidateCourse?.lessons ?? []).slice().sort(compareLessonsByHierarchy);
+        if (!candidateLessons.length) continue;
+
+        const candidateStart =
+          candidateLessons.find((item) => item.progress?.status !== 'completed') ?? candidateLessons[0];
+        finishUnitHref = `/dashboard/courses/${encodeURIComponent(candidateCourse.courseSlug)}/${encodeURIComponent(candidateStart.lessonSlug)}`;
+        break;
+      }
     }
   }
 
@@ -1005,6 +1121,7 @@
       if (!res.ok) throw new Error(await res.text());
       payload = await res.json();
       swapQuizState = sanitizeSwapQuizStateRecord(payload?.progress?.swapQuizState);
+      ensureRealWorldChallengeGoal().catch(() => undefined);
 
       await loadLessonNavigation(data.courseSlug, data.lessonSlug);
       await tick();
@@ -1417,6 +1534,7 @@
 
   async function handleNextLessonClick(event: MouseEvent, href: string) {
     event.preventDefault();
+    if (nextLessonLoading) return;
     if (lessonAdvanceBlockedBySwaps) {
       notifySwapAttemptsRequired();
       return;
@@ -1426,7 +1544,23 @@
       showStudyTargetReachedModal = true;
       return;
     }
-    await navigateWithProgress(href, true);
+    nextLessonLoading = true;
+    try {
+      await navigateWithProgress(href, true);
+    } finally {
+      nextLessonLoading = false;
+    }
+  }
+
+  async function handleFinishUnitClick(event: MouseEvent, href: string) {
+    event.preventDefault();
+    if (nextLessonLoading) return;
+    nextLessonLoading = true;
+    try {
+      await navigateWithProgress(href, true);
+    } finally {
+      nextLessonLoading = false;
+    }
   }
 
   function queueProgressPersist(delayMs = 350) {
@@ -1630,11 +1764,11 @@
         >
         <header class="pb-1">
           <a
-            href={withStudySession('/dashboard/courses?view=all')}
+            href={withStudySession('/dashboard')}
             class="lesson-backlink mt-2 inline-flex text-sm font-medium"
-            onclick={(event) => navigateToLesson(event, withStudySession('/dashboard/courses?view=all'), !nextLessonHref)}
+            onclick={(event) => navigateToLesson(event, withStudySession('/dashboard'), !nextLessonHref)}
           >
-            Back to modules
+            Back to journey
           </a>
 
           <div class="mt-2 h-2.5 w-full overflow-hidden rounded-full lesson-track">
@@ -1716,6 +1850,8 @@
                   </article>
                 {:else if block.kind === 'paragraph'}
                   <p class="lesson-copy text-sm">{@html renderInlineIrish(block.text)}</p>
+                {:else if block.kind === 'html'}
+                  <div class="lesson-copy text-sm">{@html block.html}</div>
                 {:else}
                   {@const quizKey = `micro:${block.id}`}
                   {@const quiz = swapQuizState[quizKey] || { answer: '', status: 'idle', attempts: 0, solvedOptionKeys: [] }}
@@ -1793,6 +1929,8 @@
                   </article>
                 {:else if block.kind === 'paragraph'}
                   <p class="lesson-copy text-sm">{@html renderInlineIrish(block.text)}</p>
+                {:else if block.kind === 'html'}
+                  <div class="lesson-copy text-sm">{@html block.html}</div>
                 {:else}
                   {@const quizKey = `deep:${block.id}`}
                   {@const quiz = swapQuizState[quizKey] || { answer: '', status: 'idle', attempts: 0, solvedOptionKeys: [] }}
@@ -1884,10 +2022,16 @@
                 {:else}
                   <a
                     href={completionFallbackHref(withStudySession(nextLessonHref))}
-                    class="lesson-btn-primary rounded-xl px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5"
+                    class={`lesson-btn-primary rounded-xl px-4 py-2 text-sm font-semibold transition ${nextLessonLoading ? 'pointer-events-none opacity-70' : 'hover:-translate-y-0.5'}`}
+                    aria-disabled={nextLessonLoading}
                     onclick={(event) => handleNextLessonClick(event, withStudySession(nextLessonHref))}
                   >
-                    Next lesson
+                    <span class="inline-flex items-center gap-2">
+                      {#if nextLessonLoading}
+                        <i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>
+                      {/if}
+                      Next lesson
+                    </span>
                   </a>
                 {/if}
               {:else}
@@ -1901,11 +2045,17 @@
                   </button>
                 {:else}
                   <a
-                    href={completionFallbackHref(withStudySession('/dashboard/courses?view=all'))}
-                    class="lesson-btn-primary rounded-xl px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5"
-                    onclick={(event) => navigateToLesson(event, withStudySession('/dashboard/courses?view=all'), true)}
+                    href={completionFallbackHref(withStudySession(finishUnitHref))}
+                    class={`lesson-btn-primary rounded-xl px-4 py-2 text-sm font-semibold transition ${nextLessonLoading ? 'pointer-events-none opacity-70' : 'hover:-translate-y-0.5'}`}
+                    aria-disabled={nextLessonLoading}
+                    onclick={(event) => handleFinishUnitClick(event, withStudySession(finishUnitHref))}
                   >
-                    Finish unit
+                    <span class="inline-flex items-center gap-2">
+                      {#if nextLessonLoading}
+                        <i data-lucide="loader-circle" class="h-4 w-4 animate-spin"></i>
+                      {/if}
+                      Finish unit
+                    </span>
                   </a>
                 {/if}
               {/if}

@@ -230,8 +230,8 @@
   }
 </script>
 
-<section class="mx-auto max-w-3xl space-y-5 py-8">
-  <header class="rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-600 to-teal-500 p-7 text-white shadow">
+<section class="mx-auto max-w-3xl space-y-5 pb-8 pt-0 sm:py-8">
+  <header class="-mx-4 -mt-4 rounded-none border border-emerald-200 bg-gradient-to-r from-emerald-600 to-teal-500 p-7 text-white shadow sm:mx-0 sm:mt-0 sm:rounded-2xl">
     <h1 class="text-3xl font-bold">Guided Study Session</h1>
     <p class="mt-2 text-emerald-50">Follow the recommended path or jump between steps as needed.</p>
   </header>

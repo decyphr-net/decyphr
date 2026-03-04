@@ -1,0 +1,549 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-10-altogether",
+  "lessonTitle": "Altogether",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-b",
+  "order": 10,
+  "lang": "ga",
+  "estimatedMinutes": 3,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "caifé",
+    "latte",
+    "agus",
+    "tae",
+    "glas",
+    "le",
+    "do",
+    "thoil",
+    "cén",
+    "bainne",
+    "atá",
+    "uait",
+    "sa",
+    "coirce",
+    "beag",
+    "nó",
+    "mór",
+    "anseo",
+    "tabhairt",
+    "leat",
+    "ceart",
+    "go",
+    "leor",
+    "rud",
+    "ar",
+    "bith",
+    "eile",
+    "sin",
+    "uile",
+    "sé",
+    "euro",
+    "fiche",
+    "fianán",
+    "freisin",
+    "ocht",
+    "ansin",
+    "cárta",
+    "airgead",
+    "tirim",
+    "raibh",
+    "maith",
+    "agat",
+    "beidh",
+    "siad",
+    "réidh",
+    "gceann",
+    "cúpla",
+    "nóiméad",
+    "seo",
+    "an",
+    "míle",
+    "fadhb"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "duit",
+      "translation": "to you / for you"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "caifé latte",
+      "translation": "latte"
+    },
+    {
+      "token": "latte",
+      "translation": "latte"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "glas",
+      "translation": "green"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "cén",
+      "translation": "which"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "atá",
+      "translation": "that is / is"
+    },
+    {
+      "token": "uait",
+      "translation": "from you / you want"
+    },
+    {
+      "token": "sa",
+      "translation": "in the"
+    },
+    {
+      "token": "coirce",
+      "translation": "oat"
+    },
+    {
+      "token": "beag",
+      "translation": "small"
+    },
+    {
+      "token": "mór",
+      "translation": "large"
+    },
+    {
+      "token": "nó",
+      "translation": "or"
+    },
+    {
+      "token": "anseo",
+      "translation": "here"
+    },
+    {
+      "token": "le tabhairt leat",
+      "translation": "to take with you / takeaway"
+    },
+    {
+      "token": "tabhairt",
+      "translation": "taking / bringing"
+    },
+    {
+      "token": "leat",
+      "translation": "with you"
+    },
+    {
+      "token": "ceart go leor",
+      "translation": "OK / alright"
+    },
+    {
+      "token": "rud",
+      "translation": "thing"
+    },
+    {
+      "token": "ar bith",
+      "translation": "any / at all"
+    },
+    {
+      "token": "eile",
+      "translation": "else / other"
+    },
+    {
+      "token": "sin",
+      "translation": "that"
+    },
+    {
+      "token": "uile",
+      "translation": "everything / all"
+    },
+    {
+      "token": "sé",
+      "translation": "six"
+    },
+    {
+      "token": "euro",
+      "translation": "euro"
+    },
+    {
+      "token": "fiche",
+      "translation": "twenty"
+    },
+    {
+      "token": "ó",
+      "translation": "oh"
+    },
+    {
+      "token": "fianán",
+      "translation": "cookie"
+    },
+    {
+      "token": "freisin",
+      "translation": "also / as well"
+    },
+    {
+      "token": "ocht",
+      "translation": "eight"
+    },
+    {
+      "token": "ansin",
+      "translation": "then"
+    },
+    {
+      "token": "cárta",
+      "translation": "card"
+    },
+    {
+      "token": "airgead tirim",
+      "translation": "cash"
+    },
+    {
+      "token": "go raibh maith agat",
+      "translation": "thank you"
+    },
+    {
+      "token": "beidh",
+      "translation": "will be"
+    },
+    {
+      "token": "siad",
+      "translation": "they"
+    },
+    {
+      "token": "réidh",
+      "translation": "ready"
+    },
+    {
+      "token": "i",
+      "translation": "in"
+    },
+    {
+      "token": "gceann",
+      "translation": "in the space of"
+    },
+    {
+      "token": "cúpla",
+      "translation": "a couple / a few"
+    },
+    {
+      "token": "nóiméad",
+      "translation": "minutes"
+    },
+    {
+      "token": "seo",
+      "translation": "this / here"
+    },
+    {
+      "token": "is é seo",
+      "translation": "this is"
+    },
+    {
+      "token": "an",
+      "translation": "the"
+    },
+    {
+      "token": "míle",
+      "translation": "thousand / a million (in thanks)"
+    },
+    {
+      "token": "fadhb",
+      "translation": "problem"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Altogether\n\n- **Barista**\n> Dia duit! Cad is féidir liom a fháil duit?\n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?\n> Hello! What can I get for you?\n\n- **Customer**\n> Dia is Muire duit. Caifé latte agus tae glas, le do thoil.\n> DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.\n> Hi, a latte and a green tea, please.\n\n- **Barista**\n> Cén bainne atá uait sa latte?\n> Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?\n> Which milk would you like in the latte?\n\n- **Customer**\n> Bainne coirce, le do thoil.\n> BAN-yuh KUR-keh, leh duh hull.\n> Oat milk, please.\n\n- **Barista**\n> Beag nó mór?\n> Byug noh moar?\n> Small or large?\n\n- **Customer**\n> Latte mór agus tae beag, le do thoil.\n> LAH-teh moar ah-gus teh byug, leh duh hull.\n> A large latte and a small tea, please.\n\n- **Barista**\n> Anseo nó le tabhairt leat?\n> An-SHO noh leh TOW-urt lyat?\n> For here or takeaway?\n\n- **Customer**\n> Anseo, le do thoil.\n> An-SHO, leh duh hull.\n> For here, please.\n\n- **Barista**\n> Ceart go leor. Rud ar bith eile?\n> Kyart guh lur. Rud er bih EL-eh?\n> OK. Anything else?\n\n- **Customer**\n> Sin uile.\n> Shin IL-eh.\n> That’s everything.\n\n- **Barista**\n> Sin sé euro fiche.\n> Shin shay YUR-oh FIH-heh.\n> That’s six euro twenty.\n\n- **Customer**\n> Ó, agus fianán freisin, le do thoil.\n> Oh, ah-gus FEE-uh-nawn fuh-RESH-in, leh duh hull.\n> Oh, and a cookie as well, please.\n\n- **Barista**\n> Ceart go leor. Sin ocht euro fiche ansin.\n> Kyart guh lur. Shin ukht YUR-oh FIH-heh an-shin.\n> OK. That’s eight euro twenty then.\n\n- **Barista**\n> Cárta nó airgead tirim?\n> KAR-tuh noh AR-gid TIR-im?\n> Card or cash?\n\n- **Customer**\n> Cárta.\n> KAR-tuh.\n> Card.\n\n- **Barista**\n> Go raibh maith agat. Beidh siad réidh i gceann cúpla nóiméad.\n> Guh rev mah ah-gut. Bay shid ray i gyown KOO-pluh NOH-mid.\n> Thank you. They’ll be ready in a couple of minutes.\n\n- **Barista**\n> Seo duit! Is é seo an latte, agus is é seo an tae glas.\n> Sho gwich! Iss ay sho un LAH-teh, ah-gus iss ay sho un teh gloss.\n> Here you are! This is the latte, and this is the green tea.\n\n- **Customer**\n> Go raibh míle maith agat.\n> Guh rev MEE-leh mah ah-gut.\n> Thanks a million.\n\n- **Barista**\n> Fadhb ar bith.\n> Fowb er bih.\n> No problem.\n",
+  "blocks": [
+    {
+      "id": "altogether-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Altogether"
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-2",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "Hello! What can I get for you?"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-caife-latte-agus-tae-glas-le-do-thoil-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Dia is Muire duit. Caifé latte agus tae glas, le do thoil.",
+          "pronunciation": "DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.",
+          "translation": "Hi, a latte and a green tea, please."
+        }
+      ]
+    },
+    {
+      "id": "cen-bainne-ata-uait-sa-latte-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cén bainne atá uait sa latte?",
+          "pronunciation": "Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?",
+          "translation": "Which milk would you like in the latte?"
+        }
+      ]
+    },
+    {
+      "id": "bainne-coirce-le-do-thoil-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Bainne coirce, le do thoil.",
+          "pronunciation": "BAN-yuh KUR-keh, leh duh hull.",
+          "translation": "Oat milk, please."
+        }
+      ]
+    },
+    {
+      "id": "beag-no-mor-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Beag nó mór?",
+          "pronunciation": "Byug noh moar?",
+          "translation": "Small or large?"
+        }
+      ]
+    },
+    {
+      "id": "latte-mor-agus-tae-beag-le-do-thoil-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Latte mór agus tae beag, le do thoil.",
+          "pronunciation": "LAH-teh moar ah-gus teh byug, leh duh hull.",
+          "translation": "A large latte and a small tea, please."
+        }
+      ]
+    },
+    {
+      "id": "anseo-no-le-tabhairt-leat-8",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Anseo nó le tabhairt leat?",
+          "pronunciation": "An-SHO noh leh TOW-urt lyat?",
+          "translation": "For here or takeaway?"
+        }
+      ]
+    },
+    {
+      "id": "anseo-le-do-thoil-9",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Anseo, le do thoil.",
+          "pronunciation": "An-SHO, leh duh hull.",
+          "translation": "For here, please."
+        }
+      ]
+    },
+    {
+      "id": "ceart-go-leor-rud-ar-bith-eile-10",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Ceart go leor. Rud ar bith eile?",
+          "pronunciation": "Kyart guh lur. Rud er bih EL-eh?",
+          "translation": "OK. Anything else?"
+        }
+      ]
+    },
+    {
+      "id": "sin-uile-11",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Sin uile.",
+          "pronunciation": "Shin IL-eh.",
+          "translation": "That’s everything."
+        }
+      ]
+    },
+    {
+      "id": "sin-se-euro-fiche-12",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Sin sé euro fiche.",
+          "pronunciation": "Shin shay YUR-oh FIH-heh.",
+          "translation": "That’s six euro twenty."
+        }
+      ]
+    },
+    {
+      "id": "o-agus-fianan-freisin-le-do-thoil-13",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Ó, agus fianán freisin, le do thoil.",
+          "pronunciation": "Oh, ah-gus FEE-uh-nawn fuh-RESH-in, leh duh hull.",
+          "translation": "Oh, and a cookie as well, please."
+        }
+      ]
+    },
+    {
+      "id": "ceart-go-leor-sin-ocht-euro-fiche-ansin-14",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Ceart go leor. Sin ocht euro fiche ansin.",
+          "pronunciation": "Kyart guh lur. Shin ukht YUR-oh FIH-heh an-shin.",
+          "translation": "OK. That’s eight euro twenty then."
+        }
+      ]
+    },
+    {
+      "id": "carta-no-airgead-tirim-15",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cárta nó airgead tirim?",
+          "pronunciation": "KAR-tuh noh AR-gid TIR-im?",
+          "translation": "Card or cash?"
+        }
+      ]
+    },
+    {
+      "id": "carta-16",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Cárta.",
+          "pronunciation": "KAR-tuh.",
+          "translation": "Card."
+        }
+      ]
+    },
+    {
+      "id": "go-raibh-maith-agat-beidh-siad-reidh-i-gceann-cupla-noimead-17",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Go raibh maith agat. Beidh siad réidh i gceann cúpla nóiméad.",
+          "pronunciation": "Guh rev mah ah-gut. Bay shid ray i gyown KOO-pluh NOH-mid.",
+          "translation": "Thank you. They’ll be ready in a couple of minutes."
+        }
+      ]
+    },
+    {
+      "id": "seo-duit-is-e-seo-an-latte-agus-is-e-seo-an-tae-glas-18",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Seo duit! Is é seo an latte, agus is é seo an tae glas.",
+          "pronunciation": "Sho gwich! Iss ay sho un LAH-teh, ah-gus iss ay sho un teh gloss.",
+          "translation": "Here you are! This is the latte, and this is the green tea."
+        }
+      ]
+    },
+    {
+      "id": "go-raibh-mile-maith-agat-19",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Go raibh míle maith agat.",
+          "pronunciation": "Guh rev MEE-leh mah ah-gut.",
+          "translation": "Thanks a million."
+        }
+      ]
+    },
+    {
+      "id": "fadhb-ar-bith-20",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Fadhb ar bith.",
+          "pronunciation": "Fowb er bih.",
+          "translation": "No problem."
+        }
+      ]
+    }
+  ],
+  "contentVersion": "18dd0042443e0a14"
+}

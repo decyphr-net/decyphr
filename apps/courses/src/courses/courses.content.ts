@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile, stat } from 'fs/promises';
 import path from 'path';
 import { ContentManifest, LessonContent, LessonManifestRef } from './courses.types';
 
@@ -12,6 +12,7 @@ const DEFAULT_CONTENT_DIR = path.resolve(process.cwd(), 'src/content');
 
 export class ContentStore {
   private manifestCache: ContentManifest | null = null;
+  private manifestCacheMtimeMs = 0;
 
   constructor(private readonly contentDir = process.env.COURSES_CONTENT_DIR || DEFAULT_CONTENT_DIR) {}
 
@@ -20,10 +21,22 @@ export class ContentStore {
   }
 
   async getManifest(forceReload = false): Promise<ContentManifest> {
-    if (!this.manifestCache || forceReload) {
-      const manifestPath = path.join(this.contentDir, 'manifest.json');
+    const manifestPath = path.join(this.contentDir, 'manifest.json');
+    let shouldReload = forceReload || !this.manifestCache;
+
+    if (!shouldReload) {
+      const fileStat = await stat(manifestPath);
+      shouldReload = fileStat.mtimeMs > this.manifestCacheMtimeMs;
+    }
+
+    if (shouldReload) {
       const raw = await readFile(manifestPath, 'utf-8');
       this.manifestCache = JSON.parse(raw) as ContentManifest;
+      const fileStat = await stat(manifestPath);
+      this.manifestCacheMtimeMs = fileStat.mtimeMs;
+    }
+    if (!this.manifestCache) {
+      throw new Error(`Unable to load courses manifest at ${manifestPath}`);
     }
     return this.manifestCache;
   }

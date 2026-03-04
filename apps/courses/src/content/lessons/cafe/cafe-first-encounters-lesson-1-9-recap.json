@@ -3,9 +3,13 @@
   "courseTitle": "Coffee Shop Encounters",
   "lessonSlug": "cafe-first-encounters-lesson-1-9-recap",
   "lessonTitle": "Recap",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "the-smallest-easiest-conversation",
+  "unitName": "The Smallest, Easiest Conversation",
   "order": 9,
   "lang": "ga",
-  "estimatedMinutes": 10,
+  "estimatedMinutes": 1,
   "tags": [],
   "resumeBlocks": [],
   "lexicon_include": [],
@@ -17,7 +21,7 @@
     "autoTrackPhrasebook": true,
     "autoTrackLexicon": true
   },
-  "markdown": "\n# Recap\n\nOK, let's stop for a second and take stock of what we've covered here so far. In just one coffee shop scenario, you’ve covered:\n- Greeting\n- Ordering\n- Payment\n- Add-ons\n- Extra charge\n- Unavailability\n- Alternatives\n- Polite refusal\n\nThere's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it.!\n",
+  "markdown": "\n# Recap\n\nOK, let's stop for a second and take stock of what we've covered here so far. In just one coffee shop scenario, you’ve covered:\n- Greeting\n- Ordering\n- Payment\n- Add-ons\n- Extra charge\n- Unavailability\n- Alternatives\n- Polite refusal\n\nThere's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it!\n",
   "blocks": [
     {
       "id": "recap-1",
@@ -47,8 +51,8 @@
     {
       "id": "there-s-a-lot-here-and-keep-in-mind-that-much-of-what-we-ve-gone-4",
       "type": "paragraph",
-      "text": "There's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it.!"
+      "text": "There's a lot here, and keep in mind that, much of what we've gone through here are actually set phrases that you'll be able to bring with you to a lot of similar situations, whether the setting is a coffee shop, restaurant, or shop, and you didn’t need complex grammar to do it!"
     }
   ],
-  "contentVersion": "1f75a5023e61a53a"
+  "contentVersion": "39f33146c75f1439"
 }

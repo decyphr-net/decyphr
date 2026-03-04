@@ -2,10 +2,15 @@
   "courseSlug": "cafe",
   "courseTitle": "Coffee Shop Encounters",
   "lessonSlug": "cafe-first-encounters-lesson-1-1-conversation",
-  "lessonTitle": "The Smallest, Easiest Interaction - Full Conversation",
+  "lessonTitle": "Full Conversation",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "the-smallest-easiest-conversation",
+  "unitName": "The Smallest, Easiest Conversation",
+  "group": "first-encounters-conversation-a",
   "order": 1,
   "lang": "ga",
-  "estimatedMinutes": 10,
+  "estimatedMinutes": 2,
   "tags": [],
   "resumeBlocks": [],
   "lexicon_include": [
@@ -153,8 +158,8 @@
       "translation": "goodbye"
     },
     {
-      "token": "fóill",
-      "translation": "still / yet"
+      "token": "slán go foill",
+      "translation": "goodbye"
     },
     {
       "token": "go raibh maith agat",
@@ -268,5 +273,5 @@
       ]
     }
   ],
-  "contentVersion": "11ec4be90245f452"
+  "contentVersion": "540af06840e0ed2a"
 }

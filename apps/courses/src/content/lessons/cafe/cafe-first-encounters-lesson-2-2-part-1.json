@@ -1,0 +1,228 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-2-part-1",
+  "lessonTitle": "Breakdown Part 1",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-a",
+  "order": 2,
+  "lang": "ga",
+  "estimatedMinutes": 3,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "dia",
+    "duit",
+    "cad",
+    "is",
+    "féidir",
+    "liom",
+    "fháil",
+    "muire",
+    "caifé",
+    "latte",
+    "agus",
+    "tae",
+    "glas",
+    "le",
+    "do",
+    "thoil",
+    "cén",
+    "bainne",
+    "atá",
+    "uait",
+    "sa",
+    "coirce"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "Dia duit",
+      "translation": "hello"
+    },
+    {
+      "token": "Dia is Muire duit",
+      "translation": "hello (response)"
+    },
+    {
+      "token": "cad",
+      "translation": "what"
+    },
+    {
+      "token": "is",
+      "translation": "is"
+    },
+    {
+      "token": "féidir",
+      "translation": "possible / can"
+    },
+    {
+      "token": "liom",
+      "translation": "with me"
+    },
+    {
+      "token": "a fháil",
+      "translation": "get / receive"
+    },
+    {
+      "token": "duit",
+      "translation": "to you / for you"
+    },
+    {
+      "token": "caifé latte",
+      "translation": "latte"
+    },
+    {
+      "token": "agus",
+      "translation": "and"
+    },
+    {
+      "token": "tae",
+      "translation": "tea"
+    },
+    {
+      "token": "glas",
+      "translation": "green"
+    },
+    {
+      "token": "le do thoil",
+      "translation": "please"
+    },
+    {
+      "token": "cén",
+      "translation": "which"
+    },
+    {
+      "token": "bainne",
+      "translation": "milk"
+    },
+    {
+      "token": "atá",
+      "translation": "that is / is"
+    },
+    {
+      "token": "uait",
+      "translation": "from you / you want"
+    },
+    {
+      "token": "sa",
+      "translation": "in the"
+    },
+    {
+      "token": "coirce",
+      "translation": "oat"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Let's Step It Up A Little - Breakdown Part 1\n\n- **Barista**\n> Dia duit! Cad is féidir liom a fháil duit?\n> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?\n> (Hello! What can I get for you?)\n\n- **Customer**\n> Dia is Muire duit. Caifé latte agus tae glas, le do thoil.\n> > DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.\n> (Hi, a latte and a green tea, please.)\n\nOK, here we see our greetings again. The difference is here is that the customer is ordering a latte (`caifé latte`) and a green tea (`tae glas`).\n\nSo, let's take a look at the next section, most of which you'll already be familiar with, again:\n- **Barista**\n> Cén bainne atá uait sa latte?\n> > Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?\n> Which milk would you like in the latte?\n\n- **Customer**\n> Bainne coirce, le do thoil.\n> BAN-yuh KUR-keh, leh duh hull.\n> Oat milk, please.\n\nHere's a very useful structure:\n`Cén X atá uait?`\n\nThis is a very common way of asking “which X would you like?”\n\nIt’s a pattern you’ll be able to reuse in many situations:\n- `Cén tae atá uait?` - \"Which tea would you like?\"\n- `Cén méid atá uait?` - \"Which size would you like?\"\n- `Cén ceapaire atá uait?` - \"Which sandwich would you like?\"\n- `Cén bord atá uait?` - \"Which table would you like?\"\n\nThe next chunk then is `sa latte`. This just means \"in the latte\".\n\nAnd the response is simple:\n`Bainne coirce, le do thoil.`",
+  "blocks": [
+    {
+      "id": "let-s-step-it-up-a-little-breakdown-part-1-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Let's Step It Up A Little - Breakdown Part 1"
+    },
+    {
+      "id": "dia-duit-cad-is-feidir-liom-a-fhail-duit-2",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Dia duit! Cad is féidir liom a fháil duit?",
+          "pronunciation": "DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?",
+          "translation": "(Hello! What can I get for you?)"
+        }
+      ]
+    },
+    {
+      "id": "dia-is-muire-duit-caife-latte-agus-tae-glas-le-do-thoil-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Dia is Muire duit. Caifé latte agus tae glas, le do thoil.",
+          "pronunciation": "> DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.",
+          "translation": "(Hi, a latte and a green tea, please.)"
+        }
+      ]
+    },
+    {
+      "id": "ok-here-we-see-our-greetings-again-the-difference-is-here-is-tha-4",
+      "type": "paragraph",
+      "text": "OK, here we see our greetings again. The difference is here is that the customer is ordering a latte (`caifé latte`) and a green tea (`tae glas`)."
+    },
+    {
+      "id": "so-let-s-take-a-look-at-the-next-section-most-of-which-you-ll-al-5",
+      "type": "paragraph",
+      "text": "So, let's take a look at the next section, most of which you'll already be familiar with, again:"
+    },
+    {
+      "id": "cen-bainne-ata-uait-sa-latte-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cén bainne atá uait sa latte?",
+          "pronunciation": "> Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?",
+          "translation": "Which milk would you like in the latte?"
+        }
+      ]
+    },
+    {
+      "id": "bainne-coirce-le-do-thoil-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Bainne coirce, le do thoil.",
+          "pronunciation": "BAN-yuh KUR-keh, leh duh hull.",
+          "translation": "Oat milk, please."
+        }
+      ]
+    },
+    {
+      "id": "here-s-a-very-useful-structure-cen-x-ata-uait-8",
+      "type": "paragraph",
+      "text": "Here's a very useful structure: `Cén X atá uait?`"
+    },
+    {
+      "id": "this-is-a-very-common-way-of-asking-which-x-would-you-like-9",
+      "type": "paragraph",
+      "text": "This is a very common way of asking “which X would you like?”"
+    },
+    {
+      "id": "it-s-a-pattern-you-ll-be-able-to-reuse-in-many-situations-10",
+      "type": "paragraph",
+      "text": "It’s a pattern you’ll be able to reuse in many situations:"
+    },
+    {
+      "id": "cen-tae-ata-uait-which-tea-would-you-like-11",
+      "type": "list",
+      "items": [
+        "`Cén tae atá uait?` - \"Which tea would you like?\"",
+        "`Cén méid atá uait?` - \"Which size would you like?\"",
+        "`Cén ceapaire atá uait?` - \"Which sandwich would you like?\"",
+        "`Cén bord atá uait?` - \"Which table would you like?\""
+      ]
+    },
+    {
+      "id": "the-next-chunk-then-is-sa-latte-this-just-means-in-the-latte-12",
+      "type": "paragraph",
+      "text": "The next chunk then is `sa latte`. This just means \"in the latte\"."
+    },
+    {
+      "id": "and-the-response-is-simple-bainne-coirce-le-do-thoil-13",
+      "type": "paragraph",
+      "text": "And the response is simple: `Bainne coirce, le do thoil.`"
+    }
+  ],
+  "contentVersion": "f84adc959d43bbb6"
+}

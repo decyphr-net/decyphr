@@ -1,0 +1,70 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-7-challenge",
+  "lessonTitle": "Challenge",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "order": 7,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Challenge\n\nUse the cards below to rebuild the full interaction with small changes.\n\nTry four quick reps:\n1. Swap one drink.\n2. Swap one milk.\n3. Swap one price.\n4. Swap one closing phrase.\n\n## Your Task\n\nRebuild the full interaction from greeting to collection using at least:\n- one different drink\n- one different milk\n- one different price\n- one different closing phrase\n\nKeep everything else the same.\n",
+  "blocks": [
+    {
+      "id": "challenge-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Challenge"
+    },
+    {
+      "id": "use-the-cards-below-to-rebuild-the-full-interaction-with-small-c-2",
+      "type": "paragraph",
+      "text": "Use the cards below to rebuild the full interaction with small changes."
+    },
+    {
+      "id": "try-four-quick-reps-1-swap-one-drink-2-swap-one-milk-3-swap-one--3",
+      "type": "paragraph",
+      "text": "Try four quick reps: 1. Swap one drink. 2. Swap one milk. 3. Swap one price. 4. Swap one closing phrase."
+    },
+    {
+      "id": "your-task-4",
+      "type": "heading",
+      "level": 2,
+      "text": "Your Task"
+    },
+    {
+      "id": "rebuild-the-full-interaction-from-greeting-to-collection-using-a-5",
+      "type": "paragraph",
+      "text": "Rebuild the full interaction from greeting to collection using at least:"
+    },
+    {
+      "id": "one-different-drink-6",
+      "type": "list",
+      "items": [
+        "one different drink",
+        "one different milk",
+        "one different price",
+        "one different closing phrase"
+      ]
+    },
+    {
+      "id": "keep-everything-else-the-same-7",
+      "type": "paragraph",
+      "text": "Keep everything else the same."
+    }
+  ],
+  "contentVersion": "e64d69aa3616c755"
+}

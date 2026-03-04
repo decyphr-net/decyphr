@@ -1,3 +1,5 @@
+import { compareLessonsByHierarchy } from '$lib/course-order';
+
 export type LessonStatus = 'not_started' | 'in_progress' | 'completed';
 
 export type StudyCatalogLesson = {
@@ -166,7 +168,7 @@ function completedLessonCount(course: StudyCatalogCourse) {
 function nextIncompleteLessons(course: StudyCatalogCourse) {
   return course.lessons
     .slice()
-    .sort((a, b) => a.order - b.order)
+    .sort(compareLessonsByHierarchy)
     .filter((lesson) => lesson.progress.status !== 'completed');
 }
 

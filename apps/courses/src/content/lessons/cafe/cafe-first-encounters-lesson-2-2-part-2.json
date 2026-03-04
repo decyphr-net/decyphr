@@ -1,0 +1,183 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-2-part-2",
+  "lessonTitle": "Let's Step It Up A Little - Breakdown Part 2",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-a",
+  "order": 3,
+  "lang": "ga",
+  "estimatedMinutes": 3,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "ceart",
+    "go",
+    "leor",
+    "rud",
+    "ar",
+    "bith",
+    "eile",
+    "sin",
+    "uile",
+    "sé",
+    "euro",
+    "fiche"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "ceart go leor",
+      "translation": "OK / alright"
+    },
+    {
+      "token": "rud",
+      "translation": "thing"
+    },
+    {
+      "token": "ar bith",
+      "translation": "any / at all"
+    },
+    {
+      "token": "eile",
+      "translation": "else / other"
+    },
+    {
+      "token": "sin",
+      "translation": "that"
+    },
+    {
+      "token": "uile",
+      "translation": "everything / all"
+    },
+    {
+      "token": "sé",
+      "translation": "six"
+    },
+    {
+      "token": "euro",
+      "translation": "euro"
+    },
+    {
+      "token": "fiche",
+      "translation": "twenty"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Let's Step It Up A Little - Breakdown Part 2\n\nThe next few parts of the conversation also have a couple of very useful everyday phrases. Let's take a look:\n\n- **Barista**\n> Ceart go leor. Rud ar bith eile?\n> Kyart guh lur. Rud er bih EL-eh?\n> OK. Anything else?\n\n- **Customer**\n> Sin uile.\n> Shin IL-eh.\n> That’s everything.\n\n- **Barista**\n> Sin sé euro fiche.\n> Shin shay YUR-oh FIH-heh.\n> That’s six euro twenty.\n\n`Rud ar bith eile` means \"anything else?\"\n\nYou’ll hear `ar bith` a lot in Irish. It adds that familiar “at all” feeling we often use in Irish English.\n\nFor example:\n- `Rud ar bith eile?` – Anything else?\n- `Fadhb ar bith?` – Any problem?\n- `Ceist ar bith?` – Any question?\n\nIt’s a very common pattern.\n\n`Sin uile` is a short, natural way of saying “that’s everything” or “that’s all.”\n\nYou might also hear:\n- `Sin é.` – That’s it.\n- `Sin gach rud.` – That’s everything.\n\nAnd finally:\n`Sin sé euro fiche.`\n\nYou’ve already seen this structure with prices.\nIt’s the same pattern, just with a different number.",
+  "blocks": [
+    {
+      "id": "let-s-step-it-up-a-little-breakdown-part-2-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Let's Step It Up A Little - Breakdown Part 2"
+    },
+    {
+      "id": "the-next-few-parts-of-the-conversation-also-have-a-couple-of-ver-2",
+      "type": "paragraph",
+      "text": "The next few parts of the conversation also have a couple of very useful everyday phrases. Let's take a look:"
+    },
+    {
+      "id": "ceart-go-leor-rud-ar-bith-eile-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Ceart go leor. Rud ar bith eile?",
+          "pronunciation": "Kyart guh lur. Rud er bih EL-eh?",
+          "translation": "OK. Anything else?"
+        }
+      ]
+    },
+    {
+      "id": "sin-uile-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Sin uile.",
+          "pronunciation": "Shin IL-eh.",
+          "translation": "That’s everything."
+        }
+      ]
+    },
+    {
+      "id": "sin-se-euro-fiche-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Sin sé euro fiche.",
+          "pronunciation": "Shin shay YUR-oh FIH-heh.",
+          "translation": "That’s six euro twenty."
+        }
+      ]
+    },
+    {
+      "id": "rud-ar-bith-eile-means-anything-else-6",
+      "type": "paragraph",
+      "text": "`Rud ar bith eile` means \"anything else?\""
+    },
+    {
+      "id": "you-ll-hear-ar-bith-a-lot-in-irish-it-adds-that-familiar-at-all--7",
+      "type": "paragraph",
+      "text": "You’ll hear `ar bith` a lot in Irish. It adds that familiar “at all” feeling we often use in Irish English."
+    },
+    {
+      "id": "for-example-8",
+      "type": "paragraph",
+      "text": "For example:"
+    },
+    {
+      "id": "rud-ar-bith-eile-anything-else-9",
+      "type": "list",
+      "items": [
+        "`Rud ar bith eile?` – Anything else?",
+        "`Fadhb ar bith?` – Any problem?",
+        "`Ceist ar bith?` – Any question?"
+      ]
+    },
+    {
+      "id": "it-s-a-very-common-pattern-10",
+      "type": "paragraph",
+      "text": "It’s a very common pattern."
+    },
+    {
+      "id": "sin-uile-is-a-short-natural-way-of-saying-that-s-everything-or-t-11",
+      "type": "paragraph",
+      "text": "`Sin uile` is a short, natural way of saying “that’s everything” or “that’s all.”"
+    },
+    {
+      "id": "you-might-also-hear-12",
+      "type": "paragraph",
+      "text": "You might also hear:"
+    },
+    {
+      "id": "sin-e-that-s-it-13",
+      "type": "list",
+      "items": [
+        "`Sin é.` – That’s it.",
+        "`Sin gach rud.` – That’s everything."
+      ]
+    },
+    {
+      "id": "and-finally-sin-se-euro-fiche-14",
+      "type": "paragraph",
+      "text": "And finally: `Sin sé euro fiche.`"
+    },
+    {
+      "id": "you-ve-already-seen-this-structure-with-prices-it-s-the-same-pat-15",
+      "type": "paragraph",
+      "text": "You’ve already seen this structure with prices. It’s the same pattern, just with a different number."
+    }
+  ],
+  "contentVersion": "0ef3b01f7df099ba"
+}

@@ -1,0 +1,137 @@
+---
+courseSlug: cafe
+courseTitle: Coffee Shop Encounters
+lessonSlug: cafe-first-encounters-lesson-2-1-conversation
+title: "Full Conversation"
+order: 1
+lang: ga
+estimatedMinutes: 3
+group: first-encounters-conversation-a
+tokenGlosses:
+  - Dia duit|hello
+  - Dia is Muire duit|hello (response)
+  - cad|what
+  - is|is
+  - féidir|possible / can
+  - liom|with me
+  - a fháil|get / receive
+  - duit|to you / for you
+  - caifé latte|latte
+  - agus|and
+  - tae|tea
+  - glas|green
+  - le do thoil|please
+  - cén|which
+  - bainne|milk
+  - atá|that is / is
+  - uait|from you / you want
+  - sa|in the
+  - coirce|oat
+  - ceart go leor|OK / alright
+  - rud|thing
+  - ar bith|any / at all
+  - eile|else / other
+  - sin|that
+  - uile|everything / all
+  - sé|six
+  - euro|euro
+  - fiche|twenty
+  - ó|oh
+  - fianán|cookie
+  - freisin|also / as well
+  - ocht|eight
+  - ansin|then
+  - cárta|card
+  - nó|or
+  - airgead tirim|cash
+  - go raibh maith agat|thank you
+  - beidh|will be
+  - siad|they
+  - réidh|ready
+  - i|in
+  - gceann|in the space of
+  - cúpla|a couple / a few
+  - nóiméad|minutes
+  - seo|this / here
+  - is é seo|this is
+  - an|the
+  - míle|thousand / a million (in thanks)
+  - fadhb|problem
+---
+
+# Let's Step It Up A Little - Full Conversation
+
+- **Barista**
+> Dia duit! Cad is féidir liom a fháil duit?
+> DEE-ah gwich! Cod iss FEH-dir lum uh ayl gwich?
+> Hello! What can I get for you?
+
+- **Customer**
+> Dia is Muire duit. Caifé latte agus tae glas, le do thoil.
+> DEE-ah iss MWIR-eh gwich. Kaff-AY LAH-teh ah-gus teh gloss, leh duh hull.
+> Hi, a latte and a green tea, please.
+
+- **Barista**
+> Cén bainne atá uait sa latte?
+> Kayn BAN-yuh ah-TAW oo-it suh LAH-teh?
+> Which milk would you like in the latte?
+
+- **Customer**
+> Bainne coirce, le do thoil.
+> BAN-yuh KUR-keh, leh duh hull.
+> Oat milk, please.
+
+- **Barista**
+> Ceart go leor. Rud ar bith eile?
+> Kyart guh lur. Rud er bih EL-eh?
+> OK. Anything else?
+
+- **Customer**
+> Sin uile.
+> Shin IL-eh.
+> That’s everything.
+
+- **Barista**
+> Sin sé euro fiche.
+> Shin shay YUR-oh FIH-heh.
+> That’s six euro twenty.
+
+- **Customer**
+> Ó, agus fianán freisin, le do thoil.
+> Oh, ah-gus FEE-uh-nawn fuh-RESH-in, leh duh hull.
+> Oh, and a cookie as well, please.
+
+- **Barista**
+> Ceart go leor. Sin ocht euro fiche ansin.
+> Kyart guh lur. Shin ukht YUR-oh FIH-heh an-shin.
+> OK. That’s eight euro twenty then.
+
+- **Barista**
+> Cárta nó airgead tirim?
+> KAR-tuh noh AR-gid TIR-im?
+> Card or cash?
+
+- **Customer**
+> Cárta.
+> KAR-tuh.
+> Card.
+
+- **Barista**
+> Go raibh maith agat. Beidh siad réidh i gceann cúpla nóiméad.
+> Guh rev mah ah-gut. Bay shid ray i gyown KOO-pluh NOH-mid.
+> Thank you. They’ll be ready in a couple of minutes.
+
+- **Barista**
+> Seo duit! Is é seo an latte.
+> Sho gwich! Iss ay sho un LAH-teh.
+> Here you are! This is the latte.
+
+- **Customer**
+> Go raibh míle maith agat.
+> Guh rev MEE-leh mah ah-gut.
+> Thanks a million.
+
+- **Barista**
+> Fadhb ar bith.
+> Fowb er bih.
+> No problem.

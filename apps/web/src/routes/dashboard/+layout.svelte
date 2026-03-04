@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
+  import { fade, fly } from 'svelte/transition';
   import FocusWidget from '$lib/components/focus/FocusWidget.svelte';
 
   let { children } = $props();
@@ -8,15 +10,61 @@
     dark: 'dark',
   };
 
-  const navItems = [
-    { href: '/dashboard', icon: 'layout-dashboard', label: 'Dashboard' },
-    { href: '/dashboard/pomodoro', icon: 'timer', label: 'Pomodoro' },
+  const navGroups = [
+    {
+      label: 'Goals',
+      items: [
+        { href: '/dashboard/goals', icon: 'target', label: 'Goals' },
+        { href: '/dashboard/study', icon: 'crosshair', label: 'Focus' },
+        { href: '/dashboard/pomodoro', icon: 'timer', label: 'Pomodoro' },
+      ],
+    },
+    {
+      label: 'Training',
+      items: [
+        { href: '/dashboard/practice', icon: 'brain', label: 'Practice' },
+        { href: '/dashboard/practice#mistakes-hub', icon: 'triangle-alert', label: 'Mistakes' },
+        { href: '/dashboard/flashcards/study', icon: 'layers', label: 'Flashcards' },
+      ],
+    },
+    {
+      label: 'Vocab',
+      items: [
+        { href: '/dashboard/lexicon', icon: 'book-open-check', label: 'Lexicon' },
+        { href: '/dashboard/phrasebook', icon: 'notebook-pen', label: 'Phrasebook' },
+      ],
+    },
+  ];
+
+  const mobileDockGroups = [
+    { href: '/dashboard', icon: 'route', label: 'Journey' },
     { href: '/dashboard/goals', icon: 'target', label: 'Goals' },
-    { href: '/dashboard/practice', icon: 'brain', label: 'Practice' },
-    { href: '/dashboard/phrasebook', icon: 'notebook-pen', label: 'Phrasebook' },
+    { href: '/dashboard/practice', icon: 'brain', label: 'Training' },
+    { href: '/dashboard/lexicon', icon: 'book-open-check', label: 'Vocab' },
   ];
 
   let theme = 'light';
+
+  function routeSlideX(pathname: string) {
+    if (pathname === '/dashboard/phrasebook') return 22;
+    if (pathname === '/dashboard/lexicon') return -22;
+    return 14;
+  }
+
+  function isDockActive(href: string) {
+    const pathname = page.url.pathname;
+    const target = href.split('#')[0];
+    if (target === '/dashboard') return pathname === '/dashboard';
+    return pathname === target || pathname.startsWith(`${target}/`);
+  }
+
+  function dockTone(label: string) {
+    if (label === 'Journey') return { active: 'from-amber-400 to-yellow-300', icon: 'bg-amber-500/20 text-amber-700' };
+    if (label === 'Goals') return { active: 'from-emerald-500 to-teal-400', icon: 'bg-emerald-500/20 text-emerald-700' };
+    if (label === 'Training') return { active: 'from-sky-500 to-cyan-400', icon: 'bg-sky-500/20 text-sky-700' };
+    if (label === 'Vocab') return { active: 'from-indigo-500 to-blue-500', icon: 'bg-indigo-500/20 text-indigo-700' };
+    return { active: 'from-slate-500 to-slate-400', icon: 'bg-slate-500/20 text-slate-700' };
+  }
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -51,11 +99,16 @@
       <a href="/dashboard" class="text-xl font-semibold">Misneach</a>
     </div>
 
-    <nav class="flex-1 space-y-2 overflow-y-auto px-2 py-4">
-      {#each navItems as item}
-        <a href={item.href} class="flex items-center gap-3 rounded-lg p-3 transition hover:bg-white/10">
-          <i data-lucide={item.icon} class="h-5 w-5"></i><span>{item.label}</span>
-        </a>
+    <nav class="flex-1 space-y-5 overflow-y-auto px-3 py-4">
+      {#each navGroups as group}
+        <section class="space-y-1.5">
+          <p class="px-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/65">{group.label}</p>
+          {#each group.items as item}
+            <a href={item.href} class="flex items-center gap-3 rounded-lg p-2.5 transition hover:bg-white/10">
+              <i data-lucide={item.icon} class="h-4 w-4"></i><span>{item.label}</span>
+            </a>
+          {/each}
+        </section>
       {/each}
     </nav>
 
@@ -92,37 +145,18 @@
   </aside>
 
   <div class="flex min-h-screen min-w-0 flex-1 flex-col">
-    <header class="sticky top-0 z-[90] flex items-center justify-between border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 lg:hidden">
-      <a href="/dashboard" class="text-base font-semibold text-slate-900 dark:text-slate-100">Misneach</a>
-      <button
-        type="button"
-        class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-200"
-        on:click={logout}
-      >
-        Log out
-      </button>
-    </header>
-
-    <details class="sticky top-[57px] z-[85] border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90 lg:hidden">
-      <summary class="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
-        Menu
-        <i data-lucide="chevron-down" class="h-4 w-4"></i>
-      </summary>
-      <nav class="grid grid-cols-1 gap-1 px-2 pb-3">
-        {#each navItems as item}
-          <a href={item.href} class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-            <i data-lucide={item.icon} class="h-4 w-4"></i>
-            <span>{item.label}</span>
-          </a>
-        {/each}
-      </nav>
-    </details>
-
-    <main class="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-      {@render children()}
+    <main class="min-w-0 flex-1 p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8">
+      {#key page.url.pathname}
+        <div
+          in:fly={{ x: routeSlideX(page.url.pathname), duration: 220, opacity: 0.2 }}
+          out:fade={{ duration: 120 }}
+        >
+          {@render children()}
+        </div>
+      {/key}
     </main>
 
-    <footer class="mt-8 bg-gray-800 py-10 text-gray-300 dark:bg-slate-950">
+    <footer class="mt-8 bg-gray-800 py-10 pb-28 text-gray-300 dark:bg-slate-950 lg:pb-10">
       <div class="mx-auto grid max-w-6xl gap-8 px-4 md:grid-cols-3">
         <div>
           <h3 class="mb-4 text-xl font-semibold text-white">About</h3>
@@ -146,5 +180,40 @@
     </footer>
   </div>
 </div>
+
+<nav
+  class="fixed inset-x-0 bottom-0 z-[95] border-t border-slate-200 bg-white/95 px-2 pb-[calc(env(safe-area-inset-bottom)+0.4rem)] pt-2 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 lg:hidden"
+  aria-label="Dashboard mobile dock"
+>
+  <div class="mx-auto grid w-full max-w-xl grid-cols-5 gap-2">
+    {#each mobileDockGroups as item}
+      {@const active = isDockActive(item.href)}
+      {@const tone = dockTone(item.label)}
+      <a
+        href={item.href}
+        class={`inline-flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1.5 transition ${
+          active
+            ? `bg-gradient-to-br ${tone.active} text-slate-900 shadow-[0_8px_18px_-12px_rgba(15,23,42,0.65)]`
+            : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+        }`}
+      >
+        <span class={`inline-flex h-7 w-7 items-center justify-center rounded-full ${active ? 'bg-white/80 text-slate-900' : tone.icon}`}>
+          <i data-lucide={item.icon} class="h-4 w-4"></i>
+        </span>
+        <span class="text-[11px] font-semibold">{item.label}</span>
+      </a>
+    {/each}
+    <button
+      type="button"
+      class="inline-flex min-w-0 flex-col items-center gap-1 rounded-xl px-2 py-1.5 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+      on:click={logout}
+    >
+      <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-rose-500/20 text-rose-700 dark:bg-rose-500/25 dark:text-rose-300">
+        <i data-lucide="user" class="h-4 w-4"></i>
+      </span>
+      <span class="text-[11px] font-semibold">Log out</span>
+    </button>
+  </div>
+</nav>
 
 <FocusWidget />

@@ -17,6 +17,11 @@ export type LessonContent = {
   courseTitle: string;
   lessonSlug: string;
   lessonTitle: string;
+  moduleKey?: string;
+  moduleName?: string;
+  unitKey?: string;
+  unitName?: string;
+  group?: string;
   order: number;
   lang: string;
   estimatedMinutes: number;
@@ -102,6 +107,11 @@ export type LessonMicroChunk = {
 export type LessonManifestRef = {
   lessonSlug: string;
   lessonTitle: string;
+  moduleKey?: string;
+  moduleName?: string;
+  unitKey?: string;
+  unitName?: string;
+  group?: string;
   order: number;
   estimatedMinutes: number;
   summary?: string;

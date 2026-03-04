@@ -1,0 +1,166 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-13-bunos-order",
+  "lessonTitle": "Bonus Order - Layer It All Together",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "order": 13,
+  "lang": "ga",
+  "estimatedMinutes": 10,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [],
+  "lexicon_exclude": [],
+  "tokenGlosses": [],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Bonus Order - Layer It All Together\n\n\nRight — time to build the full version.\n\nNo prompts. No subtitles. No looking back.\n\nWalk into the coffee shop and place a layered order entirely in Irish.\n\nBuild the whole interaction:\n\nGreeting → Multiple drinks → Milk choice → Size choice → For here or takeaway → Late add-on → Price update → Payment → Collection → Goodbye.\n\n---\n\n## Your Scenario\n\nOrder:\n- Two drinks (different drinks)\n- Two different sizes\n- A milk alternative in one of them\n- One food item added after the first price is given\n\nYou decide:\n- Are you staying or taking it away?\n- Are both drinks the same size or different?\n- Does the barista ask, or do you volunteer the information?\n\n\n---\n\n## Do It Twice\n\n1️⃣ First version:\nThe barista asks all clarification questions.\n\n2️⃣ Second version:\nYou volunteer most of the information up front.\n\n---\n\n## If That Felt Comfortable, Level It Up\n\n- Change one drink after you’ve ordered it.\n- Add something small at the very end.\n- Swap the price for a different number.\n- Respond naturally to “Rud ar bith eile?” without pausing.\n\nKeep it steady. Don’t rush it.\n\nThe goal isn’t speed. It’s control.\n\nIf you can build this conversation without stopping to translate in your head, you’re no longer repeating phrases — you’re operating within the structure.\n\nAnd that’s the difference.\n\nNext lesson — you take it outside again.",
+  "blocks": [
+    {
+      "id": "bonus-order-layer-it-all-together-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Bonus Order - Layer It All Together"
+    },
+    {
+      "id": "right-time-to-build-the-full-version-2",
+      "type": "paragraph",
+      "text": "Right — time to build the full version."
+    },
+    {
+      "id": "no-prompts-no-subtitles-no-looking-back-3",
+      "type": "paragraph",
+      "text": "No prompts. No subtitles. No looking back."
+    },
+    {
+      "id": "walk-into-the-coffee-shop-and-place-a-layered-order-entirely-in--4",
+      "type": "paragraph",
+      "text": "Walk into the coffee shop and place a layered order entirely in Irish."
+    },
+    {
+      "id": "build-the-whole-interaction-5",
+      "type": "paragraph",
+      "text": "Build the whole interaction:"
+    },
+    {
+      "id": "greeting-multiple-drinks-milk-choice-size-choice-for-here-or-tak-6",
+      "type": "paragraph",
+      "text": "Greeting → Multiple drinks → Milk choice → Size choice → For here or takeaway → Late add-on → Price update → Payment → Collection → Goodbye."
+    },
+    {
+      "id": "paragraph-7-7",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "your-scenario-8",
+      "type": "heading",
+      "level": 2,
+      "text": "Your Scenario"
+    },
+    {
+      "id": "order-9",
+      "type": "paragraph",
+      "text": "Order:"
+    },
+    {
+      "id": "two-drinks-different-drinks-10",
+      "type": "list",
+      "items": [
+        "Two drinks (different drinks)",
+        "Two different sizes",
+        "A milk alternative in one of them",
+        "One food item added after the first price is given"
+      ]
+    },
+    {
+      "id": "you-decide-11",
+      "type": "paragraph",
+      "text": "You decide:"
+    },
+    {
+      "id": "are-you-staying-or-taking-it-away-12",
+      "type": "list",
+      "items": [
+        "Are you staying or taking it away?",
+        "Are both drinks the same size or different?",
+        "Does the barista ask, or do you volunteer the information?"
+      ]
+    },
+    {
+      "id": "paragraph-13-13",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "do-it-twice-14",
+      "type": "heading",
+      "level": 2,
+      "text": "Do It Twice"
+    },
+    {
+      "id": "1-first-version-the-barista-asks-all-clarification-questions-15",
+      "type": "paragraph",
+      "text": "1️⃣ First version: The barista asks all clarification questions."
+    },
+    {
+      "id": "2-second-version-you-volunteer-most-of-the-information-up-front-16",
+      "type": "paragraph",
+      "text": "2️⃣ Second version: You volunteer most of the information up front."
+    },
+    {
+      "id": "paragraph-17-17",
+      "type": "paragraph",
+      "text": "---"
+    },
+    {
+      "id": "if-that-felt-comfortable-level-it-up-18",
+      "type": "heading",
+      "level": 2,
+      "text": "If That Felt Comfortable, Level It Up"
+    },
+    {
+      "id": "change-one-drink-after-you-ve-ordered-it-19",
+      "type": "list",
+      "items": [
+        "Change one drink after you’ve ordered it.",
+        "Add something small at the very end.",
+        "Swap the price for a different number.",
+        "Respond naturally to “Rud ar bith eile?” without pausing."
+      ]
+    },
+    {
+      "id": "keep-it-steady-don-t-rush-it-20",
+      "type": "paragraph",
+      "text": "Keep it steady. Don’t rush it."
+    },
+    {
+      "id": "the-goal-isn-t-speed-it-s-control-21",
+      "type": "paragraph",
+      "text": "The goal isn’t speed. It’s control."
+    },
+    {
+      "id": "if-you-can-build-this-conversation-without-stopping-to-translate-22",
+      "type": "paragraph",
+      "text": "If you can build this conversation without stopping to translate in your head, you’re no longer repeating phrases — you’re operating within the structure."
+    },
+    {
+      "id": "and-that-s-the-difference-23",
+      "type": "paragraph",
+      "text": "And that’s the difference."
+    },
+    {
+      "id": "next-lesson-you-take-it-outside-again-24",
+      "type": "paragraph",
+      "text": "Next lesson — you take it outside again."
+    }
+  ],
+  "contentVersion": "1060213333cf3ee3"
+}

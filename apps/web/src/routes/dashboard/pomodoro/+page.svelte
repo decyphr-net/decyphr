@@ -70,8 +70,8 @@
   onMount(refreshAll);
 </script>
 
-<section class="max-w-6xl mx-auto py-6 space-y-6">
-  <header class="rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-white p-8 shadow">
+<section class="max-w-6xl mx-auto pb-6 pt-0 sm:py-6 space-y-6">
+  <header class="-mx-4 -mt-4 rounded-none bg-gradient-to-r from-emerald-500 to-teal-400 text-white p-8 shadow sm:mx-0 sm:mt-0 sm:rounded-2xl">
     <h1 class="text-3xl font-bold">Pomodoro Focus</h1>
     <p class="text-emerald-50 mt-2">Start a focused block, then jump directly back into course work or practice.</p>
 

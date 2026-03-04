@@ -3,9 +3,13 @@
   "courseTitle": "Coffee Shop Encounters",
   "lessonSlug": "cafe-first-encounters-lesson-1-11-bonus-order",
   "lessonTitle": "Bonus Order - Hot Chocolate",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "the-smallest-easiest-conversation",
+  "unitName": "The Smallest, Easiest Conversation",
   "order": 11,
   "lang": "ga",
-  "estimatedMinutes": 10,
+  "estimatedMinutes": 5,
   "tags": [],
   "resumeBlocks": [],
   "lexicon_include": [],
@@ -93,5 +97,5 @@
       "text": "Next lesson — you’re taking it outside."
     }
   ],
-  "contentVersion": "5dcbb7d7d2f8b768"
+  "contentVersion": "989569e2762ae0a1"
 }

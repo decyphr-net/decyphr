@@ -1,0 +1,259 @@
+{
+  "courseSlug": "cafe",
+  "courseTitle": "Coffee Shop Encounters",
+  "lessonSlug": "cafe-first-encounters-lesson-2-4-part-3",
+  "lessonTitle": "Breakdown Part 3",
+  "moduleKey": "first-encounters",
+  "moduleName": "First Encounters",
+  "unitKey": "let-s-step-it-up-a-little",
+  "unitName": "Let's Step It Up A Little",
+  "group": "first-encounters-conversation-a",
+  "order": 4,
+  "lang": "ga",
+  "estimatedMinutes": 3,
+  "tags": [],
+  "resumeBlocks": [],
+  "lexicon_include": [
+    "agus",
+    "fianán",
+    "freisin",
+    "le",
+    "do",
+    "thoil",
+    "ceart",
+    "go",
+    "leor",
+    "sin",
+    "ocht",
+    "euro",
+    "fiche",
+    "ansin",
+    "cárta",
+    "nó",
+    "airgead",
+    "tirim",
+    "raibh",
+    "maith",
+    "agat",
+    "beidh",
+    "siad",
+    "réidh",
+    "gceann",
+    "cúpla",
+    "nóiméad"
+  ],
+  "lexicon_exclude": [],
+  "tokenGlosses": [
+    {
+      "token": "ó",
+      "translation": "oh"
+    },
+    {
+      "token": "fianán",
+      "translation": "cookie"
+    },
+    {
+      "token": "freisin",
+      "translation": "also / as well"
+    },
+    {
+      "token": "ocht",
+      "translation": "eight"
+    },
+    {
+      "token": "ansin",
+      "translation": "then"
+    },
+    {
+      "token": "cárta",
+      "translation": "card"
+    },
+    {
+      "token": "nó",
+      "translation": "or"
+    },
+    {
+      "token": "airgead tirim",
+      "translation": "cash"
+    },
+    {
+      "token": "go raibh maith agat",
+      "translation": "thank you"
+    },
+    {
+      "token": "beidh",
+      "translation": "will be"
+    },
+    {
+      "token": "siad",
+      "translation": "they"
+    },
+    {
+      "token": "réidh",
+      "translation": "ready"
+    },
+    {
+      "token": "i",
+      "translation": "in"
+    },
+    {
+      "token": "gceann",
+      "translation": "in the space of"
+    },
+    {
+      "token": "cúpla",
+      "translation": "a couple / a few"
+    },
+    {
+      "token": "nóiméad",
+      "translation": "minutes"
+    }
+  ],
+  "pedagogy": {
+    "defaultMode": "full",
+    "pedagogyFocus": "spoken_survival",
+    "autoTrackPhrasebook": true,
+    "autoTrackLexicon": true
+  },
+  "markdown": "\n# Let's Step It Up A Little - Breakdown Part 3\n\nOK, this one looks longer, but you'll recognise most of it:\n\n- **Customer**\n> Ó, agus fianán freisin, le do thoil.\n> Oh, ah-gus FEE-uh-nawn fuh-RESH-in, leh duh hull.\n> Oh, and a cookie as well, please.\n\n- **Barista**\n> Ceart go leor. Sin ocht euro fiche ansin.#\n> Kyart guh lur. Shin ukht YUR-oh FIH-heh an-shin.\n> OK. That’s eight euro twenty then.\n\n- **Barista**\n> Cárta nó airgead tirim?\n> KAR-tuh noh AR-gid TIR-im?\n> Card or cash?\n\n- **Customer**\n> Cárta.\n> KAR-tuh.\n> Card.\n\n- **Barista**\n> Go raibh maith agat. Beidh siad réidh i gceann cúpla nóiméad.\n> Guh rev mah ah-gut. Bay shid ray i gyown KOO-pluh NOH-mid.\n> Thank you. They’ll be ready in a couple of minutes.\n\n`Ó` is simply the Irish spelling of the English “oh”, which is used exactly the same way.\n\n`Fianán freisin` means \"a cookie as well.\"   `Freisin` is a very useful word meaning \"also\", \"too\" or \"as well.\"\n\nYou might also hear:\n- `Mise freisin.` – \"Me too.\"\n- `Caife freisin.` – \"A coffee as well.\"\n\nWhen the order changes, the barista updates the price:\n\n`Sin ocht euro fiche ansin.`\nYou’ve already seen this structure, its just with a different number.\n\nAnd finally:\n\n`Beidh siad réidh i gceann cúpla nóiméad`  which means \"They’ll be ready in a couple of minutes.\"\n\nYou don’t need to take this apart yet — just recognise it as a very common café phrase.\n\nYou’ll hear similar variations often:\n- `Beidh sé réidh i gceann nóiméid.` – It’ll be ready in a minute.\n- `Beidh siad réidh go luath.` – They’ll be ready soon.\n\nThis kind of timing language will come up regularly.",
+  "blocks": [
+    {
+      "id": "let-s-step-it-up-a-little-breakdown-part-3-1",
+      "type": "heading",
+      "level": 1,
+      "text": "Let's Step It Up A Little - Breakdown Part 3"
+    },
+    {
+      "id": "ok-this-one-looks-longer-but-you-ll-recognise-most-of-it-2",
+      "type": "paragraph",
+      "text": "OK, this one looks longer, but you'll recognise most of it:"
+    },
+    {
+      "id": "o-agus-fianan-freisin-le-do-thoil-3",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Ó, agus fianán freisin, le do thoil.",
+          "pronunciation": "Oh, ah-gus FEE-uh-nawn fuh-RESH-in, leh duh hull.",
+          "translation": "Oh, and a cookie as well, please."
+        }
+      ]
+    },
+    {
+      "id": "ceart-go-leor-sin-ocht-euro-fiche-ansin-4",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Ceart go leor. Sin ocht euro fiche ansin.#",
+          "pronunciation": "Kyart guh lur. Shin ukht YUR-oh FIH-heh an-shin.",
+          "translation": "OK. That’s eight euro twenty then."
+        }
+      ]
+    },
+    {
+      "id": "carta-no-airgead-tirim-5",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Cárta nó airgead tirim?",
+          "pronunciation": "KAR-tuh noh AR-gid TIR-im?",
+          "translation": "Card or cash?"
+        }
+      ]
+    },
+    {
+      "id": "carta-6",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Customer**",
+          "text": "Cárta.",
+          "pronunciation": "KAR-tuh.",
+          "translation": "Card."
+        }
+      ]
+    },
+    {
+      "id": "go-raibh-maith-agat-beidh-siad-reidh-i-gceann-cupla-noimead-7",
+      "type": "dialogue",
+      "turns": [
+        {
+          "speaker": "**Barista**",
+          "text": "Go raibh maith agat. Beidh siad réidh i gceann cúpla nóiméad.",
+          "pronunciation": "Guh rev mah ah-gut. Bay shid ray i gyown KOO-pluh NOH-mid.",
+          "translation": "Thank you. They’ll be ready in a couple of minutes."
+        }
+      ]
+    },
+    {
+      "id": "o-is-simply-the-irish-spelling-of-the-english-oh-which-is-used-e-8",
+      "type": "paragraph",
+      "text": "`Ó` is simply the Irish spelling of the English “oh”, which is used exactly the same way."
+    },
+    {
+      "id": "fianan-freisin-means-a-cookie-as-well-freisin-is-a-very-useful-w-9",
+      "type": "paragraph",
+      "text": "`Fianán freisin` means \"a cookie as well.\"   `Freisin` is a very useful word meaning \"also\", \"too\" or \"as well.\""
+    },
+    {
+      "id": "you-might-also-hear-10",
+      "type": "paragraph",
+      "text": "You might also hear:"
+    },
+    {
+      "id": "mise-freisin-me-too-11",
+      "type": "list",
+      "items": [
+        "`Mise freisin.` – \"Me too.\"",
+        "`Caife freisin.` – \"A coffee as well.\""
+      ]
+    },
+    {
+      "id": "when-the-order-changes-the-barista-updates-the-price-12",
+      "type": "paragraph",
+      "text": "When the order changes, the barista updates the price:"
+    },
+    {
+      "id": "sin-ocht-euro-fiche-ansin-you-ve-already-seen-this-structure-its-13",
+      "type": "paragraph",
+      "text": "`Sin ocht euro fiche ansin.` You’ve already seen this structure, its just with a different number."
+    },
+    {
+      "id": "and-finally-14",
+      "type": "paragraph",
+      "text": "And finally:"
+    },
+    {
+      "id": "beidh-siad-reidh-i-gceann-cupla-noimead-which-means-they-ll-be-r-15",
+      "type": "paragraph",
+      "text": "`Beidh siad réidh i gceann cúpla nóiméad`  which means \"They’ll be ready in a couple of minutes.\""
+    },
+    {
+      "id": "you-don-t-need-to-take-this-apart-yet-just-recognise-it-as-a-ver-16",
+      "type": "paragraph",
+      "text": "You don’t need to take this apart yet — just recognise it as a very common café phrase."
+    },
+    {
+      "id": "you-ll-hear-similar-variations-often-17",
+      "type": "paragraph",
+      "text": "You’ll hear similar variations often:"
+    },
+    {
+      "id": "beidh-se-reidh-i-gceann-noimeid-it-ll-be-ready-in-a-minute-18",
+      "type": "list",
+      "items": [
+        "`Beidh sé réidh i gceann nóiméid.` – It’ll be ready in a minute.",
+        "`Beidh siad réidh go luath.` – They’ll be ready soon."
+      ]
+    },
+    {
+      "id": "this-kind-of-timing-language-will-come-up-regularly-19",
+      "type": "paragraph",
+      "text": "This kind of timing language will come up regularly."
+    }
+  ],
+  "contentVersion": "c34970880a60c13d"
+}
