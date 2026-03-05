@@ -68,30 +68,6 @@ services:
       - mariadb
     env_file:
       - ./apps/ai/ai-connector/.env
-  bots:
-    build:
-      context: ./apps/chat/bots
-      dockerfile: ./Dockerfile
-    ports:
-      - "8007:3000"
-    restart: always
-    depends_on:
-      - mariadb
-      - redis
-    env_file:
-      - ./apps/chat/bots/.env
-  chat:
-    build:
-      context: ./apps/chat/chat
-      dockerfile: ./Dockerfile
-    ports:
-      - "3008:3008"
-    restart: always
-    depends_on:
-      - kafka
-      - mariadb
-    env_file:
-      - ./apps/chat/chat/.env
   nlp:
     build:
       context: ./nlp
@@ -176,19 +152,6 @@ services:
     env_file:
       - ./apps/courses/.env
 
-  challenges:
-    build:
-      context: .
-      dockerfile: ./apps/challenges/Dockerfile
-    expose:
-      - "3016"
-    restart: always
-    depends_on:
-      - mariadb
-      - courses
-    env_file:
-      - ./apps/challenges/.env
-
   client:
     build:
       context: ./apps/client
@@ -203,7 +166,6 @@ services:
       - focus
       - practice
       - courses
-      - challenges
     env_file:
       - ./apps/client/.env
       - ./docker/env/client.env
